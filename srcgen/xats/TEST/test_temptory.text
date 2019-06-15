@@ -1,0 +1,12 @@
+impltmp
+gseq_rforall<gseq><cs,c0>
+  (cs) =
+(
+  string0_rforall<>(cs)
+) where
+{
+impltmp
+string0_rforall$test<>(c0) = gseq_rforall$test<c0>(c0)
+string0_rforall$test<>(c0) =
+  gseq_rforall$test<gseq><cs,c0>(c0)
+} (* end of [gseq_rforall] *)

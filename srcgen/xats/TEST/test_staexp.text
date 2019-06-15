@@ -1,0 +1,134 @@
+(* ****** ****** *)
+
+sexpdef
+xy: int = op+(x, y)
+sexpdef
+xy: int = op(add)(x, y)
+
+(* ****** ****** *)
+
+sexpdef
+xyz: char = foo('a')
+sexpdef
+xyz: string = foo("a")
+sexpdef
+xyz: float = foo(1E-3f)
+sexpdef
+xyz: float = foo(0x1.abcdeP-3)
+
+(* ****** ****** *)
+
+#infix x
+#infixr -> =>>
+#infixl + - * /
+#infixl & && ||
+#prefix ~ ! !!
+#postfix ~ !! !!!
+
+#nonfix foo bar
+
+(* ****** ****** *)
+
+typedef + = $A.+
+typedef @ = $A.@
+
+(* ****** ****** *)
+
+typedef int2 = @(int, int)
+typedef int2 = $(int, int)
+typedef int2 = @{x=int, y=int}
+typedef int2 = ${x=$A.int, y=$B.int}
+
+(* ****** ****** *)
+
+vtypedef int11 = @{x=int | y=int}
+vtypedef int12 = ${x=int | y=int, z=int}
+
+(* ****** ****** *)
+
+absview array_v(a:vtype+)
+absprop array_p(a:vtype+)
+
+(* ****** ****** *)
+
+abstype
+arrayref
+(a:vtype+, n:int) == ptr
+absvtype
+arrayptr
+(a:vtype+, n:int) <= ptr
+
+(* ****** ****** *)
+//
+abstype
+foo(a)(b) == list(a, b) // illegal
+//
+(* ****** ****** *)
+//
+datasort
+ilist =
+  | ilist_nil
+  | ilist_cons of (int, ilist)
+and
+ilist2 =
+  | ilist2_nil
+  | ilist2_cons of (int, int, ilist2)
+//
+(* ****** ****** *)
+
+vtypedef
+fint1 =
+{a,b:int|a > b}
+(int(a), int(b)) ->
+[c:int | c <= a*b] int(c)
+vtypedef
+fint2 =
+{a,b:int|a > b}
+ (int(a), int(b)) ->
+#[c:int | c <= a*b] int(c)
+
+(* ****** ****** *)
+
+typedef int x y =
+(lam(u:int, v:bool): type => int(x+y))(0, false)
+
+(* ****** ****** *)
+
+local
+
+sexpdef foo = int * int
+
+in (* in-of-local *)
+
+sortdef pos = {a: int | a > 0}
+sortdef neg = {a: int | a < 0}
+sortdef nat = {a: int | a >= 0}
+
+endlocal // end of [local]
+
+(* ****** ****** *)
+//
+datatype
+mylist(a:type+, int) =
+| mylist_nil(a, 0) of ()
+| {n:nat}
+  mylist_cons(a, n+1) of (a, mylist_(a, n))
+and
+mylist2(a:type+, int) =
+| mylist2_nil(a, 0) of ()
+| {n:nat}
+  mylist2_cons(a, n+1) of (a, mylist2_(a, n))
+//
+where
+  sortdef nat = {a: int | a >= 0}
+  typedef mylist_(a, n) = mylist(a, n)
+  typedef mylist2_(a, n) = mylist2(a, n)
+endwhere
+//
+(* ****** ****** *)
+
+typedef foo = bar2 * bar2
+
+(* ****** ****** *)
+
+(* end of [test_staexp.text] *)
