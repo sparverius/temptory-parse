@@ -33,6 +33,7 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
 
@@ -50,6 +51,8 @@
 
 #staload "libats/SATS/filebas.sats"
 #staload _ = "libats/DATS/filebas.dats"
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 
 #staload
@@ -57,7 +60,18 @@ UN = "libats/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
+extern
+castfn ofg0{a:tflt}
+(list0_vt(a)) : [n:int | n >= 0] list1_vt(a, n)
+
+
+(* ****** ****** *)
+
+#staload LOC = "./../SATS/location.sats"
+#staload _ = "./location.dats"
+
 #staload "./../SATS/lexbuf.sats"
+#staload _ = "./lexbuf.dats"
 #staload "./../SATS/lexing.sats"
 
 (* ****** ****** *)
@@ -137,10 +151,9 @@ isEOL(c) = (c = '\n')
 //
 implement
 isBLANK(c) =
-if
-(c = ' ')
-then true
-else (if (c = '\t') then true else false)
+  if (c = ' ')
+  then true
+  else (if (c = '\t') then true else false)
 //
 (* ****** ****** *)
 //
@@ -161,10 +174,7 @@ isXDIGIT(c) = char0_isxdigit(c)
 (* ****** ****** *)
 //
 implement
-isALNUM_(c) =
-(
-  char0_isalnum(c) || (c = '_')
-)
+isALNUM_(c) = (char0_isalnum(c) || (c = '_'))
 //
 (* ****** ****** *)
 
@@ -180,12 +190,12 @@ isIDENTFST(c) =
 implement
 isIDENTRST(c) =
 (
-ifcase
-| char0_isalnum(c) => true
-| ( c = '_' ) => true
-| ( c = '$' ) => true
-| ( c = '\'' ) => true // HX: ML tradition
-| _ (*rest-of-char*) => false
+  ifcase
+  | char0_isalnum(c) => true
+  | ( c = '_' ) => true
+  | ( c = '$' ) => true
+  | ( c = '\'' ) => true // HX: ML tradition
+  | _ (*rest-of-char*) => false
 ) (* end of [isIDENTRST] *)
 
 (* ****** ****** *)
@@ -211,12 +221,7 @@ end // end of [SYMBOLIC_test]
 implement
 isSLASH(c) = (c = '/')
 implement
-isSLASH4(cs) =
-(
-0 =
-$extfcall
-(int, "strncmp", cs, "////", 4)
-) (* end of [isSLASH4] *)
+isSLASH4(cs) = (0 = $extfcall(int, "strncmp", cs, "////", 4))
 
 (* ****** ****** *)
 
@@ -248,309 +253,234 @@ isDQUOTE(c) = ( c = '\"' )
 //
 extern
 fun
-testing_digits
-(buf: &lexbuf >> _): int
+testing_digits(buf: &lexbuf >> _): int
 and
-testing_xdigits
-(buf: &lexbuf >> _): int
+testing_xdigits(buf: &lexbuf >> _): int
 //
 extern
 fun
-testing_sign_digits
-(buf: &lexbuf >> _): int
+testing_sign_digits(buf: &lexbuf >> _): int
 //
 (* ****** ****** *)
 
 implement
-testing_digits
-  (buf) =
-  loop(buf, 0) where
+testing_digits(buf) = loop(buf, 0) where
 {
-//
-fun
-loop
-(buf:
-&lexbuf >> _, k: int): int = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isDIGIT(c0)
-then
-(
-loop(buf, k+1)
-)
-else
-let
-  val () = lexbuf_unget(buf, i0) in k
-end // end of [else]
-//
-end // end of [loop]
-//
-} (* end of [testing_digits] *)
+
+  fun
+  loop(buf: &lexbuf >> _, k: int): int = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isDIGIT(c0)
+    then (loop(buf, k+1))
+    else k where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+  end
+
+}
 
 implement
-testing_sign_digits
-  (buf) = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| c0 = '+' =>
-  1+testing_digits(buf)
-| c0 = '-' =>
-  1+testing_digits(buf)
-| isDIGIT(c0) => 1+testing_digits(buf)
-| _(* else *) =>
-  let
-    val () = lexbuf_unget(buf, i0) in 0
-  end // end of [else]
-//
-end // end of [testing_sign_digits]
+testing_sign_digits(buf) = let
 
-(* ****** ****** *)
-
-implement
-testing_xdigits
-  (buf) =
-  loop(buf, 0) where
-{
-//
-fun
-loop
-(buf:
-&lexbuf >> _, k: int): int = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isXDIGIT(c0)
-then
-(
-loop(buf, k+1)
-) // end of [then]
-else
-let
-  val () = lexbuf_unget(buf, i0) in k
-end // end of [else]
-//
-end // end of [loop]
-//
-} (* end of [testing_xdigits] *)
-
-(* ****** ****** *)
-//
-extern
-fun
-testing_floatsfx
-(buf:
-&lexbuf >> _, i0: int): int
-//
-extern
-fun
-testing_floatsfx_hex
-(buf:
-&lexbuf >> _, i0: int): int
-//
-(* ****** ****** *)
-
-implement
-testing_floatsfx
-  (buf, i0) = let
-//
-val c0 = char0_chr(i0)
-//
-in
-ifcase
-| c0 = '.' =>
-  loop0(buf, 1)
-| c0 = 'e' =>
-  loop1(buf, i0, 0)
-| c0 = 'E' =>
-  loop1(buf, i0, 0)
-| _(* else *) =>
-  let
-    val () = lexbuf_unget(buf, i0) in 0
-  end // end of [else]
-end where
-{
-//
-fun
-loop0
-(buf:
-&lexbuf >> _, k: int): int = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-if
-isDIGIT(c0)
-then loop0(buf, k+1)
-else loop1(buf, i0, k)
-end // end of [loop0]
-//
-and
-loop1
-(buf:
-&lexbuf >> _
-, i0: int, k: int): int =
-let
+  val i0 = lexbuf_getc(buf)
   val c0 = char0_chr(i0)
+
 in
-//
-ifcase
-| c0 = 'e' =>
-  (
-    k+1+testing_sign_digits(buf)
-  )
-| c0 = 'E' =>
-  (
-    k+1+testing_sign_digits(buf)
-  )
-| _(* else *) => // exponent-less
-  let
-    val () = lexbuf_unget(buf, i0) in k
-  end // end of [else]
-//
-end // end of [let]
-//
-} (* testing_floatsfx *)
+
+  ifcase
+  | c0 = '+' => 1+testing_digits(buf)
+  | c0 = '-' => 1+testing_digits(buf)
+  | isDIGIT(c0) => 1+testing_digits(buf)
+  | _(* else *) => 0 where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+end
+
+(* ****** ****** *)
 
 implement
-testing_floatsfx_hex
-  (buf, i0) = let
+testing_xdigits(buf) = loop(buf, 0) where
+{
+
+  fun
+  loop(buf: &lexbuf >> _, k: int): int = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isXDIGIT(c0)
+    then (loop(buf, k+1)) // end of [then]
+    else k where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+  end
+
+}
+(* end of [testing_xdigits] *)
+
+(*
+let
+  val () = lexbuf_unget(buf, i0) in k
+end // end of [else]
+*)
+
+
+(* ****** ****** *)
 //
-val c0 = char0_chr(i0)
-//
+extern
+fun
+testing_floatsfx(buf: &lexbuf >> _, i0: int): int
+
+extern
+fun
+testing_floatsfx_hex(buf: &lexbuf >> _, i0: int): int
+
+(* ****** ****** *)
+
+implement
+testing_floatsfx(buf, i0) = let
+
+  val c0 = char0_chr(i0)
+
 in
-//
-ifcase
-| c0 = '.' =>
-  loop0(buf, 1)
-| c0 = 'p' =>
-  loop1(buf, i0, 0)
-| c0 = 'P' =>
-  loop1(buf, i0, 0)
-| _(* else *) =>
-  let
-    val () = lexbuf_unget(buf, i0) in 0
-  end // end of [else]
-//
+
+  ifcase
+  | c0 = '.' => loop0(buf, 1)
+  | c0 = 'e' => loop1(buf, i0, 0)
+  | c0 = 'E' => loop1(buf, i0, 0)
+  | _(* else *) => 0 where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
 end where
 {
-//
-fun
-loop0
-(buf:
-&lexbuf >> _, k: int): int = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
+
+  fun
+  loop0(buf: &lexbuf >> _, k: int): int = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isDIGIT(c0)
+    then loop0(buf, k+1)
+    else loop1(buf, i0, k)
+
+  end // end of [loop0]
+
+  and
+  loop1(buf: &lexbuf >> _, i0: int, k: int): int = let
+
+    val c0 = char0_chr(i0)
+
+  in
+
+    ifcase
+    | c0 = 'e' => (k+1+testing_sign_digits(buf))
+    | c0 = 'E' => (k+1+testing_sign_digits(buf))
+    | _(* else *) => k where
+      {
+        // exponent-less
+        val () = lexbuf_unget(buf, i0)
+      }
+
+  end
+
+}
+
+implement
+testing_floatsfx_hex(buf, i0) = let
+
+  val c0 = char0_chr(i0)
+
 in
-if
-isXDIGIT(c0)
-then loop0(buf, k+1)
-else loop1(buf, i0, k)
-end // end of [loop0]
-//
-and
-loop1
-(buf:
-&lexbuf >> _
-, i0: int, k: int): int = let
-//
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| c0 = 'p' =>
-  (
-    k+1+testing_sign_digits(buf)
-  )
-| c0 = 'P' =>
-  (
-    k+1+testing_sign_digits(buf)
-  )
-| _(* else *) => // exponent-less
-  let
-    val () = lexbuf_unget(buf, i0) in k
-  end // end of [else]
-//
-end // end of [let]
-//
+
+  ifcase
+  | c0 = '.' => loop0(buf, 1)
+  | c0 = 'p' => loop1(buf, i0, 0)
+  | c0 = 'P' => loop1(buf, i0, 0)
+  | _(* else *) => 0 where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+end where
+{
+
+  fun
+  loop0(buf: &lexbuf >> _, k: int): int = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isXDIGIT(c0)
+    then loop0(buf, k+1)
+    else loop1(buf, i0, k)
+
+  end
+
+  and
+  loop1(buf: &lexbuf >> _, i0: int, k: int): int = let
+
+    val c0 = char0_chr(i0)
+
+  in
+
+    ifcase
+    | c0 = 'p' => (k+1+testing_sign_digits(buf))
+    | c0 = 'P' => (k+1+testing_sign_digits(buf))
+    | _(* else *) => k where // exponent-less
+      {
+        val () = lexbuf_unget(buf, i0)
+      }
+
+  end
+
 } (* testing_floatsfx_hex *)
 
 (* ****** ****** *)
 
 extern
 fun
-lexing_isIDENTFST
-( buf
-: &lexbuf >> _, i0: int
-) : tnode // lexing_isIDENTFST
+lexing_isIDENTFST(buf: &lexbuf >> _, i0: int) : tnode
 extern
 fun
-lexing_isSYMBOLIC
-( buf
-: &lexbuf >> _, i0: int
-) : tnode // lexing_isSYMBOLIC
+lexing_isSYMBOLIC(buf: &lexbuf >> _, i0: int) : tnode
 
 (* ****** ****** *)
 
 extern
 fun
-lexing_COMMENT_line
-( buf
-: &lexbuf >> _, sym: string
-) : tnode // lexing_COMMENT_line
+lexing_COMMENT_line(buf: &lexbuf >> _, sym: string) : tnode
 extern
 fun
-lexing_COMMENT_rest
-( buf
-: &lexbuf >> _, sym: string
-) : tnode // lexing_COMMENT_rest
+lexing_COMMENT_rest(buf: &lexbuf >> _, sym: string) : tnode
 
 (* ****** ****** *)
 
 extern
 fun
-lexing_COMMENT_cblock
-( buf
-: &lexbuf >> _, i0: int, i1: int
-) : tnode // lexing_COMMENT_cblock
+lexing_COMMENT_cblock(buf: &lexbuf >> _, i0: int, i1: int) : tnode
 extern
 fun
-lexing_COMMENT_mlblock
-( buf
-: &lexbuf >> _, i0: int, i1: int
-) : tnode // lexing_COMMENT_mlblock
+lexing_COMMENT_mlblock(buf: &lexbuf >> _, i0: int, i1: int) : tnode
 
 (* ****** ****** *)
 
@@ -559,242 +489,169 @@ local
 (* ****** ****** *)
 
 fun
-lexing_isEOL
-( buf
-: &lexbuf >> _, i0: int
-) : tnode = let
-  val () =
-  lexbuf_get_none(buf)
-in
-  T_EOL() // HX: newline token
-end (* end of [lexing_isEOL] *)
+lexing_isEOL(buf: &lexbuf >> _, i0: int) : tnode = T_EOL() where // HX: newline token
+{
+  val () = lexbuf_get_none(buf)
+}
+(* end of [lexing_isEOL] *)
 
 (* ****** ****** *)
 
 fun
-lexing_isBLANK
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
-  loop(buf) where
+lexing_isBLANK(buf: &lexbuf >> _, i0: int) : tnode = loop(buf) where
 {
-//
-fun
-loop
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isBLANK(c0)
-then loop(buf)
-else let
-  val () = lexbuf_unget(buf, i0)
-in
-  T_BLANK(lexbuf_get_fullseg(buf))
-end // end of [else]
-//
-end // end of [loop]
-//
+
+  fun
+  loop(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isBLANK(c0)
+    then loop(buf)
+    else T_BLANK(lexbuf_get_fullseg(buf)) where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+  end
+
 } (* end of [lexing_isBLANK] *)
 
 (* ****** ****** *)
 
 fun
-lexing_isSLASH
-( buf
-: &lexbuf >> _, i0: int
-) : tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
+lexing_isSLASH(buf: &lexbuf >> _, i0: int) : tnode = let
+
+  val i1 = lexbuf_getc(buf)
+  val c1 = char0_chr(i1)
+
 in
-//
-ifcase
-| c1 = '*' =>
-  lexing_COMMENT_cblock
-    (buf, i0, i1)
-  // lexing_COMMENT_cblock
-| c1 = '/' => let
-    val-
-    T_IDENT_sym(sym) =
-    lexing_isSYMBOLIC(buf, i0)
-  in
-    if
-    isSLASH4(sym)
-    then
-    lexing_COMMENT_rest(buf, sym)
-    else
-    lexing_COMMENT_line(buf, sym)
-  end // end-of-SLASH
-| _(* else *) => let
-    val () =
-    lexbuf_unget(buf, i1)
-  in
-    lexing_isSYMBOLIC(buf, i0)
-  end (* end of [......] *)
-//
+
+  ifcase
+  | c1 = '*' => lexing_COMMENT_cblock(buf, i0, i1)
+  | c1 = '/' => let
+      val-T_IDENT_sym(sym) = lexing_isSYMBOLIC(buf, i0)
+    in
+
+      if isSLASH4(sym)
+      then lexing_COMMENT_rest(buf, sym)
+      else lexing_COMMENT_line(buf, sym)
+
+    end
+  | _(* else *) => lexing_isSYMBOLIC(buf, i0) where
+    {
+      val () = lexbuf_unget(buf, i1)
+    } (* end of [......] *)
+
 end (* end of [lexing_isSLASH] *)
 
 (* ****** ****** *)
 
 fun
 lexing_isDIGIT
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
+(buf: &lexbuf >> _, i0: int) : tnode =
 (
-//
-ifcase
-| c0 = '0' => loop0(buf)
-| _(* else *) => loop1(buf)
-//
+
+  ifcase
+  | c0 = '0' => loop0(buf)
+  | _(* else *) => loop1(buf)
+
 ) where
 {
-//
-fun
-loop0
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| c0 = 'x' => loop0x(buf)
-| c0 = 'X' => loop0X(buf)
-| _(* else *) =>
-  (
-    if
-    isDIGIT(c0)
-    then
+
+  fun
+  loop0(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    ifcase
+    | c0 = 'x' => loop0x(buf)
+    | c0 = 'X' => loop0X(buf)
+    | _(* else *) =>
     (
-      loop0d(buf)
-    ) // end of [then]
+      if isDIGIT(c0)
+      then loop0d(buf)
+      else T_INT1(lexbuf_get_fullseg(buf)) where
+      {
+        val () = lexbuf_unget(buf, i0)
+      }
+    )
+
+  end
+
+  and
+  loop0d(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isDIGIT(c0)
+    then loop0d(buf)
     else let
-      val () = lexbuf_unget(buf, i0)
+      val k0 = testing_floatsfx(buf, i0)
     in
-      T_INT1(lexbuf_get_fullseg(buf))
+
+      if (k0 = 0)
+      then T_INT2(OCT, lexbuf_get_fullseg(buf))
+      else T_FLOAT2(DEC, lexbuf_get_fullseg(buf))
+
+    end
+
+  end // end of [loop0d]
+
+  and
+  loop0x(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isXDIGIT(c0)
+    then loop0x(buf)
+    else let
+      val k0 = testing_floatsfx_hex(buf, i0)
+    in
+
+      if (k0 = 0)
+      then T_INT2(HEX, lexbuf_get_fullseg(buf))
+      else T_FLOAT2(HEX, lexbuf_get_fullseg(buf))
+
     end // end of [else]
-  )
-//
-end // end of [loop0]
 
-and
-loop0d
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isDIGIT(c0)
-then loop0d(buf)
-else let
-  val k0 =
-  testing_floatsfx(buf, i0)
-in
-  if
-  (k0 = 0)
-  then
-  T_INT2
-  (OCT, lexbuf_get_fullseg(buf))
-  else
-  T_FLOAT2
-  (DEC, lexbuf_get_fullseg(buf))
-end // end of [else]
-//
-end // end of [loop0d]
+  end
 
-and
-loop0x
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isXDIGIT(c0)
-then loop0x(buf)
-else let
-  val k0 =
-  testing_floatsfx_hex(buf, i0)
-in
-  if
-  (k0 = 0)
-  then
-  T_INT2
-  (HEX, lexbuf_get_fullseg(buf))
-  else
-  T_FLOAT2
-  (HEX, lexbuf_get_fullseg(buf))
-end // end of [else]
-//
-end // end of [loop0x]
-
-and
-loop0X
-(buf:
-&lexbuf >> _): tnode = loop0x(buf)
+  and
+  loop0X(buf: &lexbuf >> _): tnode = loop0x(buf)
 
 (* ****** ****** *)
 
 fun
-loop1
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
+loop1(buf: &lexbuf >> _): tnode = let
+
+  val i0 = lexbuf_getc(buf)
+  val c0 = char0_chr(i0)
+
 in
-//
-if
-isDIGIT(c0)
-then loop1(buf)
-else let
-  val k0 =
-  testing_floatsfx(buf, i0)
-in
-  if
-  (k0 = 0)
-  then
-  T_INT1(lexbuf_get_fullseg(buf))
-  else
-  T_FLOAT1(lexbuf_get_fullseg(buf))
-end // end of [else]
-//
+
+  if isDIGIT(c0)
+  then loop1(buf)
+  else let
+    val k0 = testing_floatsfx(buf, i0)
+  in
+    if (k0 = 0)
+    then T_INT1(lexbuf_get_fullseg(buf))
+    else T_FLOAT1(lexbuf_get_fullseg(buf))
+  end
+
 end // end of [loop1]
 
 (* ****** ****** *)
@@ -808,123 +665,85 @@ val c0 = char0_chr(i0)
 (* ****** ****** *)
 
 implement
-lexing_isIDENTFST
-  (buf, i0) =
-  loop(buf) where
+lexing_isIDENTFST(buf, i0) = loop(buf) where
 {
 //
-fun
-loop
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-(*
-val () =
-println!
-("lexing_isIDENTFST: c0 = ", c0)
-*)
-//
-in
-//
-if
-isIDENTRST(c0)
-then
-(
-loop(buf)
-) // end of [then]
-else let
-  val () = lexbuf_unget(buf, i0)
-in
-  T_IDENT_alp(lexbuf_get_fullseg(buf))
-end // end of [else]
-//
-end // end of [loop]
-//
+  fun
+  loop(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+    (*
+    val () = println!("lexing_isIDENTFST: c0 = ", c0)
+    *)
+
+  in
+
+    if isIDENTRST(c0)
+    then loop(buf)
+    else T_IDENT_alp(lexbuf_get_fullseg(buf)) where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+  end
+
 } (* end of [lexing_isIDENTFST] *)
 
 (* ****** ****** *)
 
 implement
-lexing_isSYMBOLIC
-  (buf, i0) =
-  loop(buf) where
+lexing_isSYMBOLIC(buf, i0) = loop(buf) where
 {
-//
-fun
-loop
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-if
-isSYMBOLIC(c0)
-then
-(
-loop(buf)
-) // end of [then]
-else let
-  val () = lexbuf_unget(buf, i0)
-in
-  T_IDENT_sym(lexbuf_get_fullseg(buf))
-end // end of [else]
-//
-end // end of [loop]
-//
+
+  fun
+  loop(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isSYMBOLIC(c0)
+    then loop(buf)
+    else T_IDENT_sym(lexbuf_get_fullseg(buf)) where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+
+  end
+
 } (* end of [lexing_isSYMBOLIC] *)
 
 (* ****** ****** *)
 
 fun
-lexing_isSHARP
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
-  loop(buf, 0) where
+lexing_isSHARP(buf: &lexbuf >> _, i0: int) : tnode = loop(buf, 0) where
 {
 //
-fun
-loop
-(buf:
-&lexbuf >> _, k: int): tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
-in
-//
-if
-isALNUM_(c1)
-then loop(buf, k+1)
-else
-(
-if
-(k > 0)
-then let
-  val () = lexbuf_unget(buf, i1)
-in
-  T_IDENT_srp(lexbuf_get_fullseg(buf))
-end // end of [then]
-else let
-  val () =
-  lexbuf_unget(buf, i1) in lexing_isSYMBOLIC(buf, i0)
-end // end of [else]
-)
-//
+  fun
+  loop(buf: &lexbuf >> _, k: int): tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    if isALNUM_(c1)
+    then loop(buf, k+1)
+    else
+    (
+      if (k > 0)
+      then T_IDENT_srp(lexbuf_get_fullseg(buf)) where
+      {
+        val () = lexbuf_unget(buf, i1)
+      }
+      else lexing_isSYMBOLIC(buf, i0) where
+      {
+        val () = lexbuf_unget(buf, i1)
+      }
+    )
+
 end // end of [loop]
 //
 } (* end of [lexing_isSHARP] *)
@@ -932,276 +751,185 @@ end // end of [loop]
 (* ****** ****** *)
 
 fun
-lexing_isDOLLAR
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
-  loop(buf, 0) where
+lexing_isDOLLAR(buf: &lexbuf >> _, i0: int) : tnode = loop(buf, 0) where
 {
 //
-fun
-loop
-(buf:
-&lexbuf >> _, k: int): tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
-in
-//
-if
-isALNUM_(c1)
-then
-(
-loop(buf, k+1)
-) (* end of [then] *)
-else
-(
-if
-(k > 0)
-then
-(
-if
-(c1 = '.')
-then
-(
-T_IDENT_qual(lexbuf_get_fullseg(buf))
-) // end of [then]
-else let
-  val () =
-  lexbuf_unget(buf, i1)
-in
-  T_IDENT_dlr(lexbuf_get_fullseg(buf))
-end // end of [else]
-)
-else let
-  val () =
-  lexbuf_unget(buf, i1) in lexing_isSYMBOLIC(buf, i0)
-end // end of [else]
-) (* end of [else] *)
-//
-end // end of [loop]
-//
+  fun
+  loop(buf: &lexbuf >> _, k: int): tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    if isALNUM_(c1)
+    then loop(buf, k+1)
+    else
+    (
+      if (k > 0)
+      then
+      (
+        if (c1 = '.')
+        then T_IDENT_qual(lexbuf_get_fullseg(buf))
+        else T_IDENT_dlr(lexbuf_get_fullseg(buf)) where
+        {
+          val () = lexbuf_unget(buf, i1)
+        }
+      )
+      else lexing_isSYMBOLIC(buf, i0) where
+      {
+        val () = lexbuf_unget(buf, i1)
+      }
+    )
+
+  end
+
 } (* end of [lexing_isDOLLAR] *)
 
 (* ****** ****** *)
 
 fun
-lexing_isLPAREN
-( buf
-: &lexbuf >> _, i0: int
-) : tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
+lexing_isLPAREN(buf: &lexbuf >> _, i0: int) : tnode = let
+
+  val i1 = lexbuf_getc(buf)
+  val c1 = char0_chr(i1)
+
 in
-//
-ifcase
-| c1 = '*' =>
-  lexing_COMMENT_mlblock
-    (buf, i0, i1)
-  // lexing_COMMENT_mlblock
-| _(* else *) =>
-  T_SPECHAR(i0) where
-  {
-    val () =
-      lexbuf_unget(buf, i1)
-    // end of [val]
-    val () = lexbuf_get_none(buf)
-  } (* end of [......] *)
-//
+
+  ifcase
+  | c1 = '*' => lexing_COMMENT_mlblock(buf, i0, i1)
+  | _(* else *) => T_SPECHAR(i0) where
+    {
+      val () = lexbuf_unget(buf, i1)
+      val () = lexbuf_get_none(buf)
+    } (* end of [......] *)
+
 end (* end of [lexing_isLPAREN] *)
 
 (* ****** ****** *)
 
 fun
-lexing_isSQUOTE
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
-  loop(buf) where
+lexing_isSQUOTE(buf: &lexbuf >> _, i0: int) : tnode = loop(buf) where
 {
 //
-fun
-loop
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| c0 = '\\' => loop1(buf)
-| c0 = '\'' => loop2(buf)
-| _(* else *) => loop3(buf)
-//
-end // end of [loop]
-//
-and
-loop1
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| char0_isdigit(c0) => loop11(buf)
-| char0_isprint(c0) => loop12(buf)
-| _ (* else *) => loop12(buf)
-//
-end // end of [loop1]
-//
-and
-loop2
-(buf:
-&lexbuf >> _): tnode =
-T_CHAR_nil
-(lexbuf_get_fullseg(buf))
-//
-and
-loop3
-(buf:
-&lexbuf >> _): tnode = let
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-//
-| isSQUOTE(c0) =>
-  T_CHAR_char
-  (lexbuf_get_fullseg(buf))
-//
-| _ (* else *) => let
-    val () = lexbuf_unget(buf, i0)
+  fun
+  loop(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
   in
-    T_CHAR_char(lexbuf_get_fullseg(buf))
-  end // end of [non-closing-SQUOTE]
-//
-end // end of [loop3]
-//
-and
-loop11
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-//
-| char0_isdigit(c0) => loop11(buf)
-//
-| isSQUOTE(c0) =>
-  T_CHAR_slash
-  (lexbuf_get_fullseg(buf))
-//
-| _ (* else *) => let
-    val () = lexbuf_unget(buf, i0)
+
+    ifcase
+    | c0 = '\\' => loop1(buf)
+    | c0 = '\'' => loop2(buf)
+    | _(*else*) => loop3(buf)
+
+  end
+
+  and
+  loop1(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
   in
-    T_CHAR_slash(lexbuf_get_fullseg(buf))
-  end // end of [non-closing-SQUOTE]
-//
-end // end of [loop11]
-//
-and
-loop12
-(buf:
-&lexbuf >> _): tnode = let
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| isSQUOTE(c0) =>
-  T_CHAR_slash
-  (lexbuf_get_fullseg(buf))
-| _ (* else *) => let
-    val () = lexbuf_unget(buf, i0)
+
+    ifcase
+    | char0_isdigit(c0) => loop11(buf)
+    | char0_isprint(c0) => loop12(buf)
+    | _ (* else *) => loop12(buf)
+
+  end // end of [loop1]
+
+  and
+  loop2 (buf: &lexbuf >> _): tnode = T_CHAR_nil(lexbuf_get_fullseg(buf))
+
+  and
+  loop3(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
   in
-    T_CHAR_slash(lexbuf_get_fullseg(buf))
-  end // end of [non-closing-SQUOTE]
-//
-end // end of [loop12]
-//
+
+    ifcase
+    | isSQUOTE(c0) => T_CHAR_char(lexbuf_get_fullseg(buf))
+    | _ (* else *) => (T_CHAR_char(lexbuf_get_fullseg(buf))) where
+      {
+        val () = lexbuf_unget(buf, i0)
+      }
+
+  end // end of [loop3]
+
+  and
+  loop11(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    ifcase
+    | char0_isdigit(c0) => loop11(buf)
+    | isSQUOTE(c0) => T_CHAR_slash(lexbuf_get_fullseg(buf))
+    | _ (* else *) => T_CHAR_slash(lexbuf_get_fullseg(buf)) where
+      {
+        val () = lexbuf_unget(buf, i0)
+      }
+
+  end
+
+  and
+  loop12(buf: &lexbuf >> _): tnode = let
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    ifcase
+    | isSQUOTE(c0) => T_CHAR_slash(lexbuf_get_fullseg(buf))
+    | _ (* else *) => T_CHAR_slash(lexbuf_get_fullseg(buf)) where
+      {
+        val () = lexbuf_unget(buf, i0)
+      }
+
+  end // end of [loop12]
+
 } (* end of [lexing_isSQUOTE] *)
 
 (* ****** ****** *)
 
 fun
 lexing_isDQUOTE
-( buf
-: &lexbuf >> _, i0: int
-) : tnode =
-  loop(buf) where
+(buf: &lexbuf >> _, i0: int) : tnode = loop(buf) where
 {
-//
-fun
-loop
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-(*
-val () = println! ("i0 = ", i0)
-*)
-//
-in
-//
-ifcase
-| c0 = '\"' =>
-  T_STRING_closed//unclsd
-  (lexbuf_get_fullseg(buf))
-| c0 = '\\' =>
-  loop(buf) where
-  {
-  val i0 = lexbuf_getc(buf)
-  } (* end of [......] *)
-| _(* else *) =>
-  if
-  (i0 >= 0)
-  then loop(buf)
-  else
-  T_STRING_unclsd(* closed *)(lexbuf_get_fullseg(buf))
-//
-end // end of [loop]
-//
+
+  fun
+  loop(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+    (*
+    val () = println! ("i0 = ", i0)
+    *)
+
+  in
+
+    ifcase
+    | c0 = '\"' => T_STRING_closed(lexbuf_get_fullseg(buf))//unclsd
+    | c0 = '\\' => loop(buf) where
+      {
+        val i0 = lexbuf_getc(buf)
+      } (* end of [......] *)
+    | _(* else *) =>
+      if (i0 >= 0)
+      then loop(buf)
+      else T_STRING_unclsd(* closed *)(lexbuf_get_fullseg(buf))
+
+  end
+
 } (* end of [lexing_isDQUOTE] *)
 
 (* ****** ****** *)
@@ -1210,204 +938,133 @@ in (* in-of-local *)
 
 implement
 lexing_tnode(buf) = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-(*
-val () =
-println!
-("lexing_tnode: c0 = ", c0)
-*)
-//
-//
+
+  val i0 = lexbuf_getc(buf)
+  val c0 = char0_chr(i0)
+
+  (*
+  val () = println!("lexing_tnode: c0 = ", c0)
+  *)
+
 in
-//
-ifcase
-//
-| isEOL(c0) =>
-  lexing_isEOL(buf, i0)
-//
-| isBLANK(c0) =>
-  lexing_isBLANK(buf, i0)
-//
-| isSLASH(c0) =>
-  lexing_isSLASH(buf, i0)
-//
-| isDIGIT(c0) =>
-  lexing_isDIGIT(buf, i0)
-//
-| isIDENTFST(c0) =>
-  lexing_isIDENTFST(buf, i0)
-//
-| isSHARP(c0) =>
-  lexing_isSHARP(buf, i0)
-| isDOLLAR(c0) =>
-  lexing_isDOLLAR(buf, i0)
-//
-| isSYMBOLIC(c0) =>
-  lexing_isSYMBOLIC(buf, i0)
-//
-| isLPAREN(c0) =>
-  (
-    lexing_isLPAREN(buf, i0)
-  )
-//
-| isSQUOTE(c0) =>
-  (
-    lexing_isSQUOTE(buf, i0)
-  )
-| isDQUOTE(c0) =>
-  (
-    lexing_isDQUOTE(buf, i0)
-  )
-//
-| _(* else *) =>
-  (
-    if
-    (i0 >= 0)
-    then T_SPECHAR(i0) else T_EOF()
-  ) where
-  {
-    val ((*void*)) = lexbuf_get_none(buf)
-  }
-//
+
+  ifcase
+  | isEOL(c0) => lexing_isEOL(buf, i0)
+  | isBLANK(c0) => lexing_isBLANK(buf, i0)
+  | isSLASH(c0) => lexing_isSLASH(buf, i0)
+  | isDIGIT(c0) => lexing_isDIGIT(buf, i0)
+  | isIDENTFST(c0) => lexing_isIDENTFST(buf, i0)
+  | isSHARP(c0) => lexing_isSHARP(buf, i0)
+  | isDOLLAR(c0) => lexing_isDOLLAR(buf, i0)
+  | isSYMBOLIC(c0) => lexing_isSYMBOLIC(buf, i0)
+  | isLPAREN(c0) => lexing_isLPAREN(buf, i0)
+  | isSQUOTE(c0) => lexing_isSQUOTE(buf, i0)
+  | isDQUOTE(c0) => lexing_isDQUOTE(buf, i0)
+  | _(* else *) =>
+    (
+      if (i0 >= 0) then T_SPECHAR(i0) else T_EOF()
+    ) where
+    {
+      val ((*void*)) = lexbuf_get_none(buf)
+    }
+
 end // end of [lexing_token]
 
 (* ****** ****** *)
 
 implement
-lexing_COMMENT_rest
-  (buf, sym) =
-  loop0(buf) where
+lexing_COMMENT_rest(buf, sym) = loop0(buf) where
 {
-//
-fun
-loop0
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-  if
-  (i0 >= 0)
-  then loop0(buf)
-  else
-  T_COMMENT_rest
-  (sym, lexbuf_get_fullseg(buf))
-end // end of [loop0]
-//
+
+  fun
+  loop0(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if (i0 >= 0)
+    then loop0(buf)
+    else T_COMMENT_rest(sym, lexbuf_get_fullseg(buf))
+
+  end // end of [loop0]
+
 } (* end of [lexing_COMMENT_rest] *)
 
 (* ****** ****** *)
 
 implement
-lexing_COMMENT_line
-  (buf, sym) =
-  loop0(buf) where
+lexing_COMMENT_line(buf, sym) = loop0(buf) where
 {
-//
-fun
-loop0
-(buf:
-&lexbuf >> _): tnode = let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-  if
-  isEOL(c0)
-  then let
-    val () = lexbuf_unget(buf, i0)
+
+  fun
+  loop0(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
   in
-    T_COMMENT_line
-    (sym, lexbuf_get_fullseg(buf))
-  end // end of [then]
-  else
-  (
-    if
-    (i0 >= 0)
-    then loop0(buf)
+
+    if isEOL(c0)
+    then T_COMMENT_line (sym, lexbuf_get_fullseg(buf)) where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
     else
-    T_COMMENT_line
-    (sym, lexbuf_get_fullseg(buf))
-  ) (* end of [else] *)
-end // end of [loop0]
-//
+    (
+      if (i0 >= 0)
+      then loop0(buf)
+      else T_COMMENT_line(sym, lexbuf_get_fullseg(buf))
+    )
+
+  end
+
 } (* end of [lexing_COMMENT_line] *)
 
 (* ****** ****** *)
 
 implement
-lexing_COMMENT_cblock
-  (buf, c0, c1) = let
+lexing_COMMENT_cblock(buf, c0, c1) = let
 //
-fun
-loop0
-(buf:
-&lexbuf >> _, lvl: int): tnode =
-if
-(lvl > 0)
-then let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
-in
-//
-ifcase
-| isASTRSK(c0) =>
-  loop1(buf, lvl)
-| _(* non-ASTRSK *) =>
-  (
-    if
-    (i0 >= 0)
-    then loop0(buf, lvl)
-    else
-    T_COMMENT_cblock
-    (lvl, lexbuf_get_fullseg(buf))
-  )
-//
-end // end of [then]
-else
-T_COMMENT_cblock
-(0(*lvl*), lexbuf_get_fullseg(buf))
-//
-and
-loop1
-(buf:
-&lexbuf >> _, lvl: int): tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
-in
-//
-ifcase
-| isSLASH(c1) => loop0(buf, lvl-1)
-| isASTRSK(c1) => loop1(buf, lvl-0)
-| _(*non-ASTRSK-SLASH*) => loop0(buf, lvl)
-//
-end // end of [loop1]
-//
+  fun
+  loop0(buf: &lexbuf >> _, lvl: int): tnode =
+    if (lvl > 0)
+    then let
+
+      val i0 = lexbuf_getc(buf)
+      val c0 = char0_chr(i0)
+
+    in
+
+      ifcase
+      | isASTRSK(c0) => loop1(buf, lvl)
+      | _(* non-ASTRSK *) =>
+        (
+          if (i0 >= 0)
+          then loop0(buf, lvl)
+          else T_COMMENT_cblock(lvl, lexbuf_get_fullseg(buf))
+        )
+
+    end
+
+    else T_COMMENT_cblock(0(*lvl*), lexbuf_get_fullseg(buf))
+
+  and
+  loop1(buf: &lexbuf >> _, lvl: int): tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    ifcase
+    | isSLASH(c1) => loop0(buf, lvl-1)
+    | isASTRSK(c1) => loop1(buf, lvl-0)
+    | _(*non-ASTRSK-SLASH*) => loop0(buf, lvl)
+
+  end // end of [loop1]
+
 in
   loop0(buf, 1(*lvl*))
 end // end of [lexing_COMMENT_cblock]
@@ -1415,88 +1072,67 @@ end // end of [lexing_COMMENT_cblock]
 (* ****** ****** *)
 
 implement
-lexing_COMMENT_mlblock
-  (buf, c0, c1) = let
+lexing_COMMENT_mlblock(buf, c0, c1) = let
 //
-fun
-loop0
-(buf:
-&lexbuf >> _, lvl: int): tnode =
-if
-(lvl > 0)
-then let
-//
-val i0 =
-(
-  lexbuf_getc(buf)
-)
-val c0 = char0_chr(i0)
-//
+  fun
+  loop0(buf: &lexbuf >> _, lvl: int): tnode =
+    if (lvl > 0)
+    then let
+
+      val i0 = lexbuf_getc(buf)
+      val c0 = char0_chr(i0)
+
+    in
+
+      ifcase
+      | isASTRSK(c0) => loop1(buf, lvl)
+      | isLPAREN(c0) => loop2(buf, lvl)
+      | _(* non-ASTRSK-LPAREN *) =>
+      (
+        if (i0 >= 0)
+        then loop0(buf, lvl)
+        else T_COMMENT_mlblock(lvl, lexbuf_get_fullseg(buf))
+      )
+
+    end // end of [then]
+
+    else T_COMMENT_mlblock(0(*lvl*), lexbuf_get_fullseg(buf))
+
+  and
+  loop1(buf: &lexbuf >> _, lvl: int): tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    ifcase
+    | isASTRSK(c1) => loop1(buf, lvl-0)
+    | isRPAREN(c1) => loop0(buf, lvl-1)
+    | _(*non-ASTRSK-LPAREN*) => loop0(buf, lvl)
+
+  end // end of [loop1]
+
+  and
+  loop2(buf: &lexbuf >> _, lvl: int): tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    ifcase
+    | isASTRSK(c1) => loop0(buf, lvl+1)
+    | isLPAREN(c1) => loop2(buf, lvl+0)
+    | _(*non-ASTRSK-LPAREN*) => loop0(buf, lvl)
+
+  end // end of [loop2]
+
 in
-//
-ifcase
-| isASTRSK(c0) =>
-  loop1(buf, lvl)
-| isLPAREN(c0) =>
-  loop2(buf, lvl)
-| _(* non-ASTRSK-LPAREN *) =>
-  (
-    if
-    (i0 >= 0)
-    then loop0(buf, lvl)
-    else
-    T_COMMENT_mlblock
-    (lvl, lexbuf_get_fullseg(buf))
-  )
-//
-end // end of [then]
-else
-T_COMMENT_mlblock
-(0(*lvl*), lexbuf_get_fullseg(buf))
-//
-and
-loop1
-(buf:
-&lexbuf >> _, lvl: int): tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
-in
-//
-ifcase
-| isASTRSK(c1) => loop1(buf, lvl-0)
-| isRPAREN(c1) => loop0(buf, lvl-1)
-| _(*non-ASTRSK-LPAREN*) => loop0(buf, lvl)
-//
-end // end of [loop1]
-//
-and
-loop2
-(buf:
-&lexbuf >> _, lvl: int): tnode = let
-//
-val i1 =
-(
-  lexbuf_getc(buf)
-)
-val c1 = char0_chr(i1)
-//
-in
-//
-ifcase
-| isASTRSK(c1) => loop0(buf, lvl+1)
-| isLPAREN(c1) => loop2(buf, lvl+0)
-| _(*non-ASTRSK-LPAREN*) => loop0(buf, lvl)
-//
-end // end of [loop2]
-//
-in
+
   loop0(buf, 1(*lvl*))
-end // end of [lexing_COMMENT_mlblock]
+
+end
 
 (* ****** ****** *)
 
@@ -1505,24 +1141,14 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-fpath_tokenize
-  (fpath) = let
+fpath_tokenize(fpath) = let
 //
-val
-opt =
-FILEref_open_opt
-  (fpath, "r"(* file_mode_r *))
+  val opt = FILEref_open_opt(fpath, "r"(* file_mode_r *))
 //
 in
   case+ opt of
-  | ~optn0_vt_none() =>
-    (
-      optn1_vt_none()
-    )
-  | ~optn0_vt_some(inp) =>
-    (
-      optn1_vt_some(fileref_tokenize(inp))
-    )
+  | ~optn0_vt_none() => optn1_vt_none()
+  | ~optn0_vt_some(inp) => optn1_vt_some(fileref_tokenize(inp))
 end // end of [fpath_tokenize]
 
 (* ****** ****** *)
@@ -1539,126 +1165,103 @@ local
 in (* in-of-local *)
 
 implement
-string_tokenize
-  (inp) = let
+string_tokenize(inp) = let
 //
-fun
-loop
-(buf:
-&lexbuf >> _
-,res:
- tnodelst_vt): tnodelst_vt = let
-//
-  val tnd = lexing_tnode(buf)
-(*
-  val (_) =
-  println!
-  ("string_tokenize: loop: tnd = ", tnd)
-*)
-//
+  fun
+  loop(buf: &lexbuf >> _,res: tnodelst_vt): tnodelst_vt = let
+
+    val tnd = lexing_tnode(buf)
+    (*
+    val (_) = println!("string_tokenize: loop: tnd = ", tnd)
+    *)
+
+  in
+
+    case+ tnd of
+    | T_EOF() => (list1_vt_cons(tnd, res))
+    | _(*non-EOF*) => (loop(buf, list1_vt_cons(tnd, res)))
+
+  end // end of [loop]
+
+  var buf: lexbuf
+
+  val cbs = string2cblist(inp)
+  val (_) = lexbuf_initize_cblist(buf, cbs)
+  val tnds = loop(buf, list1_vt_nil(*void*))
+
 in
-  case+ tnd of
-  | T_EOF() =>
-    (
-      list1_vt_cons(tnd, res)
-    )
-  | _(*non-EOF*) =>
-    ( loop
-      (buf, list1_vt_cons(tnd, res))
-    )
-end // end of [loop]
-//
-var buf: lexbuf
-//
-val cbs = string2cblist(inp)
-val (_) = lexbuf_initize_cblist(buf, cbs)
-val tnds = loop(buf, list1_vt_nil(*void*))
-//
-in
-//
-toks where
-{
-//
-var pos0: pos_t
-//
-extern castfn ofg0{a:tflt}(list0_vt(a)) : [n:int | n >= 0] list1_vt(a, n)
-  val tnds = ofg0(list0_vt_reverse(g0ofg1 tnds))
-//
-val ((*void*)) =
-  $LOC.position_initize(pos0, 0, 0, 0)
-val toks =
-  lexing_locatize_nodelst(pos0, list1_vt2t(tnds))
-//
-(* val ((*freed*)) = list0_vt_free(g0ofg1 tnds) *)
-//
-} (* end of [where] *)
+
+  toks where
+  {
+
+    var pos0: pos_t
+
+    val tnds = ofg0(list0_vt_reverse(g0ofg1 tnds))
+
+    val ((*void*)) = $LOC.position_initize(pos0, 0, 0, 0)
+    val toks = lexing_locatize_nodelst(pos0, list1_vt2t(tnds))
+    //
+    (* val ((*freed*)) = list0_vt_free(g0ofg1 tnds) *)
+    //
+
+  } (* end of [where] *)
+
 end // end of [string_tokenize]
 
 (* ****** ****** *)
 
 implement
-fileref_tokenize
-  (inp) = let
-//
-val BSZ = i2sz(8012)
-//
-fun
-loop
-(buf:
-&lexbuf >> _
-,res:
- tnodelst_vt): tnodelst_vt = let
-//
-  val tnd = lexing_tnode(buf)
-//
-in
-  case+ tnd of
-  | T_EOF() =>
-    (
-      list1_vt_cons(tnd, res)
-    )
-  | _(*non-EOF*) =>
-    ( loop
-      (buf, list1_vt_cons(tnd, res))
-    )
-end // end of [loop]
-//
-var buf: lexbuf
-//
-val-
-~optn1_vt_some(cbs) =
-(
-  fileref_get_cblist_vt(inp, BSZ)
-)
-//
-local
-val cbs = $UN.castvwtp1(cbs)
-val (_) = lexbuf_initize_cblist(buf, cbs)
-in
-val tnds = loop(buf, list1_vt_nil(*void*))
-//
-end // end of [local]
+fileref_tokenize(inp) = let
+
+  val BSZ = i2sz(8012)
+
+  fun
+  loop(buf: &lexbuf >> _, res: tnodelst_vt): tnodelst_vt = let
+
+    val tnd = lexing_tnode(buf)
+
+  in
+
+    case+ tnd of
+    | T_EOF() => (list1_vt_cons(tnd, res))
+    | _(*non-EOF*) => (loop(buf, list1_vt_cons(tnd, res)))
+
+  end // end of [loop]
+
+  var buf: lexbuf
+
+  val-~optn1_vt_some(cbs) = (fileref_get_cblist_vt(inp, BSZ))
+
+  local
+
+    val cbs = $UN.castvwtp1(cbs)
+    val (_) = lexbuf_initize_cblist(buf, cbs)
+
+  in
+
+    val tnds = loop(buf, list1_vt_nil(*void*))
+
+  end // end of [local]
 //
 in
-//
-toks where
-{
-//
-var pos0: pos_t
-//
-val () = cblist_vt_free(cbs)
-val tnds = list0_vt_reverse(g0ofg1 tnds)
-//
-val ((*void*)) =
-  $LOC.position_initize(pos0, 0, 0, 0)
-extern castfn ofg0{a:tflt}(list0_vt(a)) : [n:int | n >= 0] list1_vt(a, n)
-val nxt = list1_vt2t(ofg0(tnds))
-val toks =
-  lexing_locatize_nodelst(pos0, nxt) //$UN.list1_vt2t(g1ofg0(tnds)))
-//
-(* val ((*freed*)) = list0_vt_free(tnds) *)
-//
-} (* end of [where] *)
+
+  toks where
+  {
+
+    var pos0: pos_t
+
+    val () = cblist_vt_free(cbs)
+    val tnds = list0_vt_reverse(g0ofg1 tnds)
+
+    val ((*void*)) = $LOC.position_initize(pos0, 0, 0, 0)
+
+    val nxt = list1_vt2t(ofg0(tnds))
+    val toks = lexing_locatize_nodelst(pos0, nxt)
+
+    (* val ((*freed*)) = list0_vt_free(tnds) *)
+
+  }
+
 end // end of [fileref_tokenize]
 
 end // end of [local]

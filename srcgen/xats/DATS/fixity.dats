@@ -33,13 +33,15 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/stdio.sats"
 #staload _ = "libats/DATS/stdio.dats"
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
-
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 
 #staload "./../SATS/fixity.sats"
@@ -108,16 +110,19 @@ end // end of [local]
 
 (* ****** ****** *)
 //
-(*
+
 implement
-print_prcdv(x0) =
-fprint(stdout_ref, x0)
+print_prcdv(x0) = print(prcdv2int(x0))
+(* fprint(stdout_ref, x0) *)
+(*
 implement
 prerr_prcdv(x0) =
 fprint(stderr_ref, x0)
 *)
+(*
 implement
 fprint_prcdv(out, x0) = print(prcdv2int(x0))
+*)
 //
 (* ****** ****** *)
 //

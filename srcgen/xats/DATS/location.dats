@@ -33,6 +33,7 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
 
@@ -50,12 +51,21 @@
 
 #staload "libats/SATS/gptr.sats"
 #staload _ = "libats/DATS/gptr.dats"
+*)
 
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 #staload
 UN = "libats/SATS/unsafe.sats"
 
 (* ****** ****** *)
+
+#staload
+FIL = "./../SATS/filepath.sats"
+
+#staload
+_ = "./../DATS/filepath.dats"
+
 
 #staload "./../SATS/location.sats"
 
@@ -81,9 +91,7 @@ in (* in-of-local *)
 //
 impltmp
 {}(*tmp*)
-position_initize
-( pos0
-, ntot, nrow, ncol) =
+position_initize(pos0, ntot, nrow, ncol) =
 {
   val () = pos0.ntot := ntot
   val () = pos0.nrow := nrow
@@ -92,8 +100,7 @@ position_initize
 //
 impltmp
 {}(*tmp*)
-position_copyfrom
-  (pos0, pos1) =
+position_copyfrom(pos0, pos1) =
 {
   val () = pos0.ntot := pos1.ntot()
   val () = pos0.nrow := pos1.nrow()
@@ -118,21 +125,19 @@ impltmp
 {}(*tmp*)
 position_set_ntot
   (pos, ntot) = (pos.ntot := ntot)
+
 impltmp
 {}(*tmp*)
-position_set_nrow
-  (pos, nrow) = (pos.nrow := nrow)
+position_set_nrow(pos, nrow) = (pos.nrow := nrow)
 impltmp
 {}(*tmp*)
-position_set_ncol
-  (pos, ncol) = (pos.ncol := ncol)
+position_set_ncol(pos, ncol) = (pos.ncol := ncol)
 //
 (* ****** ****** *)
 //
 
 implement
-print_position
-  (pos) = fprint_position(the_stdout<>(), pos)
+print_position(pos) = fprint_position(the_stdout<>(), pos)
 (*
 implement
 prerr_position
@@ -142,15 +147,14 @@ prerr_position
 (* ****** ****** *)
 
 implement
-fprint_position
-  (out, pos) = let
-//
-val ntot = pos.ntot
-val nrow = pos.nrow
-val ncol = pos.ncol
-//
+fprint_position(out, pos) = let
+
+  val ntot = pos.ntot
+  val nrow = pos.nrow
+  val ncol = pos.ncol
+
 in
-//
+
 $extfcall
 (
   void
@@ -159,7 +163,7 @@ $extfcall
 ,
   out, "%i(line=%i, offs=%i)", ntot+1, nrow+1, ncol+1
 ) (* end of [val] *)
-//
+
 end // end of [fprint_position]
 
 (* ****** ****** *)
@@ -169,16 +173,14 @@ end // end of [local]
 (* ****** ****** *)
 //
 implement
-position_incby_1
-  (pos) =
+position_incby_1(pos) =
 (
-pos.ntot(pos.ntot()+1);
-pos.ncol(pos.ncol()+1);
+  pos.ntot(pos.ntot()+1);
+  pos.ncol(pos.ncol()+1);
 ) (* end of [else] *)
-//
+
 implement
-position_incby_eol
-  (pos) =
+position_incby_eol(pos) =
 (
 pos.ntot(pos.ntot()+1);
 pos.nrow(pos.nrow()+1); pos.ncol(0);
@@ -188,47 +190,29 @@ implement
 position_incby_char
   (pos, uc) =
 (
-if
-(uc > 0)
+if (uc > 0)
 then
 (
 pos.ntot(pos.ntot()+1);
-if
-($UN.cast{char}(uc) != '\n')
-then
-(
-  pos.ncol(pos.ncol()+1)
-) (* end of [then] *)
-else
-(
-pos.nrow(pos.nrow()+1); pos.ncol(0);
-) (* end of [else] *)
+if ($UN.cast{char}(uc) != '\n')
+then (pos.ncol(pos.ncol()+1)) (* end of [then] *)
+else (pos.nrow(pos.nrow()+1); pos.ncol(0);) (* end of [else] *)
 )
 // end of [if]
 ) (* end of [position_incby_char] *)
 //
 implement
-position_incby_text
-  (pos, cs) = let
+position_incby_text(pos, cs) = let
 //
 fun
-loop
-( pos
-: &pos_t >> _
-, p0: ptr
-, nt: int
-, nr: int, nc: int): void =
+loop(pos: &pos_t >> _, p0: ptr, nt: int, nr: int, nc: int): void =
 (
-if
-isneqz(c0)
+if isneqz(c0)
 then
 (
-if
-(c0 != '\n')
-then
-loop(pos, p1, nt+1, nr, nc+1)
-else
-loop(pos, p1, nt+1, nr+1, 0(*nc*))
+if (c0 != '\n')
+then loop(pos, p1, nt+1, nr, nc+1)
+else loop(pos, p1, nt+1, nr+1, 0(*nc*))
 )
 else
 (
@@ -242,17 +226,13 @@ else
 }
 //
 in
-//
-loop
-( pos
-, (* string2ptr *)string0_ptrof(cs)
-, pos.ntot(), pos.nrow(), pos.ncol())
-//
+
+loop(pos, string0_ptrof(cs), pos.ntot(), pos.nrow(), pos.ncol())
+
 end // end of [position_incby_text]
 //
 implement
-position_incby_neol
-  (pos, cs) = let
+position_incby_neol(pos, cs) = let
   val n0 = length(cs)
 in
   pos.ntot(pos.ntot()+(* sz2i *)$UN.cast{int}(n0));
@@ -267,8 +247,7 @@ absimpl
 location_type =
 $rec{
 //
-  filepath=
-  filepath // filepath
+  filepath=filepath // filepath
 //
 , beg_ntot= int // beginning char position
 , beg_nrow= int
@@ -286,8 +265,7 @@ $rec{
 in (* in-of-local *)
 
 implement
-location_make_pos_pos
-  (bpos, cpos) = $rec
+location_make_pos_pos(bpos, cpos) = $rec
 {
   filepath= fil
 //
@@ -407,8 +385,7 @@ in
 end // end of [location_leftmost]
 
 implement
-location_rightmost
-  (loc) = let
+location_rightmost(loc) = let
 //
   val fil = loc.filepath()
 //

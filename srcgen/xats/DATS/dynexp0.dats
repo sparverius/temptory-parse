@@ -39,14 +39,19 @@ UN =
 //
 (* ****** ****** *)
 
+#include "share/HATS/temptory_staload_bucs320.hats"
+
 #staload "./../SATS/label0.sats"
+#staload _ = "./label0.dats"
 #staload "./../SATS/location.sats"
+#staload _ = "./location.dats"
 
 (* ****** ****** *)
 //
 #staload "./../SATS/lexing.sats"
 //
 #staload "./../SATS/staexp0.sats"
+#staload _ = "./staexp0.dats"
 //
 #staload "./../SATS/dynexp0.sats"
 //
@@ -559,59 +564,3 @@ case+ x0 of
     | optn1_some(tok2) => tok1.loc() + tok2.loc()
   )
 ) (* end of [endwhere_get_loc] *)
-
-////
-
-local
-
-absimpl
-d0exp_tbox = $rec{
-  d0exp_loc= loc_t
-, d0exp_node= d0exp_node
-} (* end of [absimpl] *)
-
-in (* in-of-local *)
-
-implement
-d0exp_get_loc(x) = x.d0exp_loc
-implement
-d0exp_get_node(x) = x.d0exp_node
-
-implement
-d0exp_make_node
-(loc, node) = $rec
-{
-  d0exp_loc= loc, d0exp_node= node
-} (* end of [d0exp_make_node] *)
-
-end // end of [local]
-
-(* ****** ****** *)
-
-local
-
-absimpl
-d0ecl_tbox = $rec{
-  d0ecl_loc= loc_t
-, d0ecl_node= d0ecl_node
-} (* end of [absimpl] *)
-
-in (* in-of-local *)
-
-implement
-d0ecl_get_loc(x) = x.d0ecl_loc
-implement
-d0ecl_get_node(x) = x.d0ecl_node
-
-implement
-d0ecl_make_node
-(loc, node) = $rec
-{
-  d0ecl_loc= loc, d0ecl_node= node
-} (* end of [d0ecl_make_node] *)
-
-end // end of [local]
-
-(* ****** ****** *)
-
-(* end of [xats_dynexp0.dats] *)

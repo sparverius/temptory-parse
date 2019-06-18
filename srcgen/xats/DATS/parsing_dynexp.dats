@@ -32,17 +32,25 @@
 // Authoremail: gmhwxiATgmailDOTcom
 //
 (* ****** ****** *)
-//
+
+#include "share/HATS/temptory_staload_bucs320.hats"
+
+(* ****** ****** *)
+
 #staload "./../SATS/location.sats"
-//
+#staload _ = "./location.dats"
+
 (* ****** ****** *)
 
 #staload "./../SATS/lexing.sats"
 #staload "./../SATS/staexp0.sats"
+#staload _ = "./staexp0.dats"
 #staload "./../SATS/dynexp0.sats"
+#staload _ = "./dynexp0.dats"
 #staload "./../SATS/parsing.sats"
 
 
+(*
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
 
@@ -54,6 +62,7 @@
 
 #staload "libats/SATS/list_vt.sats"
 #staload _ = "libats/DATS/list_vt.dats"
+*)
 
 (* ****** ****** *)
 

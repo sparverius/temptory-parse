@@ -33,15 +33,17 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
-
 
 #staload "libats/SATS/string.sats"
 #staload _ = "libats/DATS/string.dats"
 
 #staload "libats/SATS/gref.sats"
 #staload _ = "libats/DATS/gref.dats"
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 (* ****** ****** *)
 
@@ -54,6 +56,7 @@ UN = "libats/SATS/unsafe.sats"
 SYM = "./../SATS/symbol.sats"
   typedef symbol = $SYM.symbol
 //
+#staload _ = "./symbol.dats"
 (* ****** ****** *)
 
 #staload "./../SATS/filepath.sats"

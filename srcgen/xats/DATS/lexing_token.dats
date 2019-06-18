@@ -33,9 +33,12 @@
 //
 (* ****** ****** *)
 
+#include "share/HATS/temptory_staload_bucs320.hats"
+
 #staload
 UN = "libats/SATS/unsafe.sats"
 
+(*
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
 
@@ -53,12 +56,16 @@ UN = "libats/SATS/unsafe.sats"
 
 #staload "libats/SATS/array.sats"
 #staload _ = "libats/DATS/array.dats"
+*)
 
 (* ****** ****** *)
 
 #staload "./../SATS/basics.sats"
+#staload _ = "./basics.dats"
 #staload "./../SATS/lexing.sats"
+(* #staload _ = "./lexing.dats" *)
 #staload "./../SATS/location.sats"
+#staload _ = "./location.dats"
 
 (* ****** ****** *)
 
@@ -621,9 +628,8 @@ val
 theAsz =
 (* i2sz *)$UN.cast{size}(128)
 val
-theMap =
+theMap = arrszref_make_elt<tnode>(theAsz, T_EOF())
 (* arrayref_make_elt<tnode> *)
-arrszref_make_elt<tnode>(theAsz, T_EOF())
 //
 (*
 val () = theMap[c2i('=')] := T_EQ()
@@ -692,47 +698,41 @@ end // end of [local]
 (* ****** ****** *)
 //
 implement
-tnode_is_AND
-  (node) =
+tnode_is_AND(node) =
 (
   case+ node of
   | T_AND() => true | _ => false
 )
 implement
-tnode_is_BAR
-  (node) =
+tnode_is_BAR(node) =
 (
   case+ node of
   | T_BAR() => true | _ => false
 )
 //
 implement
-tnode_is_CLN
-  (node) =
+tnode_is_CLN(node) =
 (
   case+ node of
   | T_CLN() => true | _ => false
 )
 //
 implement
-tnode_is_COMMA
-  (node) =
+tnode_is_COMMA(node) =
 (
   case+ node of
   | T_COMMA() => true | _ => false
 )
 //
 implement
-tnode_is_SMCLN
-  (node) =
+tnode_is_SMCLN(node) =
 (
   case+ node of
   | T_SMCLN() => true | _ => false
 )
 //
 implement
-tnode_is_BARSMCLN
-  (node) =
+tnode_is_BARSMCLN(node) =
 (
   case+ node of
   | T_BAR() => true
@@ -742,33 +742,31 @@ tnode_is_BARSMCLN
 (* ****** ****** *)
 //
 implement
-tnode_is_blank
-  (node) =
+tnode_is_blank(node) =
 (
-case+ node of
-| T_EOL _ => true
-| T_BLANK _ => true
-| _ (* non-T_BLANK_... *) => false
+  case+ node of
+    | T_EOL _ => true
+    | T_BLANK _ => true
+    | _ (* non-T_BLANK_... *) => false
 )
+
 implement
-tnode_is_comment
-  (node) =
+tnode_is_comment(node) =
 (
-case+ node of
-| T_COMMENT_line _ => true
-| T_COMMENT_rest _ => true
-| T_COMMENT_cblock _ => true
-| T_COMMENT_mlblock _ => true
-| _ (* non-T_COMMENT_... *) => false
+  case+ node of
+    | T_COMMENT_line _ => true
+    | T_COMMENT_rest _ => true
+    | T_COMMENT_cblock _ => true
+    | T_COMMENT_mlblock _ => true
+    | _ (* non-T_COMMENT_... *) => false
 )
 //
 implement
-tnode_is_skipped
-  (node) =
+tnode_is_skipped(node) =
 (
-if
-tnode_is_blank(node)
-then true else tnode_is_comment(node)
+  if tnode_is_blank(node)
+  then true
+  else tnode_is_comment(node)
 )
 //
 (* ****** ****** *)
@@ -832,40 +830,37 @@ in (* in-of-local *)
 
 implement
 tnode_search(name) = let
-//
-var res: itm?
-//
-val tbl =
-$UN.castvwtp0{hashtbl}(theHashtbl)
-val ans =
-hashmap_search<key,itm>(tbl, name, res)
-prval ((*void*)) = $UN.cast2void(tbl)
-//
+
+  var res: itm?
+
+  val tbl = $UN.castvwtp0{hashtbl}(theHashtbl)
+  val ans = hashmap_search<key,itm>(tbl, name, res)
+  prval ((*void*)) = $UN.cast2void(tbl)
+
 in
+
   if (ans)
   then opt_unsome_get(res)
   else let
     prval () = opt_unnone(res) in T_EOF()
   end // end of [else]
+
 end // end of [tnode_search]
 
 (* ****** ****** *)
 
 implement
-tnode_insert
-(name, node) = let
+tnode_insert(name, node) = let
 //
-var res: itm?
-val tbl =
-$UN.castvwtp0{hashtbl}(theHashtbl)
-val ans =
-hashmap_insert<key,itm>(tbl, name, node, res)
-//
-(* val ((*void*)) = assertloc(ans = false) *)
-//
-prval ((*void*)) = opt_clear(res)
-prval ((*void*)) = $UN.cast2void(tbl)
-//
+  var res: itm?
+  val tbl = $UN.castvwtp0{hashtbl}(theHashtbl)
+  val ans = hashmap_insert<key,itm>(tbl, name, node, res)
+
+  (* val ((*void*)) = assertloc(ans = false) *)
+
+  prval ((*void*)) = opt_clear(res)
+  prval ((*void*)) = $UN.cast2void(tbl)
+
 in
   // nothing
 end // end of [tnode_insert]
@@ -898,69 +893,59 @@ implement
 lexing_locatize_node
   (pos0, node) = let
 //
-#define
-locmake
-location_make_pos_pos
+  #define
+  locmake
+  location_make_pos_pos
 //
-#define
-posinc1 position_incby_1
-#define
-posinceol position_incby_eol
-#define
-posincneol position_incby_neol
-#define
-posinctext position_incby_text
+  #define
+  posinc1 position_incby_1
+  #define
+  posinceol position_incby_eol
+  #define
+  posincneol position_incby_neol
+  #define
+  posinctext position_incby_text
 //
-fun
-trans_tnode
-(node0: tnode): tnode =
-(
-case+ node0 of
-| T_SPECHAR(c) => let
-    val
-    node1 = char2tnode(c)
-  in
-    case+ node1 of
-    | T_EOF() => node0 | _(*else*) => node1
-  end // end of [T_SPECHAR]
-//
-| T_IDENT_alp(id) => let
-    val
-    node1 = tnode_search(id)
-  in
-    case+ node1 of
-    | T_EOF() => node0 | _(*else*) => node1
-  end // end of [T_IDENT_alp]
-| T_IDENT_sym(id) => let
-    val
-    node1 = tnode_search(id)
-  in
-    case+ node1 of
-    | T_EOF() => node0 | _(*else*) => node1
-  end // end of [T_IDENT_sym]
-//
-| T_IDENT_dlr(id) => let
-    val
-    node1 = tnode_search(id)
-  in
-    case+ node1 of
-    | T_EOF() => node0 | _(*else*) => node1
-  end // end of [T_IDENT_dlr]
-| T_IDENT_srp(id) => let
-    val
-    node1 = tnode_search(id)
-  in
-    case+ node1 of
-    | T_EOF() => node0 | _(*else*) => node1
-  end // end of [T_IDENT_srp]
-//
-| _ (* rest-of-tnode *) => node0
-//
-)
-//
-var pos1: pos_t
-val ((*void*)) =
-position_copyfrom(pos1, pos0)
+  fun
+  trans_tnode(node0: tnode): tnode =
+  (
+    case+ node0 of
+    | T_SPECHAR(c) => let
+        val node1 = char2tnode(c)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+    | T_IDENT_alp(id) => let
+        val node1 = tnode_search(id)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+    | T_IDENT_sym(id) => let
+        val node1 = tnode_search(id)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+    | T_IDENT_dlr(id) => let
+        val node1 = tnode_search(id)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+    | T_IDENT_srp(id) => let
+        val node1 = tnode_search(id)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+    | _ (* rest-of-tnode *) => node0
+
+  )
+
+  var pos1: pos_t
+  val ((*void*)) = position_copyfrom(pos1, pos0)
 //
 in
 //
@@ -1043,82 +1028,57 @@ end // end of [lexing_locatize_node]
 extern castfn ofg0{a:tflt}(list0_vt(a)) : [n:int | n >= 0] list1_vt(a, n)
 
 implement
-lexing_locatize_nodelst
-  (pos, nodes) = let
-//
-fun
-loop
-( pos: &pos_t >> _
-, nodes: tnodelst
-, tokens: tokenlst_vt): tokenlst_vt =
-(
-case+ nodes of
-| list1_nil() =>
-  ofg0(list0_vt_reverse(g0ofg1 tokens))
-| list1_cons(node, nodes) => let
-    val token =
-    lexing_locatize_node(pos, node)
-  in
-    loop(pos, nodes, list1_vt_cons(token, tokens))
-  end // end of [list_cons]
-)
-//
+lexing_locatize_nodelst(pos, nodes) = let
+
+  fun
+  loop(pos: &pos_t >> _, nodes: tnodelst, tokens: tokenlst_vt): tokenlst_vt =
+  (
+    case+ nodes of
+    | list1_nil() => ofg0(list0_vt_reverse(g0ofg1 tokens))
+    | list1_cons(node, nodes) => let
+        val token = lexing_locatize_node(pos, node)
+      in
+        loop(pos, nodes, list1_vt_cons(token, tokens))
+      end // end of [list_cons]
+  )
+
 in
+
   loop(pos, nodes, list1_vt_nil(*void*))
+
 end // end of [lexing_locatize_tnodelst]
 
 (* ****** ****** *)
 
 implement
-lexing_preprocess_tokenlst
-  (toks) = let
+lexing_preprocess_tokenlst(toks) = let
 //
-fnx
-loop0
-( xs0: tokenlst_vt
-, res: tokenlst_vt): tokenlst_vt =
-(
-case+ xs0 of
-| ~list1_vt_nil() => res
-| ~list1_vt_cons(x0, xs1) =>
-   (loop1(x0, xs1, res))
-)
-and
-loop1
-( x0: token
-, xs1: tokenlst_vt
-, res: tokenlst_vt): tokenlst_vt =
-(
-case+ xs1 of
-| ~list1_vt_nil() =>
-   list1_vt_cons(x0, res)
-| ~list1_vt_cons(x1, xs2) =>
-   (loop2(x0, x1, xs2, res))
-)
-and
-loop2
-( x0: token
-, x1: token
-, xs2: tokenlst_vt
-, res: tokenlst_vt): tokenlst_vt =
-(
-case+ x0.node() of
+  fnx
+  loop0(xs0: tokenlst_vt, res: tokenlst_vt): tokenlst_vt =
+  (
+    case+ xs0 of
+    | ~list1_vt_nil() => res
+    | ~list1_vt_cons(x0, xs1) => (loop1(x0, xs1, res))
+  )
+  and
+  loop1(x0: token, xs1: tokenlst_vt, res: tokenlst_vt): tokenlst_vt =
+  (
+    case+ xs1 of
+    | ~list1_vt_nil() => list1_vt_cons(x0, res)
+    | ~list1_vt_cons(x1, xs2) => (loop2(x0, x1, xs2, res))
+  )
+  and
+  loop2(x0: token, x1: token, xs2: tokenlst_vt, res: tokenlst_vt): tokenlst_vt =
+  (
+  case+ x0.node() of
 //
-| T_EOL() =>
-  loop1(x1, xs2, res)
-| T_BLANK _ =>
-  loop1(x1, xs2, res)
-//
-| T_COMMENT_line _ =>
-  loop1(x1, xs2, res)
-| T_COMMENT_rest _ =>
-  loop1(x1, xs2, res)
-| T_COMMENT_cblock _ =>
-  loop1(x1, xs2, res)
-| T_COMMENT_mlblock _ =>
-  loop1(x1, xs2, res)
-//
-| T_AT() =>
+  | T_EOL() => loop1(x1, xs2, res)
+  | T_BLANK _ => loop1(x1, xs2, res)
+  | T_COMMENT_line _ => loop1(x1, xs2, res)
+  | T_COMMENT_rest _ => loop1(x1, xs2, res)
+  | T_COMMENT_cblock _ => loop1(x1, xs2, res)
+  | T_COMMENT_mlblock _ => loop1(x1, xs2, res)
+  | T_AT() =>
   (
     case+ x1.node() of
     | T_LPAREN() => let

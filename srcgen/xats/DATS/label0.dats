@@ -33,17 +33,21 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/stdio.sats"
 #staload _ = "libats/DATS/stdio.dats"
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 (* ****** ****** *)
 
 #staload "./../SATS/label0.sats"
 #staload "./../SATS/symbol.sats"
+#staload _ = "./symbol.dats"
 
 (* ****** ****** *)
 //

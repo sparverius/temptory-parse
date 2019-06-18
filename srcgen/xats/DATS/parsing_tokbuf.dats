@@ -33,6 +33,7 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
 
@@ -44,6 +45,8 @@
 
 #staload "libats/SATS/array.sats"
 #staload _ = "libats/DATS/array.dats"
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 (* ****** ****** *)
 
@@ -186,16 +189,12 @@ impltmp
 array_ptr_alloc
   {n}(asz) = let
 //
-val
-[l:addr]
-(
-  pf, pfgc | p
-) = malloc_gc (asz * sizeof<a>)
+val [l:addr] (pf, pfgc | p) = malloc_gc (asz * sizeof<a>)
 prval pf =
 __assert(pf) where
 {
 extern praxi __assert
-  (pf: bytes (n*sizeof(a)) @ l): array_v (a?, l, n)
+(pf: bytes (n*sizeof(a)) @ l): array_v (a?, l, n)
 // end of [__assert]
 } // end of [where] // end of [prval]
 //

@@ -33,6 +33,7 @@
 //
 (* ****** ****** *)
 
+(*
 #staload "libats/SATS/gint.sats"
 #staload _ = "libats/DATS/gint.dats"
 
@@ -41,6 +42,9 @@
 
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
+*)
+
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 (* ****** ****** *)
 
@@ -49,8 +53,10 @@
 (* ****** ****** *)
 //
 #staload "./../SATS/label0.sats"
+#staload _ = "./label0.dats"
 #staload "./../SATS/lexing.sats"
 #staload "./../SATS/staexp0.sats"
+#staload _ = "./staexp0.dats"
 //
 (* ****** ****** *)
 

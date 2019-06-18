@@ -40,7 +40,11 @@
 UN = "prelude/SATS/unsafe.sats"
 *)
 #staload STDLIB = "libats/SATS/stdlib.sats"
+(*
 #staload _ = "libats/DATS/stdlib.dats"
+*)
+
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 #staload UN = "libats/SATS/unsafe.sats"
 //
@@ -49,7 +53,11 @@ UN = "prelude/SATS/unsafe.sats"
 #staload
 "./../SATS/label0.sats"
 #staload
+_ = "./label0.dats"
+#staload
 "./../SATS/location.sats"
+#staload
+_ = "./location.dats"
 //
 #staload "./../SATS/lexing.sats"
 #staload "./../SATS/staexp0.sats"
@@ -275,8 +283,7 @@ l0abl_make_node
 end // end of [l0abl_make_int1]
 
 implement
-l0abl_make_name
-  (tok) = let
+l0abl_make_name(tok) = let
 //
 val-
 T_IDENT_alp(s0) = tok.node()
@@ -318,15 +325,12 @@ in (* in-of-local *)
 (* ****** ****** *)
 //
 implement
-s0ymb_get_loc
-  (l0) = l0.s0ymb_loc
+s0ymb_get_loc(l0) = l0.s0ymb_loc
 implement
-s0ymb_get_node
-  (l0) = l0.s0ymb_node
+s0ymb_get_node(l0) = l0.s0ymb_node
 //
 implement
-s0ymb_make_node
-  (loc, node) = $rec{
+s0ymb_make_node(loc, node) = $rec{
   s0ymb_loc= loc, s0ymb_node= node
 } (* end of [s0ymb_make] *)
 //
@@ -337,8 +341,7 @@ end // end of [local]
 (* ****** ****** *)
 //
 implement
-sq0eid_get_loc
-  (x0) =
+sq0eid_get_loc(x0) =
 (
 case+ x0 of
 | SQ0EIDnone(id0) => id0.loc()
@@ -567,8 +570,7 @@ t0arg_get_node(x0) = x0.t0arg_node
 (* ****** ****** *)
 
 implement
-t0arg_make_node
-(loc, node) = $rec
+t0arg_make_node(loc, node) = $rec
 {
   t0arg_loc= loc, t0arg_node= node
 } (* end of [t0arg_make_node] *)

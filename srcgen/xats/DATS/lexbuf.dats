@@ -33,6 +33,7 @@
 //
 (* ****** ****** *)
 //
+(*
 #staload "libats/SATS/stdio.sats"
 #staload _ = "libats/DATS/stdio.dats"
 #staload "libats/SATS/print.sats"
@@ -50,6 +51,8 @@
 
 #staload "libats/SATS/array.sats"
 #staload _ = "libats/DATS/array.dats"
+*)
+#include "share/HATS/temptory_staload_bucs320.hats"
 
 (* ****** ****** *)
 
@@ -103,8 +106,7 @@ $extype_struct
 (* ****** ****** *)
 
 implement
-lexbuf_initize_cblist
-  (buf, cbs) = let
+lexbuf_initize_cblist(buf, cbs) = let
 //
 (*
 val () = buf.ntot := 0
