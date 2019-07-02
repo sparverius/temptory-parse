@@ -38,7 +38,7 @@
 #staload _ = "libats/DATS/gint.dats"
 
 #staload "libats/SATS/stdio.sats"
-#staload _ = "libats/DATS/stdio.dats"
+v#staload _ = "libats/DATS/stdio.dats"
 
 #staload "libats/SATS/print.sats"
 #staload _ = "libats/DATS/print.dats"
@@ -889,5 +889,6 @@ case+ x0.node() of
 ) (* end of [fprint_d0atcon] *)
 
 (* ****** ****** *)
+
 
 (* end of [xats_staexp0_print.dats] *)

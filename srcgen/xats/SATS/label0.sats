@@ -52,18 +52,11 @@ typedef symbol = $SYM.symbol
 //
 fun
 print_label : print_type(label)
-(*
-fun
-prerr_label : prerr_type(label)
-fun
-fprint_label : fprint_type(label)
-*)
-//
 #symload print with print_label
-(*
-#symload prerr with prerr_label
-#symload fprint with fprint_label
-*)
+//
+fun
+show_label : label -> void
+#symload show with show_label
 //
 (* ****** ****** *)
 //

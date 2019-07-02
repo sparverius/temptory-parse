@@ -11,20 +11,22 @@ BUILD/dynexp0_sats.o : SATS/share.sats SATS/staexp0.sats
 BUILD/parsing_sats.o : SATS/symbol.sats SATS/location.sats SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats
 BUILD/basics_dats.o : SATS/basics.sats
 BUILD/symbol_dats.o : SATS/symbol.sats
-BUILD/label0_dats.o : SATS/label0.sats SATS/symbol.sats
+BUILD/label0_dats.o : SATS/label0.sats SATS/symbol.sats DATS/symbol.dats
 BUILD/fixity_dats.o : SATS/fixity.sats
-BUILD/filepath_dats.o : SATS/symbol.sats SATS/filepath.sats sysparam.hats
-BUILD/location_dats.o : SATS/location.sats
+BUILD/filepath_dats.o : SATS/symbol.sats DATS/symbol.dats SATS/filepath.sats sysparam.hats
+BUILD/location_dats.o : SATS/filepath.sats DATS/filepath.dats SATS/location.sats
 BUILD/lexbuf_dats.o : SATS/location.sats SATS/lexbuf.sats ../util/SATS/cblist.sats
-BUILD/lexing_token_dats.o : SATS/basics.sats SATS/lexing.sats SATS/location.sats
+BUILD/lexing_token_dats.o : SATS/basics.sats DATS/basics.dats SATS/lexing.sats SATS/location.sats DATS/location.dats DATS/print2_tnode.dats
 BUILD/lexing_kword_dats.o : SATS/basics.sats SATS/symbol.sats SATS/lexing.sats
-BUILD/lexing_util0_dats.o : SATS/lexbuf.sats SATS/lexing.sats ../util/SATS/cblist.sats ../util/SATS/Posix/cblist.sats ../util/DATS/Posix/cblist.dats
-BUILD/staexp0_dats.o : SATS/label0.sats SATS/location.sats SATS/lexing.sats SATS/staexp0.sats
-BUILD/dynexp0_dats.o : SATS/label0.sats SATS/location.sats SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats
-BUILD/staexp0_print_dats.o : SATS/label0.sats SATS/lexing.sats SATS/staexp0.sats
+BUILD/lexing_util0_dats.o : SATS/location.sats DATS/location.dats SATS/lexbuf.sats DATS/lexbuf.dats SATS/lexing.sats ../util/SATS/cblist.sats ../util/SATS/Posix/cblist.sats ../util/DATS/Posix/cblist.dats
+BUILD/staexp0_dats.o : SATS/label0.sats DATS/label0.dats SATS/location.sats DATS/location.dats SATS/lexing.sats SATS/staexp0.sats
+BUILD/dynexp0_dats.o : SATS/label0.sats DATS/label0.dats SATS/location.sats DATS/location.dats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats SATS/dynexp0.sats
+BUILD/staexp0_print_dats.o : SATS/label0.sats DATS/label0.dats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats
 BUILD/dynexp0_print_dats.o : SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats DATS/staexp0_print.dats
+BUILD/staexp0_show_dats.o : SATS/label0.sats DATS/label0.dats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats
+BUILD/dynexp0_show_dats.o : SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats DATS/staexp0_print.dats
 BUILD/parsing_basics_dats.o : SATS/lexing.sats SATS/parsing.sats
 BUILD/parsing_tokbuf_dats.o : SATS/lexing.sats SATS/parsing.sats
-BUILD/parsing_staexp_dats.o : SATS/location.sats SATS/lexing.sats SATS/staexp0.sats SATS/parsing.sats
-BUILD/parsing_dynexp_dats.o : SATS/location.sats SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats SATS/parsing.sats
-BUILD/opt_dats.o : ../util/DATS/cblist.dats ../util/DATS/Posix/cblist.dats DATS/basics.dats DATS/symbol.dats DATS/label0.dats DATS/location.dats DATS/filepath.dats DATS/lexbuf.dats DATS/lexing_token.dats DATS/lexing_kword.dats DATS/lexing_util0.dats DATS/staexp0.dats DATS/staexp0_print.dats DATS/dynexp0.dats DATS/dynexp0_print.dats DATS/parsing_tokbuf.dats DATS/parsing_basics.dats DATS/parsing_staexp.dats DATS/parsing_dynexp.dats SATS/lexing.sats SATS/staexp0.sats SATS/dynexp0.sats SATS/parsing.sats
+BUILD/parsing_staexp_dats.o : SATS/location.sats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats SATS/parsing.sats
+BUILD/parsing_dynexp_dats.o : SATS/location.sats DATS/location.dats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats SATS/dynexp0.sats DATS/dynexp0.dats SATS/parsing.sats
+BUILD/opt_dats.o : ../util/DATS/cblist.dats ../util/DATS/Posix/cblist.dats SATS/lexing.sats SATS/staexp0.sats DATS/staexp0.dats SATS/dynexp0.sats DATS/dynexp0.dats SATS/parsing.sats

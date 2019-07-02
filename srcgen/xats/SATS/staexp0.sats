@@ -124,22 +124,20 @@ t0int_get_node: (t0int) -> t0int_node
 //
 #symload .loc with t0int_get_loc
 #symload .node with t0int_get_node
-//
-fun t0int_none : token -> t0int
-fun t0int_some : token -> t0int
-//
-fun print_t0int : print_type(t0int)
-(*
-fun prerr_t0int : prerr_type(t0int)
-fun fprint_t0int : fprint_type(t0int)
-*)
-//
+
+fun
+t0int_none : token -> t0int
+fun
+t0int_some : token -> t0int
+
+fun
+print_t0int : print_type(t0int)
 #symload print with print_t0int
-(*
-#symload prerr with prerr_t0int
-#symload fprint with fprint_t0int
-*)
-//
+
+fun
+show_t0int : t0int -> void
+#symload show with print_t0int
+
 (* ****** ****** *)
 //
 fun
@@ -154,16 +152,10 @@ fun t0chr_none : token -> t0chr
 fun t0chr_some : token -> t0chr
 //
 fun print_t0chr : print_type(t0chr)
-(*
-fun prerr_t0chr : prerr_type(t0chr)
-fun fprint_t0chr : fprint_type(t0chr)
-*)
-//
 #symload print with print_t0chr
-(*
-#symload prerr with prerr_t0chr
-#symload fprint with fprint_t0chr
-*)
+//
+fun show_t0chr : t0chr -> void
+#symload show with show_t0chr
 //
 (* ****** ****** *)
 //
@@ -179,18 +171,18 @@ fun t0flt_none : token -> t0flt
 fun t0flt_some : token -> t0flt
 //
 fun print_t0flt : print_type(t0flt)
-(*
-fun prerr_t0flt : prerr_type(t0flt)
-fun fprint_t0flt : fprint_type(t0flt)
-*)
-//
 #symload print with print_t0flt
-(*
-#symload prerr with prerr_t0flt
-#symload fprint with fprint_t0flt
-*)
+//
+fun show_t0flt : t0flt -> void
+#symload show with show_t0flt
 //
 (* ****** ****** *)
+//
+fun print_t0str : print_type(t0str)
+#symload print with print_t0str
+//
+fun show_t0str : t0str -> void
+#symload show with show_t0str
 //
 fun
 t0str_get_loc: (t0str) -> loc_t
@@ -202,18 +194,6 @@ t0str_get_node: (t0str) -> t0str_node
 //
 fun t0str_none : token -> t0str
 fun t0str_some : token -> t0str
-//
-fun print_t0str : print_type(t0str)
-(*
-fun prerr_t0str : prerr_type(t0str)
-fun fprint_t0str : fprint_type(t0str)
-*)
-//
-#symload print with print_t0str
-(*
-#symload prerr with prerr_t0str
-#symload fprint with fprint_t0str
-*)
 //
 (* ****** ****** *)
 //
@@ -237,16 +217,10 @@ fun i0dnt_some : token -> i0dnt
 (* ****** ****** *)
 //
 fun print_i0dnt : print_type(i0dnt)
-(*
-fun prerr_i0dnt : prerr_type(i0dnt)
-fun fprint_i0dnt : fprint_type(i0dnt)
-*)
-//
 #symload print with print_i0dnt
-(*
-#symload prerr with prerr_i0dnt
-#symload fprint with fprint_i0dnt
-*)
+//
+fun show_i0dnt : i0dnt -> void
+#symload show with show_i0dnt
 //
 (* ****** ****** *)
 //
@@ -264,16 +238,10 @@ l0abl_get_node(l0abl): l0abl_node
 #symload .node with l0abl_get_node
 //
 fun print_l0abl : print_type(l0abl)
-(*
-fun prerr_l0abl : prerr_type(l0abl)
-fun fprint_l0abl : fprint_type(l0abl)
-*)
-//
 #symload print with print_l0abl
-(*
-#symload prerr with prerr_l0abl
-#symload fprint with fprint_l0abl
-*)
+//
+fun show_l0abl : l0abl -> void
+#symload show with show_l0abl
 //
 fun
 l0abl_make_int1(tok: token): l0abl
@@ -314,16 +282,10 @@ s0ymb_get_node: (s0ymb) -> s0ymb_node
 #symload .node with s0ymb_get_node
 //
 fun print_s0ymb : print_type(s0ymb)
-(*
-fun prerr_s0ymb : prerr_type(s0ymb)
-fun fprint_s0ymb : fprint_type(s0ymb)
-*)
-//
 #symload print with print_s0ymb
-(*
-#symload prerr with prerr_s0ymb
-#symload fprint with fprint_s0ymb
-*)
+//
+fun show_s0ymb : s0ymb -> void
+#symload show with show_s0ymb
 //
 fun
 s0ymb_make_node
@@ -339,6 +301,10 @@ sl0abled
 fun
 {a:tbox}
 print_sl0abled(x0: sl0abled(a)): void
+//
+fun
+{a:tbox}
+show_sl0abled(x0: sl0abled(a)): void
 //
 (* ****** ****** *)
 //
@@ -364,6 +330,14 @@ print_dq0eid: print_type(dq0eid)
 //
 #symload print with print_sq0eid
 #symload print with print_dq0eid
+//
+fun
+show_sq0eid: sq0eid -> void
+fun
+show_dq0eid: dq0eid -> void
+//
+#symload show with show_sq0eid
+#symload show with show_dq0eid
 //
 (* ****** ****** *)
 //
@@ -421,6 +395,12 @@ sort0_node =
 
 (* ****** ****** *)
 //
+fun print_sort0 : print_type(sort0)
+#symload print with print_sort0
+//
+fun show_sort0 : sort0 -> void
+#symload show with show_sort0
+//
 fun
 sort0_get_loc(sort0): loc_t
 fun
@@ -428,18 +408,6 @@ sort0_get_node(sort0): sort0_node
 //
 #symload .loc with sort0_get_loc
 #symload .node with sort0_get_node
-//
-fun print_sort0 : print_type(sort0)
-(*
-fun prerr_sort0 : prerr_type(sort0)
-fun fprint_sort0 : fprint_type(sort0)
-*)
-//
-#symload print with print_sort0
-(*
-#symload prerr with prerr_sort0
-#symload fprint with fprint_sort0
-*)
 //
 fun
 sort0_make_node
@@ -467,16 +435,10 @@ s0rtcon_get_node(s0rtcon): s0rtcon_node
 #symload .node with s0rtcon_get_node
 //
 fun print_s0rtcon : print_type(s0rtcon)
-(*
-fun prerr_s0rtcon : prerr_type(s0rtcon)
-fun fprint_s0rtcon : fprint_type(s0rtcon)
-*)
-//
 #symload print with print_s0rtcon
-(*
-#symload prerr with prerr_s0rtcon
-#symload fprint with fprint_s0rtcon
-*)
+//
+fun show_s0rtcon : s0rtcon -> void
+#symload show with show_s0rtcon
 //
 fun
 s0rtcon_make_node
@@ -498,6 +460,14 @@ d0tsort_node =
   // D0TSORT
 //
 fun
+print_d0tsort: print_type(d0tsort)
+#symload print with print_d0tsort
+//
+fun
+show_d0tsort: d0tsort -> void
+#symload show with show_d0tsort
+//
+fun
 d0tsort_get_loc
   (x0: d0tsort): loc_t
 fun
@@ -506,21 +476,6 @@ d0tsort_get_node
 //
 #symload .loc with d0tsort_get_loc
 #symload .node with d0tsort_get_node
-//
-fun
-print_d0tsort: print_type(d0tsort)
-(*
-fun
-prerr_d0tsort: prerr_type(d0tsort)
-fun
-fprint_d0tsort: fprint_type(d0tsort)
-*)
-//
-#symload print with print_d0tsort
-(*
-#symload prerr with prerr_d0tsort
-#symload fprint with fprint_d0tsort
-*)
 //
 fun
 d0tsort_make_node
@@ -539,6 +494,12 @@ s0rtdef_node =
 | S0RTDEFsbst of
   (token, s0arg, token, s0explst, token)
 //
+fun print_s0rtdef : print_type(s0rtdef)
+#symload print with print_s0rtdef
+//
+fun show_s0rtdef : s0rtdef -> void
+#symload show with show_s0rtdef
+//
 fun
 s0rtdef_get_loc(s0rtdef): loc_t
 fun
@@ -546,18 +507,6 @@ s0rtdef_get_node(s0rtdef): s0rtdef_node
 //
 #symload .loc with s0rtdef_get_loc
 #symload .node with s0rtdef_get_node
-//
-fun print_s0rtdef : print_type(s0rtdef)
-(*
-fun prerr_s0rtdef : prerr_type(s0rtdef)
-fun fprint_s0rtdef : fprint_type(s0rtdef)
-*)
-//
-#symload print with print_s0rtdef
-(*
-#symload prerr with prerr_s0rtdef
-#symload fprint with fprint_s0rtdef
-*)
 //
 fun
 s0rtdef_make_node
@@ -578,6 +527,12 @@ s0marg_node =
 //
 (* ****** ****** *)
 //
+fun print_s0arg : print_type(s0arg)
+#symload print with print_s0arg
+//
+fun show_s0arg : s0arg -> void
+#symload show with show_s0arg
+//
 fun
 s0arg_get_loc(s0arg): loc_t
 fun
@@ -586,23 +541,17 @@ s0arg_get_node(s0arg): s0arg_node
 #symload .loc with s0arg_get_loc
 #symload .node with s0arg_get_node
 //
-fun print_s0arg : print_type(s0arg)
-(*
-fun prerr_s0arg : prerr_type(s0arg)
-fun fprint_s0arg : fprint_type(s0arg)
-*)
-//
-#symload print with print_s0arg
-(*
-#symload prerr with prerr_s0arg
-#symload fprint with fprint_s0arg
-*)
-//
 fun
 s0arg_make_node
 (loc: loc_t, node: s0arg_node): s0arg
 //
 (* ****** ****** *)
+//
+fun print_s0marg : print_type(s0marg)
+#symload print with print_s0marg
+//
+fun show_s0marg : s0marg -> void
+#symload show with show_s0marg
 //
 fun
 s0marg_get_loc(s0marg): loc_t
@@ -611,18 +560,6 @@ s0marg_get_node(s0marg): s0marg_node
 //
 #symload .loc with s0marg_get_loc
 #symload .node with s0marg_get_node
-//
-fun print_s0marg : print_type(s0marg)
-(*
-fun prerr_s0marg : prerr_type(s0marg)
-fun fprint_s0marg : fprint_type(s0marg)
-*)
-//
-#symload print with print_s0marg
-(*
-#symload prerr with prerr_s0marg
-#symload fprint with fprint_s0marg
-*)
 //
 fun
 s0marg_make_node
@@ -645,6 +582,12 @@ t0marg_node =
 //
 (* ****** ****** *)
 //
+fun print_t0arg : print_type(t0arg)
+#symload print with print_t0arg
+//
+fun show_t0arg : t0arg -> void
+#symload show with show_t0arg
+//
 fun
 t0arg_get_loc(t0arg): loc_t
 fun
@@ -653,23 +596,17 @@ t0arg_get_node(t0arg): t0arg_node
 #symload .loc with t0arg_get_loc
 #symload .node with t0arg_get_node
 //
-fun print_t0arg : print_type(t0arg)
-(*
-fun prerr_t0arg : prerr_type(t0arg)
-fun fprint_t0arg : fprint_type(t0arg)
-*)
-//
-#symload print with print_t0arg
-(*
-#symload prerr with prerr_t0arg
-#symload fprint with fprint_t0arg
-*)
-//
 fun
 t0arg_make_node
 (loc: loc_t, node: t0arg_node): t0arg
 //
 (* ****** ****** *)
+//
+fun print_t0marg : print_type(t0marg)
+#symload print with print_t0marg
+//
+fun show_t0marg : t0marg -> void
+#symload show with show_t0marg
 //
 fun
 t0marg_get_loc(t0marg): loc_t
@@ -678,18 +615,6 @@ t0marg_get_node(t0marg): t0marg_node
 //
 #symload .loc with t0marg_get_loc
 #symload .node with t0marg_get_node
-//
-fun print_t0marg : print_type(t0marg)
-(*
-fun prerr_t0marg : prerr_type(t0marg)
-fun fprint_t0marg : fprint_type(t0marg)
-*)
-//
-#symload print with print_t0marg
-(*
-#symload prerr with prerr_t0marg
-#symload fprint with fprint_t0marg
-*)
 //
 fun
 t0marg_make_node
@@ -706,6 +631,12 @@ s0qua_node =
 | S0QUAprop of (s0exp)
 | S0QUAvars of (i0dntlst, sort0opt)
 //
+fun print_s0qua : print_type(s0qua)
+#symload print with print_s0qua
+//
+fun show_s0qua : s0qua -> void
+#symload show with show_s0qua
+//
 fun
 s0qua_get_loc(s0qua): loc_t
 fun
@@ -713,18 +644,6 @@ s0qua_get_node(s0qua): s0qua_node
 //
 #symload .loc with s0qua_get_loc
 #symload .node with s0qua_get_node
-//
-fun print_s0qua : print_type(s0qua)
-(*
-fun prerr_s0qua : prerr_type(s0qua)
-fun fprint_s0qua : fprint_type(s0qua)
-*)
-//
-#symload print with print_s0qua
-(*
-#symload prerr with prerr_s0qua
-#symload fprint with fprint_s0qua
-*)
 //
 fun
 s0qua_make_node
@@ -741,6 +660,12 @@ s0uni_node =
 | S0UNInone of (token)
 | S0UNIsome of (token, s0qualst, token)
 //
+fun print_s0uni : print_type(s0uni)
+#symload print with print_s0uni
+//
+fun show_s0uni : s0uni -> void
+#symload show with show_s0uni
+//
 fun
 s0uni_get_loc(s0uni): loc_t
 fun
@@ -748,18 +673,6 @@ s0uni_get_node(s0uni): s0uni_node
 //
 #symload .loc with s0uni_get_loc
 #symload .node with s0uni_get_node
-//
-fun print_s0uni : print_type(s0uni)
-(*
-fun prerr_s0uni : prerr_type(s0uni)
-fun fprint_s0uni : fprint_type(s0uni)
-*)
-//
-#symload print with print_s0uni
-(*
-#symload prerr with prerr_s0uni
-#symload fprint with fprint_s0uni
-*)
 //
 fun
 s0uni_make_node
@@ -832,6 +745,12 @@ labs0exp_RBRACE =
 //
 (* ****** ****** *)
 //
+fun print_s0exp : print_type(s0exp)
+#symload print with print_s0exp
+//
+fun show_s0exp : s0exp -> void
+#symload show with show_s0exp
+//
 fun
 s0exp_get_loc(s0exp): loc_t
 fun
@@ -839,18 +758,6 @@ s0exp_get_node(s0exp): s0exp_node
 //
 #symload .loc with s0exp_get_loc
 #symload .node with s0exp_get_node
-//
-fun print_s0exp : print_type(s0exp)
-(*
-fun prerr_s0exp : prerr_type(s0exp)
-fun fprint_s0exp : fprint_type(s0exp)
-*)
-//
-#symload print with print_s0exp
-(*
-#symload prerr with prerr_s0exp
-#symload fprint with fprint_s0exp
-*)
 //
 fun
 s0exp_anno_opt
@@ -866,18 +773,11 @@ s0exp_RPAREN_loc(s0exp_RPAREN): loc_t
 //
 fun
 print_s0exp_RPAREN: print_type(s0exp_RPAREN)
-(*
-fun
-prerr_s0exp_RPAREN: print_type(s0exp_RPAREN)
-fun
-fprint_s0exp_RPAREN: fprint_type(s0exp_RPAREN)
-*)
-//
 #symload print with print_s0exp_RPAREN
-(*
-#symload prerr with prerr_s0exp_RPAREN
-#symload fprint with fprint_s0exp_RPAREN
-*)
+//
+fun
+show_s0exp_RPAREN: s0exp_RPAREN -> void
+#symload show with show_s0exp_RPAREN
 //
 (* ****** ****** *)
 //
@@ -886,18 +786,11 @@ labs0exp_RBRACE_loc(labs0exp_RBRACE): loc_t
 //
 fun
 print_labs0exp_RBRACE: print_type(labs0exp_RBRACE)
-(*
-fun
-prerr_labs0exp_RBRACE: prerr_type(labs0exp_RBRACE)
-fun
-fprint_labs0exp_RBRACE: fprint_type(labs0exp_RBRACE)
-*)
-//
 #symload print with print_labs0exp_RBRACE
-(*
-#symload prerr with prerr_labs0exp_RBRACE
-#symload fprint with fprint_labs0exp_RBRACE
-*)
+//
+fun
+show_labs0exp_RBRACE: labs0exp_RBRACE -> void
+#symload show with show_labs0exp_RBRACE
 //
 (* ****** ****** *)
 //
@@ -937,21 +830,12 @@ effs0expopt =
 *)
 //
 fun
-print_effs0expopt:
-print_type(effs0expopt)
-(*
-fun
-prerr_effs0expopt:
-prerr_type(effs0expopt)
-fun
-fprint_effs0expopt: fprint_type(effs0expopt)
-*)
-//
+print_effs0expopt: print_type(effs0expopt)
 #symload print with print_effs0expopt
-(*
-#symload prerr with prerr_effs0expopt
-#symload fprint with fprint_effs0expopt
-*)
+//
+fun
+show_effs0expopt: effs0expopt -> void
+#symload show with show_effs0expopt
 //
 (* ****** ****** *)
 //
@@ -968,6 +852,12 @@ d0atcon_node =
   ( s0unilst
   , d0eid(*nm*), s0explst, s0expopt)
 //
+fun print_d0atcon : print_type(d0atcon)
+#symload print with print_d0atcon
+//
+fun show_d0atcon : d0atcon -> void
+#symload show with show_d0atcon
+//
 fun
 d0atcon_get_loc(d0atcon): loc_t
 fun
@@ -975,18 +865,6 @@ d0atcon_get_node(d0atcon): d0atcon_node
 //
 #symload .loc with d0atcon_get_loc
 #symload .node with d0atcon_get_node
-//
-fun print_d0atcon : print_type(d0atcon)
-(*
-fun prerr_d0atcon : prerr_type(d0atcon)
-fun fprint_d0atcon : fprint_type(d0atcon)
-*)
-//
-#symload print with print_d0atcon
-(*
-#symload prerr with prerr_d0atcon
-#symload fprint with fprint_d0atcon
-*)
 //
 fun
 d0atcon_make_node
@@ -1009,6 +887,12 @@ d0atype_node =
   , sort0opt(*res*), token, d0atconlst)
   // D0ATYPE
 //
+fun print_d0atype : print_type(d0atype)
+#symload print with print_d0atype
+//
+fun show_d0atype : d0atype -> void
+#symload show with show_d0atype
+//
 fun
 d0atype_get_loc
   (x0: d0atype): loc_t
@@ -1018,18 +902,6 @@ d0atype_get_node
 //
 #symload .loc with d0atype_get_loc
 #symload .node with d0atype_get_node
-//
-fun print_d0atype : print_type(d0atype)
-(*
-fun prerr_d0atype : prerr_type(d0atype)
-fun fprint_d0atype : fprint_type(d0atype)
-*)
-//
-#symload print with print_d0atype
-(*
-#symload prerr with prerr_d0atype
-#symload fprint with fprint_d0atype
-*)
 //
 fun
 d0atype_make_node

@@ -144,6 +144,8 @@ staexp0.dats \
 dynexp0.dats \
 staexp0_print.dats \
 dynexp0_print.dats \
+staexp0_show.dats \
+dynexp0_show.dats \
 parsing_basics.dats \
 parsing_tokbuf.dats \
 parsing_staexp.dats \

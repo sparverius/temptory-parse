@@ -161,4 +161,61 @@ end // end of [local]
 
 (* ****** ****** *)
 
+
+implement
+show_valkind(vlk) =
+(
+//
+case+ vlk of
+| VLKval() => print("val")
+| VLKvalp() => print("val+")
+| VLKvaln() => print("val-")
+(*
+| VLKmcval() => print("VLKprval")
+*)
+| VLKprval() => print("prval")
+//
+) (* end of [fprint_valkind] *)
+
+impltmp show$val<valkind>(x) = show_valkind(x)
+//
+
+implement
+show_funkind(fnk) =
+(
+//
+case+ fnk of
+| FNKfn0() => print("fn")
+| FNKfnx() => print("fnx")
+| FNKfn1() => print("fun")
+| FNKfun() => print("fun")
+
+| FNKprfn0() => print("prfn0")
+| FNKprfn1() => print("prfn1")
+| FNKprfun() => print("prfun")
+| FNKpraxi() => print("praxi")
+//
+| FNKcastfn() => print("castfn")
+//
+) (* end of [fprint_funkind] *)
+
+impltmp show$val<funkind>(x) = show_funkind(x)
+
+implement
+show_impkind(knd) =
+(
+case+ knd of
+| IMPtmp() => print!("impltmp")
+| IMPfun() => print!("implfun")
+| IMPval() => print!("implement")
+| IMPprf() => print!("implprf")
+) (* end of [fprint_impkind] *)
+
+impltmp show$val<impkind>(x) = show_impkind(x)
+
+impltmp show$sep<>() = ()
+//fprint$val<string>(the_stdout<>(), " ")
+
+(* ****** ****** *)
+
 (* end of [xats_basics.dats] *)

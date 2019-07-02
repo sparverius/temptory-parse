@@ -57,11 +57,13 @@ local
 //
 #dynload"./staexp0.dats"
 #dynload"./staexp0_print.dats"
+#dynload"./staexp0_show.dats"
 //
 (* ****** ****** *)
 //
 #dynload"./dynexp0.dats"
 #dynload"./dynexp0_print.dats"
+#dynload"./dynexp0_show.dats"
 //
 (* ****** ****** *)
 //
@@ -226,6 +228,15 @@ then () where
     impltmp
     list0_foreach$work<d0ecl> tok = println!(tok)
   }
+
+  val () = println!()
+
+  val () = list0_foreach<d0ecl>(g0ofg1(toks)) where
+  {
+    impltmp
+    list0_foreach$work<d0ecl> tok = (show(tok); println!())
+  }
+
 }
 else println! ("Hello from ATS3(ATS/Xanadu)!")
 )

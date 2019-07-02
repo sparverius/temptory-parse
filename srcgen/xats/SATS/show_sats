@@ -1,52 +1,23 @@
-(***********************************************************************)
-(*                                                                     *)
-(*                         Applied Type System                         *)
-(*                                                                     *)
-(***********************************************************************)
-
-(*
-** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2018 Hongwei Xi, ATS Trustful Software, Inc.
-** All rights reserved
-**
-** ATS is free software;  you can  redistribute it and/or modify it under
-** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
-** Free Software Foundation; either version 3, or (at  your  option)  any
-** later version.
-**
-** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
-** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
-** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
-** for more details.
-**
-** You  should  have  received  a  copy of the GNU General Public License
-** along  with  ATS;  see the  file COPYING.  If not, please write to the
-** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
-** 02110-1301, USA.
-*)
-
-(* ****** ****** *)
-//
-// Author: Hongwei Xi
-// Start Time: June, 2018
-// Authoremail: gmhwxiATgmailDOTcom
-//
-(* ****** ****** *)
-//
 #include "./share.sats"
+#staload "./basics.sats"
 
+typedef show_type(x:tflt) = x -> void
+(*
 #define INFIX 0
 #define INFIXL 1
 #define INFIXR 2
 //
 #define PREFIX 3
 #define POSTFIX 4
+*)
 //
 (* ****** ****** *)
 
+(*
 #define BOXFLG (0x1 << 0)
 #define LINFLG (0x1 << 1)
 #define PRFFLG (0x1 << 2)
+*)
 
 (* ****** ****** *)
 //
@@ -74,6 +45,7 @@ overload tail with list_tail
 (* ****** ****** *)
 
 
+(*
 fun sortbox(x: int): int // 0,1
 fun sortlin(x: int): int // 0,1
 fun sortprf(x: int): int // 0,1
@@ -153,9 +125,11 @@ fun
 subsort_int_int(int, int): bool
 //
 #symload subsort with subsort_int_int
+*)
 //
 (* ****** ****** *)
 
+(*
 datatype
 dctkind =
   | DCKfun of ()
@@ -164,16 +138,22 @@ dctkind =
   | DCKprfun of ()
   | DCKprval of ()
   | DCKcastfn of ()
+*)
 // end of [dcstkind]
 
 (* ****** ****** *)
 //
+(*
 fun
 print_dctkind: print_type(dctkind)
 #symload print with print_dctkind
+*)
+fun show_dctkind: show_type(dctkind)
+#symload show with print_dctkind
 //
 (* ****** ****** *)
 //
+(*
 datatype
 valkind =
 | VLKval // val
@@ -189,13 +169,13 @@ valkind =
 fun
 print_valkind: print_type(valkind)
 #symload print with print_valkind
-//
-fun
-show_valkind: print_type(valkind)
-#symload show with show_valkind
+*)
+fun show_valkind: show_type(valkind)
+#symload show with print_valkind
 //
 (* ****** ****** *)
 
+(*
 datatype
 funkind =
 //
@@ -216,13 +196,13 @@ funkind =
 fun
 print_funkind: print_type(funkind)
 #symload print with print_funkind
-//
-fun
-show_funkind: print_type(funkind)
+*)
+fun show_funkind: print_type(funkind)
 #symload show with show_funkind
 //
 (* ****** ****** *)
 //
+(*
 datatype
 impkind =
 //
@@ -235,10 +215,9 @@ fun
 print_impkind: print_type(impkind)
 #symload
 print with print_impkind
-//
-fun
-show_impkind: print_type(impkind)
-#symload show with show_impkind
+*)
+fun show_impkind: show_type(impkind)
+#symload show with print_impkind
 //
 (* ****** ****** *)
 //
@@ -246,6 +225,7 @@ show_impkind: print_type(impkind)
 HX: level-2 syntax
 *)
 //
+(*
 #define CLOFLT (0) // flat
 #define CLOPTR (1) // linear-boxed
 #define CLOREF %(~1) // non-linear-boxed
@@ -270,16 +250,17 @@ fprint_funclo2: fprint_type(funclo2)
 *)
 //
 #symload print with print_funclo2
-
-fun show_funclo2: print_type(funclo2)
-#symload show with show_funclo2
+*)
 (*
 overload prerr with prerr_funclo2
 overload fprint with fprint_funclo2
 *)
-
+fun show_funclo2: show_type(funclo2)
+#symload show with show_funclo2
+//
 (* ****** ****** *)
 //
+(*
 typedef
 eq_type(a:tflt) = (a, a) -> bool
 typedef
@@ -287,21 +268,18 @@ neq_type(a:tflt) = (a, a) -> bool
 //
 typedef
 compare_type(a:tflt) = (a, a) -> int
+*)
 //
 (* ****** ****** *)
 //
+(*
 fun
 xats_string_append
   : (string, string) -<fun> string
 //
 #symload + with xats_string_append of 100
+*)
 //
 (* ****** ****** *)
-
-fun
-{a:vtflt}
-show$val(x: !a): void
-
-fun {} show$sep(): void
 
 (* end of [xats_basics.sats] *)

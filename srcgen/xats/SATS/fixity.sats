@@ -50,14 +50,18 @@ ASSOCnon | ASSOClft | ASSOCrgt
 //
 fun
 print_assoc(assoc): void
+(*
 fun
 prerr_assoc(assoc): void
 fun
 fprint_assoc: fprint_type(assoc)
+*)
 //
 #symload print with print_assoc
+(*
 #symload prerr with prerr_assoc
 #symload fprint with fprint_assoc
+*)
 //
 (* ****** ****** *)
 //
@@ -139,14 +143,18 @@ fixty =
 //
 fun
 print_fixty (fixty): void
+(*
 fun
 prerr_fixty (fixty): void
 fun
 fprint_fixty: fprint_type(fixty)
+*)
 //
 #symload print with print_fixty
+(*
 #symload prerr with prerr_fixty
 #symload fprint with fprint_fixty
+*)
 //
 (* ****** ****** *)
 //

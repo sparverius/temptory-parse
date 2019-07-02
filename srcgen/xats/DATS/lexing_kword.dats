@@ -47,12 +47,12 @@ UN =
 //
 #macdef
 T_CASE_ = T_CASE(0)
-(*
+//(*
 #macdef
 T_CASEP_ = T_CASE( 1)
 #macdef
 T_CASEN_ = T_CASE(~1)
-*)
+//*)
 //
 (* ****** ****** *)
 //
@@ -121,22 +121,18 @@ T_VTYPEDEF_ = T_SEXPDEF(VTYPESORT)
 #macdef
 T_ABSTYPE_ = T_ABSTYPE(TYPESORT)
 //
-(*
 #macdef
 T_ABSPROP_ = T_ABSTYPE(PROPSORT)
 #macdef
 T_ABSVIEW_ = T_ABSTYPE(VIEWSORT)
-*)
-(*
+
 #macdef
 T_ABSTBOX_ = T_ABSTYPE(TBOXSORT)
 #macdef
 T_ABSTFLT_ = T_ABSTYPE(TFLATSORT)
 #macdef
 T_ABSTFLAT_ = T_ABSTYPE(TFLATSORT)
-*)
 //
-(*
 #macdef
 T_ABSVTYPE_ = T_ABSTYPE(VTYPESORT)
 #macdef
@@ -145,7 +141,6 @@ T_ABSVTBOX_ = T_ABSTYPE(VTBOXSORT)
 T_ABSVTFLT_ = T_ABSTYPE(VTFLATSORT)
 #macdef
 T_ABSVTFLAT_ = T_ABSTYPE(VTFLATSORT)
-*)
 //
 (* ****** ****** *)
 //
@@ -389,21 +384,21 @@ val () = myins("vtypedef", T_VTYPEDEF_)
 //
 val () = myins("abstype", T_ABSTYPE_)
 //
-(*
+//(*
 val () = myins("absprop", T_ABSPROP_)
 val () = myins("absview", T_ABSVIEW_)
-*)
-(*
+//*)
+//(*
 val () = myins("abstbox", T_ABSTBOX_)
 val () = myins("abstflt", T_ABSTFLT_)
-val () = myins("abstflat", T_ABSTFLAT_)
-*)
-(*
-val () = myins("absvtype", T_ABSVTYPE_)
+//val () = myins("abstflat", T_ABSTFLAT_)
+//*)
+//(*
+//val () = myins("absvtype", T_ABSVTYPE_)
 val () = myins("absvtbox", T_ABSVTBOX_)
 val () = myins("absvtflt", T_ABSVTFLT_)
-val () = myins("absvtflat", T_ABSVTFLAT_)
-*)
+//val () = myins("absvtflat", T_ABSVTFLAT_)
+//*)
 //
 val () = myins("absimpl", T_ABSIMPL)
 val () = myins("absopen", T_ABSOPEN)

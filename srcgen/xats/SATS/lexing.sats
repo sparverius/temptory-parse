@@ -343,53 +343,33 @@ token_get_node(tok: token): tnode
 //
 fun
 print_tnode : (tnode) -> void
-(*
-fun
-prerr_tnode : (tnode) -> void
-fun
-fprint_tnode : (FILEref, tnode) -> void
-*)
-//
 #symload print with print_tnode
-(*
-#symload prerr with prerr_tnode
-#symload fprint with fprint_tnode
-*)
+//
+fun
+show_tnode : (tnode) -> void
+#symload show with show_tnode
 //
 (* ****** ****** *)
 //
 fun
 print_token : (token) -> void
-(*
-fun
-prerr_token : (token) -> void
-fun
-fprint_token : (FILEref, token) -> void
-*)
-//
 #symload print with print_token
-(*
-#symload prerr with prerr_token
-#symload fprint with fprint_token
-*)
+//
+fun
+show_token : token -> void
+#symload show with show_token
 //
 (* ****** ****** *)
 //
 fun
 print2_tnode : (tnode) -> void
-(*
-fun
-prerr2_tnode : (tnode) -> void
-fun
-fprint2_tnode : (FILEref, tnode) -> void
-*)
-//
 #symload print2 with print2_tnode
-(*
-#symload prerr2 with prerr2_tnode
-#symload fprint2 with fprint2_tnode
-*)
 //
+(* ****** ****** *)
+
+fun
+print2_token : (token) -> void
+
 (* ****** ****** *)
 //
 fun

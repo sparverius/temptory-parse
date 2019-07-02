@@ -169,18 +169,10 @@ symbol_get_stamp(x: symbol):<> uint
 //
 fun
 print_symbol : (symbol) -> void
-(*
-fun
-prerr_symbol : (symbol) -> void
-fun
-fprint_symbol : (FILEref, symbol) -> void
-*)
-//
 #symload print with print_symbol
-(*
-#symload prerr with prerr_symbol
-#symload fprint with fprint_symbol
-*)
+fun
+show_symbol : (symbol) -> void
+#symload show with show_symbol
 //
 (* ****** ****** *)
 //

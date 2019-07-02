@@ -1,0 +1,114 @@
+#include "share/HATS/temptory_staload_bucs320.hats"
+
+#staload
+UN =
+"libats/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+//
+#staload "./../SATS/basics.sats"
+#staload "./../SATS/show.sats"
+//
+(* ****** ****** *)
+
+implement
+show_valkind(vlk) =
+(
+//
+case+ vlk of
+| VLKval() => print("val")
+| VLKvalp() => print("val+")
+| VLKvaln() => print("val-")
+(*
+| VLKmcval() => print("VLKprval")
+*)
+| VLKprval() => print("prval")
+//
+) (* end of [fprint_valkind] *)
+
+(* ****** ****** *)
+
+implement
+show_funkind(fnk) =
+(
+//
+case+ fnk of
+| FNKfn0() => print("fn")
+| FNKfnx() => print("fnx")
+| FNKfn1() => print("fn1")
+| FNKfun() => print("fun")
+//
+| FNKprfn0() => print("prfn0")
+| FNKprfn1() => print("prfn1")
+| FNKprfun() => print("prfun")
+| FNKpraxi() => print("praxi")
+//
+| FNKcastfn() => print("castfn")
+//
+) (* end of [fprint_funkind] *)
+
+(* ****** ****** *)
+
+implement
+show_impkind(knd) =
+(
+case+ knd of
+| IMPtmp() => print!("imptmp")
+| IMPfun() => print!("impfun")
+| IMPval() => print!("implement")
+| IMPprf() => print!("impprf")
+) (* end of [fprint_impkind] *)
+
+(* ****** ****** *)
+
+(*
+implement
+FC2clo_ = FC2clo(0)
+implement
+FC2cloptr = FC2clo(1)
+implement
+FC2cloref = FC2clo(~1)
+*)
+
+(* ****** ****** *)
+//
+(*
+implement
+print_funclo2(fc2) =
+fprint_funclo2(stdout_ref, fc2)
+implement
+prerr_funclo2(fc2) =
+fprint_funclo2(stderr_ref, fc2)
+*)
+//
+implement
+show_funclo2(fc2) =
+(
+case+ fc2 of
+| FC2fun() => print!("FC2fun()")
+| FC2clo(knd) => print!("FC2clo(", knd, ")")
+)
+
+
+(*
+local
+//
+#staload
+"libats/SATS/string.sats"
+#staload
+_ = "libats/DATS/string.dats"
+//
+in (* in-of-local *)
+
+implement
+xats_string_append
+  (xs, ys) = let
+  val xs = g1ofg0(xs)
+  and ys = g1ofg0(ys)
+in
+  $effmask_all
+  ((* strptr2string *)(string0_append<>(xs, ys)))
+end // end of [xats_string_append]
+
+end // end of [local]
+*)

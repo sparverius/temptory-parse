@@ -203,75 +203,51 @@ parser(res:tflt) =
 //
 (* ****** ****** *)
 
-fun
-p_EQ: parser(token)
-fun
-p_GT: parser(token)
-fun
-p_BAR: parser(token)
-fun
-p_EQGT: parser(token)
-fun
-p_COLON: parser(token)
-fun
-p_GTDOT: parser(token)
+fun p_EQ: parser(token)
+fun p_GT: parser(token)
+fun p_BAR: parser(token)
+fun p_EQGT: parser(token)
+fun p_COLON: parser(token)
+fun p_GTDOT: parser(token)
 
 (* ****** ****** *)
 
-fun
-p_LPAREN: parser(token)
-fun
-p_RPAREN: parser(token)
-fun
-p_LBRACE: parser(token)
-fun
-p_RBRACE: parser(token)
-fun
-p_LBRACK: parser(token)
-fun
-p_RBRACK: parser(token)
+fun p_LPAREN: parser(token)
+fun p_RPAREN: parser(token)
+fun p_LBRACE: parser(token)
+fun p_RBRACE: parser(token)
+fun p_LBRACK: parser(token)
+fun p_RBRACK: parser(token)
+
+(* ****** ****** *)
+
+fun p_OF: parser(token)
+
+fun p_IN: parser(token)
+
+fun p_WITH: parser(token)
+
+(* ****** ****** *)
+
+fun p_END: parser(token)
+fun p_ENDLET: parser(token)
+fun p_ENDLOCAL: parser(token)
+
+(* ****** ****** *)
+
+fun popt_BAR: parser(tokenopt)
+fun popt_SMCLN: parser(tokenopt)
+
+fun popt_LBRACE: parser(tokenopt)
 
 (* ****** ****** *)
 //
-fun
-p_OF: parser(token)
-//
-fun
-p_IN: parser(token)
-//
-fun
-p_WITH: parser(token)
+fun popt_ENDIF: parser(tokenopt)
+fun popt_ENDCASE: parser(tokenopt)
 //
 (* ****** ****** *)
 //
-fun
-p_END: parser(token)
-fun
-p_ENDLET: parser(token)
-fun
-p_ENDLOCAL: parser(token)
-//
-(* ****** ****** *)
-//
-fun
-popt_BAR: parser(tokenopt)
-fun
-popt_SMCLN: parser(tokenopt)
-//
-fun
-popt_LBRACE: parser(tokenopt)
-//
-(* ****** ****** *)
-//
-fun
-popt_ENDIF: parser(tokenopt)
-fun
-popt_ENDCASE: parser(tokenopt)
-//
-(* ****** ****** *)
-//
-fun
-popt_ENDLAM: parser(tokenopt)
+fun popt_ENDLAM: parser(tokenopt)
 //
 (* ****** ****** *)
 //
@@ -334,8 +310,7 @@ s0arg ::
 | s0aid [COLON sort0]
 *)
 fun p_s0arg: parser(s0arg)
-fun
-p_s0argseq_COMMA: parser(s0arglst)
+fun p_s0argseq_COMMA: parser(s0arglst)
 //
 (* ****** ****** *)
 //
@@ -343,10 +318,8 @@ p_s0argseq_COMMA: parser(s0arglst)
 d0tsort ::=
 | s0tid EQ s0rtconseq_BAR
 *)
-fun
-p_d0tsort: parser(d0tsort)
-fun
-p_d0tsortseq_AND: parser(d0tsortlst)
+fun p_d0tsort: parser(d0tsort)
+fun p_d0tsortseq_AND: parser(d0tsortlst)
 //
 (* ****** ****** *)
 //
@@ -357,8 +330,7 @@ s0rtdef ::=
   s0arg BAR s0expseq_SMCLN
   RBRACE
 *)
-fun
-p_s0rtdef: parser(s0rtdef)
+fun p_s0rtdef: parser(s0rtdef)
 //
 (* ****** ****** *)
 //
@@ -373,11 +345,9 @@ labs0exp ::= l0abl EQ s0exp
 //
 (* ****** ****** *)
 //
-fun
-p_labs0exp : parser(labs0exp)
+fun p_labs0exp : parser(labs0exp)
 //
-fun
-p_s0expseq_COMMA : parser(s0explst)
+fun p_s0expseq_COMMA : parser(s0explst)
 //
 (* ****** ****** *)
 //
@@ -514,13 +484,10 @@ synent1
 (a1:vtbox) = SYNENT1 of (a1)
 datavtype
 synent2
-( a1:vtbox
-, a2:vtbox) = SYNENT2 of (a1, a2)
+(a1:vtbox, a2:vtbox) = SYNENT2 of (a1, a2)
 datavtype
 synent3
-( a1:vtbox
-, a2:vtbox
-, a3:vtbox) = SYNENT3 of (a1, a2, a3)
+(a1:vtbox, a2:vtbox, a3:vtbox) = SYNENT3 of (a1, a2, a3)
 
 (* ****** ****** *)
 //

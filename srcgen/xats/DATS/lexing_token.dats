@@ -110,7 +110,9 @@ prerr_tnode
 (* ****** ****** *)
 //
 implement
-print_tnode(tnd) =
+print_tnode(tnd) = let
+  (* val _ = $showtype(tnd) *)
+in
 (
 case+ tnd of
 //
@@ -353,6 +355,7 @@ case+ tnd of
 | T_SRP_SYMLOAD() => print("#SYMLOAD")
 //
 ) (* end of [fprint_tnode] *)
+end
 //
 (* ****** ****** *)
 //
@@ -367,14 +370,29 @@ prerr_token
   fprint_token(stderr_ref, tok)
 *)
 //
+
 implement
-print_token(tok) =
+print_token(tok: token) =
 (
-  print(tok.node())
+  print_tnode(tok.node())
 (*
   print!(tok.loc(), ": ", tok.node())
 *)
 )
+
+impltmp
+print$val<token>(x) = print_token(x)
+
+
+implement
+print2_token(tok: token) =
+(
+  print2_tnode(tok.node())
+(*
+  print!(tok.loc(), ": ", tok.node())
+*)
+)
+
 //
 (* ****** ****** *)
 //
@@ -391,6 +409,19 @@ prerr2_tnode
 //
 (* ****** ****** *)
 //
+#include "./print2_tnode.dats"
+
+implement
+show_token(tok: token) =
+(
+  print2_tnode(tok.node())
+(*
+  print!(tok.loc(), ": ", tok.node())
+*)
+)
+impltmp show$val<token>(x) = show_token(x)
+
+(*
 implement
 print2_tnode(tnd) =
 (
@@ -612,6 +643,7 @@ case+ tnd of
 | T_SRP_SYMLOAD() => print("#symload")
 //
 ) (* end of [fprint2_tnode] *)
+*)
 //
 (* ****** ****** *)
 
