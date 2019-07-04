@@ -303,5 +303,7 @@ fun
 show$val(x: !a): void
 
 fun {} show$sep(): void
+fun {} show$beg(): void
+fun {} show$end(): void
 
 (* end of [xats_basics.sats] *)

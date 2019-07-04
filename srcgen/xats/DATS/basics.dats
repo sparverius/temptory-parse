@@ -214,6 +214,8 @@ case+ knd of
 impltmp show$val<impkind>(x) = show_impkind(x)
 
 impltmp show$sep<>() = ()
+impltmp show$beg<>() = ()
+impltmp show$end<>() = ()
 //fprint$val<string>(the_stdout<>(), " ")
 
 (* ****** ****** *)

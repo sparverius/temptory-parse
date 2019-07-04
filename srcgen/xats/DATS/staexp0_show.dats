@@ -21,10 +21,13 @@
 
 #macdef prout(x) = fprint$val<string>(the_stdout<>(), ,(x))
 
-//
-local
+impltmp show$beg<>() = ()
+impltmp show$end<>() = ()
 
 fun show_newline() = prout("\n")
+fun show_spc() = prout(" ")
+//
+local
 //
 #macrodef
 rec
@@ -178,14 +181,14 @@ impltmp {a} optn1_show(t0) =
 (
   case+ t0 of
     | optn1_none() => ()
-    | optn1_some(x0) => (show$val<a>(x0))
+    | optn1_some(x0) => (show$beg<>(); show$val<a>(x0); show$end<>())
 )
 
 impltmp {a} optn0_show(t0) =
 (
   case+ t0 of
     | optn0_none() => ()
-    | optn0_some(x0) => (show$val<a>(x0))
+    | optn0_some(x0) => (show$beg<>(); show$val<a>(x0); show$end<>())
 )
 
 impltmp(a:tflt) show$val<optn0(a)>(x) = optn0_show<a>(x)
@@ -216,10 +219,11 @@ impltmp(a:tflt) list1_show<a>(xs) = (loop(0, xs)) where
   | list1_nil() => ()
   | list1_cons(x0, xs) =>
     (
-    if
-    (i0 > 0)
-    then show$sep<>();
-    show$val<a>(x0); loop(i0+1, xs)
+    show$beg<>();
+    (if(i0 > 0) then show$sep<>());
+    show$val<a>(x0);
+    show$end<>();
+    loop(i0+1, xs)
     )
   )
 }
@@ -232,10 +236,18 @@ impltmp(a:vtflt) list0_vt_show<a>(xs) = (loop(0, xs)) where
   | list0_vt_nil() => ()
   | list0_vt_cons(x0, xs) =>
     (
+    (if(i0 > 0) then show$sep<>());
+    show$beg<>();
+    show$val<a>(x0);
+    show$end<>();
+    loop(i0+1, xs)
+
+(*
     if
     (i0 > 0)
     then show$sep<>();
     show$val<a>(x0); loop(i0+1, xs)
+*)
     )
   )
 }
@@ -248,11 +260,20 @@ impltmp(a:tflt) list0_show<a>(xs) = (loop(0, xs)) where
   | list0_nil() => ()
   | list0_cons(x0, xs) =>
     (
+    (if(i0 > 0) then show$sep<>());
+    show$beg<>();
+    show$val<a>(x0);
+    show$end<>();
+    loop(i0+1, xs)
+    )
+(*
+    (
     if
     (i0 > 0)
     then show$sep<>();
     show$val<a>(x0); loop(i0+1, xs)
     )
+*)
   )
 }
 
@@ -399,6 +420,9 @@ show$val<d0atype> x = show_d0atype x
 impltmp
 show$val<d0atcon> x = show_d0atcon x
 
+impltmp
+print$val<d0atype> x = show_d0atype x
+
 (* ****** ****** *)
 
 impltmp
@@ -410,14 +434,19 @@ show$val<sl0abled(a)> x = show_sl0abled<a> x
 
 (* ****** ****** *)
 
+impltmp
+show$val<t0int> x = show_t0int x
+
+
 implement
 show_t0int(x0) =
 (
 case+ x0.node() of
-| T0INTnone(tok) =>
-  print!("T0INTnone(", tok, ")")
-| T0INTsome(tok) =>
-  print!("T0INTsome(", tok, ")")
+| T0INTnone(tok) => show(tok)
+  (* print!("T0INTnone(", tok, ")") *)
+| T0INTsome(tok) => show(tok)
+
+  (* print!("T0INTsome(", tok, ")") *)
 )
 
 (* ****** ****** *)
@@ -428,8 +457,8 @@ show_t0chr(x0) =
 case+ x0.node() of
 | T0CHRnone(tok) =>
   print!("T0CHRnone(", tok, ")")
-| T0CHRsome(tok) =>
-  print!("T0CHRsome(", tok, ")")
+| T0CHRsome(tok) => show(tok)
+  (* print!("T0CHRsome(", tok, ")") *)
 )
 
 (* ****** ****** *)
@@ -440,8 +469,8 @@ show_t0flt(x0) =
 case+ x0.node() of
 | T0FLTnone(tok) =>
   print!("T0FLTnone(", tok, ")")
-| T0FLTsome(tok) =>
-  print!("T0FLTsome(", tok, ")")
+| T0FLTsome(tok) => show(tok)
+  (* print!("T0FLTsome(", tok, ")") *)
 )
 
 (* ****** ****** *)
@@ -454,7 +483,10 @@ case+ x0.node() of
 | T0STRnone(tok) =>
   print!("T0STRnone(", tok, ")")
 | T0STRsome(tok) =>
-  print!("T0STRsome(", tok, ")")
+  (
+  show(tok)
+  )
+  (* print!("T0STRsome(", tok, ")") *)
 )
 
 (* ****** ****** *)
@@ -549,7 +581,7 @@ case+ x0.node() of
 //
 | S0Tapps(s0ts) => show$val<list0(sort0)>(g0ofg1(s0ts)) where
 {
-  impltmp show$sep<>() = fprint$val<string>(the_stdout<>(), " ")
+  impltmp show$sep<>() = ()//fprint$val<string>(the_stdout<>(), " ")
 }
   (* print!("S0Tapps(", s0ts, ")") *)
 //
@@ -596,9 +628,19 @@ case+ x0.node() of
 | S0RTDEFsort(s0t) => show(s0t)
   (* print!("S0RTDEFsort(", s0t, ")") *)
 | S0RTDEFsbst(tbeg, s0a0, tbar, s0es, tend) =>
+  (
+    show(tbeg);
+    show(s0a0);
+    show(tbar);
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where {
+    };
+    show(tend)
+  )
+(*
   print!
   ("S0RTDEFsbst("
   , tbeg, "; ", s0a0, "; ", tbar, "; ", s0es, "; ", tend, ")")
+*)
 ) (* end of [show_s0rtdef] *)
 
 (* ****** ****** *)
@@ -611,7 +653,14 @@ x0.node() of
 | S0ARGnone(tok) =>
   print!("S0ARGnone(", tok, ")")
 | S0ARGsome(sid, opt) =>
-  print!("S0ARGsome(", sid, ", ", opt, ")")
+  (
+    show(sid);
+    show$val<optn0(sort0)>(g0ofg1(opt)) where {
+      impltmp show$beg<>() = prout(":")
+    }
+    (* show(opt) *)
+  )
+  (* print!("S0ARGsome(", sid, ", ", opt, ")") *)
 ) (* show_s0arg *)
 
 implement
@@ -621,10 +670,17 @@ case+
 x0.node() of
 | S0MARGnone(tok) =>
   print!("S0MARGnone(", tok, ")")
-| S0MARGsing(tid) =>
-  print!("S0MARGsing(", tid, ")")
+| S0MARGsing(tid) => show(tid)
+  (* print!("S0MARGsing(", tid, ")") *)
 | S0MARGlist(tbeg, s0as, tend) =>
-  print!("S0MARGlist(", tbeg, "; ", s0as, "; ", tend, ")")
+  (
+    show(tbeg);
+    show$val<list0(s0arg)>(g0ofg1(s0as)) where {
+      impltmp show$sep<>() = prout(",")
+    };
+    show(tend)
+  )
+  //print!("S0MARGlist(", tbeg, "; ", s0as, "; ", tend, ")")
 ) (* show_s0marg *)
 
 (* ****** ****** *)
@@ -635,7 +691,18 @@ show_t0arg(x0) =
 case+
 x0.node() of
 | T0ARGsome(s0t, opt) =>
-  print!("T0ARGsome(", s0t, ", ", opt, ")")
+  (
+
+    (* show(opt) *)
+    (* show_newline(); *)
+    show$val<optn0(token)>(g0ofg1(opt)) where {
+      impltmp show$sep<>() = () //prout(":") //()
+      impltmp show$end<>() = prout(":")
+    };
+
+    show(s0t);
+  )
+  (* print!("T0ARGsome(", s0t, ", ", opt, ")") *)
 ) (* show_t0arg *)
 
 implement
@@ -646,7 +713,14 @@ x0.node() of
 | T0MARGnone(tok) =>
   print!("T0MARGnone(", tok, ")")
 | T0MARGlist(tbeg, t0as, tend) =>
-  print!("T0MARGlist(", tbeg, ", ", t0as, ", ", tend, ")")
+  (
+    show(tbeg);
+    show$val<list0(t0arg)>(g0ofg1(t0as)) where {
+      impltmp show$sep<>() = prout(",")//()
+    };
+    show(tend)
+  )
+  (* print!("T0MARGlist(", tbeg, ", ", t0as, ", ", tend, ")") *)
 ) (* show_t0marg *)
 
 (* ****** ****** *)
@@ -659,7 +733,10 @@ case+ x0.node() of
   (* print!("S0QUAprop(", s0e, ")") *)
 | S0QUAvars(ids, opt) =>
   (
-    show$val<list0(i0dnt)>(g0ofg1(ids));
+    show$val<list0(i0dnt)>(g0ofg1(ids)) where
+    {
+      impltmp show$sep<>() = prout(",");
+    };
     print(":");
     show$val<optn0(sort0)>(g0ofg1(opt))
     (* show(opt); *)
@@ -677,7 +754,13 @@ case+ x0.node() of
 | S0UNInone(tok) =>
   print!("S0UNInone(", tok, ")")
 | S0UNIsome(tbeg, s0qs, tend) =>
-  print!("S0UNIsome(", tbeg, "; ", s0qs, "; ", tend, ")")
+  (
+    show(tbeg);
+    show$val<list0(s0qua)>(g0ofg1(s0qs));
+    show(tend);
+    show_spc();
+  )
+  (* print!("S0UNIsome(", tbeg, "; ", s0qs, "; ", tend, ")") *)
 )
 
 (* ****** ****** *)
@@ -691,15 +774,17 @@ val+SL0ABLED(l0, t0, x1) = x0
 in
   print!("SL0ABLED(");
   print!(l0, ", ", t0, ", ");
-  print$val<a>(x1); print!(")")
+  show$val<a>(x1); print!(")")
 end // end of [show_sl0abled]
 
 (* ****** ****** *)
 
 local
 
+(*
 impltmp
 print$val<s0exp> x = show_s0exp x
+*)
 
 in (* in-of-local *)
 
@@ -711,23 +796,28 @@ case+ x0.node() of
 | S0Eid(sid) => show(sid)
   (* print!("S0Eid(", sid, ")") *)
 //
-| S0Eop1(opid) =>
-  print!("S0Eop1(", opid, ")")
+| S0Eop1(opid) => show(opid)
+  (* print!("S0Eop1(", opid, ")") *)
 | S0Eop2(tbeg, opid, tend) =>
-  print!("S0Eop2(", tbeg, "; ", opid, "; ", tend, ")")
+  (
+    show(tbeg);
+    show(opid);
+    show(tend);
+  )
+  (* print!("S0Eop2(", tbeg, "; ", opid, "; ", tend, ")") *)
 //
-| S0Eint(i0) =>
-  print!("S0Eint(", i0, ")")
-| S0Echr(c0) =>
-  print!("S0Echr(", c0, ")")
-| S0Eflt(f0) =>
-  print!("S0Eflt(", f0, ")")
-| S0Estr(s0) =>
-  print!("S0Estr(", s0, ")")
+| S0Eint(i0) => show_t0int(i0)
+  (* print!("S0Eint(", i0, ")") *)
+| S0Echr(c0) => show(c0)
+  (* print!("S0Echr(", c0, ")") *)
+| S0Eflt(f0) => show(f0)
+  (* print!("S0Eflt(", f0, ")") *)
+| S0Estr(s0) => show(s0)
+  (* print!("S0Estr(", s0, ")") *)
 //
 | S0Eapps(s0es) => show$val<list0(s0exp)>(g0ofg1(s0es)) where
   {
-    impltmp show$sep<>() = prout(" ")//()
+    impltmp show$sep<>() = ()//prout(" ")//()
   }
   (* print!("S0Eapps(", s0es, ")") *)
 //
@@ -736,27 +826,72 @@ case+ x0.node() of
 //
 | S0Eparen
   (tbeg, s0es, tend) =>
-  print!("S0Eparen(", tbeg, "; ", s0es, "; ", tend, ")")
+    (
+    show(tbeg);
+    (* show_spc(); *)
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = prout(",")
+    };
+    show(tend)
+    (* show(opt); *)
+  )
+  (* print!("S0Eparen(", tbeg, "; ", s0es, "; ", tend, ")") *)
 //
-| S0Eforall(tbeg, s0qs, tend) => let
+| S0Eforall(tbeg, s0qs, tend) =>
+  (
+    show(tbeg);
+    show$val<list0(s0qua)>(g0ofg1(s0qs)) where {
+      impltmp show$sep<>() = prout("|")
+    };
+    show(tend)
+  )
 (*
+let
     val _ = $showtype(tbeg)
     val _ = $showtype(s0qs)
 *)
+(*
   in
     print!("S0Eforall(", tbeg, "; ", s0qs, "; ", tend, ")")
   end
+*)
 | S0Eexists(tbeg, s0qs, tend) =>
   print!("S0Eexists(", tbeg, "; ", s0qs, "; ", tend, ")")
 //
 | S0Etuple
   (tbeg, topt, s0es, tend) =>
+  (
+    show(tbeg);
+    (* show_spc(); *)
+    show$val<optn0(token)>(g0ofg1(topt));
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = prout(",")
+    };
+    show(tend)
+    (* show(opt); *)
+  )
+(*
   print!("S0Etuple("
   , tbeg, "; ", topt, "; ", s0es, "; ", tend, ")")
+*)
 | S0Erecord
   (tbeg, topt, s0es, tend) =>
+    (
+    show(tbeg);
+    (* show_spc(); *)
+    show$val<optn0(token)>(g0ofg1(topt));
+    show$val<list0(sl0abled(s0exp))>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = prout(",")
+    };
+    show(tend)
+  )
+(*
   print!("S0Erecord("
   , tbeg, "; ", topt, "; ", s0es, "; ", tend, ")")
+*)
 //
 | S0Elam
   ( tbeg
@@ -772,7 +907,11 @@ case+ x0.node() of
 //
 | S0Equal
   (tok, s0e) =>
-  print!("S0Equal(", tok, "; ", s0e, ")")
+  (
+    show(tok);
+    show(s0e)
+  )
+  (* print!("S0Equal(", tok, "; ", s0e, ")") *)
 //
 | S0Enone(token) => ()
   //print!("S0Enone(", token, ")")
@@ -794,8 +933,8 @@ implement
 show_s0exp_RPAREN(x0) =
 (
 case+ x0 of
-| s0exp_RPAREN_cons0(tok) =>
-  print!("s0exp_RPAREN_cons0(", tok, ")")
+| s0exp_RPAREN_cons0(tok) => show(tok)
+  (* print!("s0exp_RPAREN_cons0(", tok, ")") *)
 | s0exp_RPAREN_cons1(tok1, s0es, tok2) =>
   print!("s0exp_RPAREN_cons1(", tok1, ", ", s0es, ", ", tok2, ")")
 ) (* end of [show_s0exp_RPAREN] *)
@@ -863,9 +1002,30 @@ show_d0atype(x0) =
 (
 case+ x0.node() of
 | D0ATYPE(tid, arg, res, teq, d0cs) =>
+  (
+    (* show_newline(); *)
+    show(tid);
+    show$val<list0(t0marg)>(g0ofg1(arg)) where {
+      impltmp show$sep<>() = show_newline();
+    };
+    (* show(arg); *)
+    show$val<optn0(sort0)>(g0ofg1(res)) where {
+      impltmp show$sep<>() = show_newline();
+    };
+    (* show(res); *)
+    show_spc();
+    show(teq);
+    show_newline();
+    show$val<list0(d0atcon)>(g0ofg1(d0cs)) where {
+        impltmp show$beg<>() = prout("| ")
+        impltmp show$sep<>() = (show_newline(); )
+    };
+  )
+(*
   print!("D0ATYPE("
   , tid, "; "
   , arg, "; ", res, "; ", teq, "; ", d0cs, ")")
+*)
 ) (* end of [show_d0atype] *)
 
 (* ****** ****** *)
@@ -875,8 +1035,25 @@ show_d0atcon(x0) =
 (
 case+ x0.node() of
 | D0ATCON(s0us, dcon, s0is, argopt) =>
+  (
+    show$val<list0(s0uni)>(g0ofg1(s0us)) where {
+      impltmp show$sep<>() = ()
+    };
+    show(dcon);
+    show$val<list0(s0exp)>(g0ofg1(s0is)) where {
+      impltmp show$sep<>() = ()
+    };
+    show$val<optn0(s0exp)>(g0ofg1(argopt)) where {
+      impltmp show$beg<>() = prout(" of ")
+      impltmp show$sep<>() = ()
+    };
+
+
+  )
+(*
   print!("D0ATCON("
   , s0us, "; ", dcon, "; ", s0is, "; ", argopt, ")")
+*)
 ) (* end of [show_d0atcon] *)
 
 (* ****** ****** *)

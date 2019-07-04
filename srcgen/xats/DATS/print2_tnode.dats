@@ -107,10 +107,33 @@ case+ tnd of
 | T_EXISTS(knd) =>
   print!("exists(", knd, ")")
 //
-| T_TUPLE(knd) =>
-  print!("tuple(", knd, ")")
-| T_RECORD(knd) =>
-  print!("record(", knd, ")")
+| T_TUPLE(knd) => print(str) where
+  {
+    val str =
+    (
+      case+ knd of
+      | 0 => "@("
+      | 1 => "$("
+      | 2 => "@tup"
+      | 3 => "$tup"
+      | _ => "@("
+    ): string
+  }
+
+  (* print!("tuple(", knd, ")") *)
+| T_RECORD(knd) => print(str) where
+  {
+    val str =
+    (
+      case+ knd of
+      | 0 => "@{"
+      | 1 => "${"
+      | 2 => "@rec"
+      | 3 => "$rec"
+      | _ => "@("
+    ): string
+  }
+  (* print!("record(", knd, ")") *)
 //
 (*
 | T_STRUCT(knd) =>

@@ -79,7 +79,8 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-main0() =
+main0() = ("Hello from [test_xats_main]!")
+(*
 {
 //
 val () =
@@ -87,6 +88,7 @@ println!
 ("Hello from [test_xats_main]!")
 //
 } (* end of [main0] *)
+*)
 
 (* ****** ****** *)
 //

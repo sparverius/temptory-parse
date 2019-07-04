@@ -1786,9 +1786,11 @@ case+ tnd of
     val tend = tok
     val s0es = list1_nil()
     val loc_res = tok.loc()
+
+    val dummy = token_make_node(token_get_loc(tbeg), T_BLANK(""))
   in
     d0exp_make_node
-    (loc_res, D0Etqarg(tbeg, s0es, tend))
+    (loc_res, D0Etqarg(tbeg, s0es, (* tend *)dummy))
   end // end of [T_LTGT]
 //
 | T_LBRACE() => let

@@ -1269,7 +1269,7 @@ lexing_preprocess_tokenlst(toks) = let
       // end of [rest-of-tnode]
   )
 //
-(*
+//(*
 | T_LTGT((*void*)) => let
     val loc = x0.loc()
     val x00 =
@@ -1279,9 +1279,9 @@ lexing_preprocess_tokenlst(toks) = let
   in
     loop1
     ( x1, xs2
-    , list_vt_cons(x01, list_vt_cons(x00, res)))
+    , list1_vt_cons(x01, list1_vt_cons(x00, res)))
   end // end of [T_GTLT]
-*)
+//*)
 | T_GTLT((*void*)) => let
     val loc = x0.loc()
     val x00 =
