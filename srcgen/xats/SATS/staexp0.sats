@@ -56,6 +56,10 @@ typedef t0str = t0str_tbox
 typedef i0dnt = i0dnt_tbox
 //
 (* ****** ****** *)
+
+typedef g0eid = i0dnt_tbox
+
+(* ****** ****** *)
 //
 typedef s0tid = i0dnt_tbox
 typedef s0eid = i0dnt_tbox
@@ -340,6 +344,12 @@ show_dq0eid: dq0eid -> void
 #symload show with show_dq0eid
 //
 (* ****** ****** *)
+
+abstbox g0exp_tbox = ptr
+//
+abstbox g0marg_tbox = ptr
+
+(* ****** ****** *)
 //
 abstbox sort0_tbox = ptr
 abstbox s0exp_tbox = ptr
@@ -350,6 +360,14 @@ abstbox s0marg_tbox = ptr
 abstbox t0arg_tbox = ptr
 abstbox t0marg_tbox = ptr
 //
+(* ****** ****** *)
+
+typedef g0exp = g0exp_tbox
+typedef g0explst = List0(g0exp)
+//
+typedef g0marg = g0marg_tbox
+typedef g0marglst = List0(g0marg)
+
 (* ****** ****** *)
 //
 typedef sort0 = sort0_tbox
@@ -370,6 +388,74 @@ typedef t0marg = t0marg_tbox
 typedef t0arglst = List0(t0arg)
 typedef t0marglst = List0(t0marg)
 //
+(* ****** ****** *)
+
+datatype
+g0exp_node =
+| G0Eid of (g0eid)
+| G0Eint of (t0int)
+| G0Eapps of g0explst
+| G0Elist of
+  (token, g0explst, token) (*temp*)
+//
+| G0Enone of (token) // HX: for error
+//
+(* ****** ****** *)
+//
+fun
+g0exp_get_loc(g0exp): loc_t
+fun
+g0exp_get_node(g0exp): g0exp_node
+//
+#symload .loc with g0exp_get_loc
+#symload .node with g0exp_get_node
+//
+fun print_g0exp : print_type(g0exp)
+#symload print with print_g0exp
+fun show_g0exp : print_type(g0exp)
+#symload show with show_g0exp
+//
+fun
+g0exp_make_node
+(loc: loc_t, node: g0exp_node): g0exp
+//
+(* ****** ****** *)
+//
+typedef g0arg = g0eid
+typedef g0arglst = List0(g0arg)
+//
+datatype
+g0marg_node =
+| G0MARGnone of (token)
+| G0MARGsarg of
+  (token(*LP*), g0arglst, token(*RP*))
+| G0MARGdarg of
+  (token(*LP*), g0arglst, token(*RP*))
+//
+(* ****** ****** *)
+//
+fun
+g0marg_get_loc(g0marg): loc_t
+fun
+g0marg_get_node(g0marg): g0marg_node
+//
+#symload .loc with g0marg_get_loc
+#symload .node with g0marg_get_node
+//
+fun print_g0marg : print_type(g0marg)
+#symload print with print_g0marg
+fun show_g0marg : print_type(g0marg)
+#symload show with show_g0marg
+(*
+fun print_g0marglst : print_type(g0marglst)
+#symload print with print_g0marglst
+*)
+//
+fun
+g0marg_make_node
+(loc: loc_t, node: g0marg_node): g0marg
+
+
 (* ****** ****** *)
 //
 datatype

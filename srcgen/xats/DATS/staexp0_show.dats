@@ -26,6 +26,7 @@ impltmp show$end<>() = ()
 
 fun show_newline() = prout("\n")
 fun show_spc() = prout(" ")
+fun show_col() = prout(":")
 //
 local
 //
@@ -434,6 +435,18 @@ show$val<sl0abled(a)> x = show_sl0abled<a> x
 
 (* ****** ****** *)
 
+
+impltmp
+print$val<g0marg> x = print_g0marg x
+impltmp
+print$val<g0exp> x = print_g0exp x
+impltmp
+print$val<g0eid> x = print_i0dnt x
+
+
+
+(* ****** ****** *)
+
 impltmp
 show$val<t0int> x = show_t0int x
 
@@ -538,8 +551,8 @@ implement
 show_sq0eid(x0) =
 (
 case+ x0 of
-| SQ0EIDnone(sid) =>
-  print!("SQ0EIDnone(", sid, ")")
+| SQ0EIDnone(sid) => show(sid)
+  (* print!("SQ0EIDnone(", sid, ")") *)
 | SQ0EIDsome(tok, sid) =>
   print!("SQ0EIDsome(", tok, "; ", sid, ")")
 )
@@ -555,6 +568,92 @@ case+ x0 of
 | DQ0EIDsome(tok, sid) =>
   print!("DQ0EIDsome(", tok, "; ", sid, ")")
 )
+
+(* ****** ****** *)
+
+(* ****** ****** *)
+
+local
+
+impltmp
+print$val<g0exp> x = print_g0exp x
+impltmp
+show$val<g0exp> x = show_g0exp x
+
+in (* in-of-local *)
+
+implement
+show_g0exp(x0) =
+(
+case+ x0.node() of
+//
+| G0Eid(tid) =>
+  print!("G0Eid(", tid, ")")
+//
+| G0Eint(int) => show_t0int(int)
+  (* print!("G0Eint(", int, ")") *)
+//
+| G0Eapps(s0ts) =>
+  print!("G0Eapps(", s0ts, ")")
+//
+| G0Elist(t0, g0es, t1) =>
+  print!
+  ("G0Elist(", t0, "; ", g0es, "; ", t1, ")")
+//
+| G0Enone(tok) =>
+  print!("G0Enone(", tok, ")" )
+  // end of [G0Enone]
+//
+) (* end of [fprint_g0exp] *)
+
+end // end of [local]
+
+(* ****** ****** *)
+
+(*
+implement
+print_g0marg(x0) =
+fprint_g0marg(stdout_ref, x0)
+implement
+prerr_g0marg(x0) =
+fprint_g0marg(stderr_ref, x0)
+*)
+
+local
+
+impltmp
+print$val<g0eid> x = print_i0dnt x
+
+impltmp
+show$val<g0eid> x = show_i0dnt x
+
+in (* in-of-local *)
+
+implement
+show_g0marg(x0) =
+(
+case+
+x0.node() of
+| G0MARGnone(tok) =>
+  print!
+  ("G0MARGnone(", tok, ")")
+| G0MARGsarg(tbeg, g0as, tend) =>
+  print!
+  ("G0MARGsarg(", tbeg, "; ", g0as, "; ", tend, ")")
+| G0MARGdarg(tbeg, g0as, tend) =>
+  print!
+  ("G0MARGdarg(", tbeg, "; ", g0as, "; ", tend, ")")
+) (* fprint_g0marg *)
+
+(*
+implement
+print_g0marglst(xs) =
+(
+  list1_print<g0marg>(xs)
+)
+*)
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -656,7 +755,7 @@ x0.node() of
   (
     show(sid);
     show$val<optn0(sort0)>(g0ofg1(opt)) where {
-      impltmp show$beg<>() = prout(":")
+      impltmp show$beg<>() = show_col()
     }
     (* show(opt) *)
   )
@@ -668,8 +767,8 @@ show_s0marg(x0) =
 (
 case+
 x0.node() of
-| S0MARGnone(tok) =>
-  print!("S0MARGnone(", tok, ")")
+| S0MARGnone(tok) => ()
+  (* print!("S0MARGnone(", tok, ")") *)
 | S0MARGsing(tid) => show(tid)
   (* print!("S0MARGsing(", tid, ")") *)
 | S0MARGlist(tbeg, s0as, tend) =>
@@ -697,7 +796,7 @@ x0.node() of
     (* show_newline(); *)
     show$val<optn0(token)>(g0ofg1(opt)) where {
       impltmp show$sep<>() = () //prout(":") //()
-      impltmp show$end<>() = prout(":")
+      impltmp show$end<>() = show_col()//prout(":")
     };
 
     show(s0t);
@@ -737,7 +836,8 @@ case+ x0.node() of
     {
       impltmp show$sep<>() = prout(",");
     };
-    print(":");
+    //print(":");
+    show_col();
     show$val<optn0(sort0)>(g0ofg1(opt))
     (* show(opt); *)
     (* show(opt) *)
@@ -987,7 +1087,13 @@ show_effs0expopt(x0) =
 case+ x0 of
 | EFFS0EXPnone() => ()
   (* print!("EFFS0EXPnone(", ")") *)
-| EFFS0EXPsome(s0e) => show(s0e)
+| EFFS0EXPsome(s0e) => (show_col(); show(s0e))
+(*
+where
+{
+//  val _ = $showtype(s0e)
+}
+*)
   (* print!("EFFS0EXPsome(", s0e, ")") *)
 (*
 | EFFS0EXPsome(s0f, s0e) =>

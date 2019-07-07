@@ -122,6 +122,16 @@ print$val<dl0abeled(a)> x = print_dl0abeled<a> x
 //
 (* ****** ****** *)
 
+impltmp
+print$val<g0marg> x = print_g0marg x
+impltmp
+print$val<g0exp> x = print_g0exp x
+impltmp
+print$val<g0eid> x = print_i0dnt x
+
+
+(* ****** ****** *)
+
 implement
 print_q0arg(x0) =
 (
@@ -225,6 +235,10 @@ case+
 x0.node() of
 | SQ0ARGnone(tok) =>
   print!("SQ0ARGnone(", tok, ")")
+(*
+| SQ0ARGs0rtsome(q0as) =>
+  print!("SQ0ARGs0rtsome(", q0as, ")")
+*)
 | SQ0ARGsome(tbeg, q0as, tend) =>
   print!("SQ0ARGsome(", tbeg, "; ", q0as, "; ", tend, ")")
 //
@@ -783,6 +797,19 @@ case+ x0.node() of
 | D0Cextern(tok, d0c) =>
   print!("D0Cextern(", tok, "; ", d0c, ")")
 //
+
+| D0Cdefine
+  (tok, gid, gmas, gdef) =>
+  print!
+  ("D0Cdefine(", gid, "; ", gmas, "; ", gdef, ")")
+//
+| D0Cmacdef
+  (tok, gid, gmas, mdef) =>
+  print!
+  ("D0Cmacdef("
+  , gid, "; ", gmas, "; ", mdef, ")")
+
+//
 | D0Cinclude(tok, d0e) =>
   print!("D0Cinclude(", tok, "; ", d0e, ")")
 //
@@ -813,7 +840,7 @@ print!("D0Csortdef("
   , arg, "; ", res, "; ", tok1, "; ", tdef, ")")
 //
 | D0Cabstype
-  (tok, sid, arg, res, tdef) =>
+  (tok, sid, arg, res, tdef, eq0opt) =>
 print!("D0Cabstype("
   , tok, "; ", sid, "; ", arg, "; ", res, "; ", tdef, ")")
 //
@@ -838,11 +865,15 @@ print!("D0Cabsimpl("
   print!("D0Cfundecl(", tok, "; ", mopt, "; ", tqas, "; ", d0cs, ")")
 //
 | D0Cimpdecl
-  ( tok, mopt, sqas, tqas
+  ( tok, mopt //, s0as
+  , sqas, tqas
   , dqid, tias, f0as, res0, teq1, d0e2) =>
+
   print!("D0Cimpdecl("
-  , tok, "; ", mopt, "; ", sqas, "; ", tqas, "; "
-  , dqid, "; ", tias, "; ", f0as, "; ", res0, "; ", teq1, "; ", d0e2, ")")
+  , tok, "; ", mopt, "; sq0arglst"
+  , sqas, "; tq0arglst", tqas, "; "
+  , dqid, "; ti0arglst", tias, "; f0arglst", f0as, "; "
+  , res0, "; ", teq1, "; ", d0e2, ")")
 //
 | D0Csymload
   (tok, sym, twth, dqid, tint) =>
@@ -958,6 +989,28 @@ case+ x0 of
 
 (* ****** ****** *)
 
+implement
+print_g0expdef(x0) =
+(
+case+ x0 of
+| G0EDEFnone() =>
+  print("G0EDEFnone()")
+| G0EDEFsome(tokopt, g0exp(*def*)) =>
+  print!("G0EDEFsome(", tokopt, "; ", g0exp, ")")
+)
+
+implement
+print_d0macdef(x0) =
+(
+case+ x0 of
+| D0MDEFnone() =>
+  print("D0MDEFnone()")
+| D0MDEFsome(tokopt, d0exp(*def*)) =>
+  print!("D0MDEFsome(", tokopt, "; ", d0exp,")")
+)
+
+(* ****** ****** *)
+
 (*
 implement
 print_wd0eclseq(x0) =
@@ -1042,7 +1095,7 @@ val+F0UNDECL(rcd) = x0
 in
   print!("F0UNDECL@{"
   , ", nam=", rcd.nam
-  , ", arg=", rcd.arg
+  , ", arg=", "f0arglst", rcd.arg
   , ", res=", rcd.res, ", teq=", rcd.teq
   , ", def=", rcd.def, ", wtp=", rcd.wtp, "}")
 end // end of [fprint_f0undecl]

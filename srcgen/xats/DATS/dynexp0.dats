@@ -564,3 +564,54 @@ case+ x0 of
     | optn1_some(tok2) => tok1.loc() + tok2.loc()
   )
 ) (* end of [endwhere_get_loc] *)
+
+
+(* ****** ****** *)
+
+local
+
+absimpl
+eq0arg_tbox = $rec{
+  eq0arg_loc= loc_t
+, eq0arg_node= eq0arg_node
+} (* end of [absimpl] *)
+
+in (* in-of-local *)
+
+implement
+eq0arg_get_loc(x0) = x0.eq0arg_loc
+implement
+eq0arg_get_node(x0) = x0.eq0arg_node
+
+implement
+eq0arg_make_node
+(loc, node) = $rec
+{
+  eq0arg_loc= loc, eq0arg_node= node
+} (* end of [eq0arg_make_node] *)
+
+end // end of [local]
+
+local
+
+absimpl
+eq0opt_tbox = $rec{
+  eq0opt_loc= loc_t
+, eq0opt_node= eq0opt_node
+} (* end of [absimpl] *)
+
+in (* in-of-local *)
+
+implement
+eq0opt_get_loc(x0) = x0.eq0opt_loc
+implement
+eq0opt_get_node(x0) = x0.eq0opt_node
+
+implement
+eq0opt_make_node
+(loc, node) = $rec
+{
+  eq0opt_loc= loc, eq0opt_node= node
+} (* end of [eq0opt_make_node] *)
+
+end // end of [local]

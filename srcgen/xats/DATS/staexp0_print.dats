@@ -82,6 +82,8 @@ impltmp
 (a:tflt)
 print$val<optn1(a)>(xs) = optn1_print<a>(xs)
 
+extern fun{} print$nil(): void
+impltmp print$nil<>() = ()
 
 impltmp
 {a}(*tmp*)
@@ -98,7 +100,7 @@ loop
 , xs: list1(a)): void =
 (
 case+ xs of
-| list1_nil() => ()
+| list1_nil() => print$nil<>()//print("H") //()
 | list1_cons(x0, xs) =>
   (
   if i0 > 0
@@ -133,7 +135,7 @@ loop
 , xs: !list1_vt(a)): void =
 (
 case+ xs of
-| list1_vt_nil() => ()
+| list1_vt_nil() => print("")
 | list1_vt_cons(x0, xs) =>
   (
   if
@@ -166,6 +168,13 @@ print$val<l0abl> x = print_l0abl x
 impltmp
 print$val<s0ymb> x = print_s0ymb x
 //
+(* ****** ****** *)
+
+(*
+impltmp
+print$val<g0exp> x = print_g0exp x
+*)
+
 (* ****** ****** *)
 
 impltmp
@@ -410,6 +419,96 @@ case+ x0 of
 | DQ0EIDsome(tok, sid) =>
   print!("DQ0EIDsome(", tok, "; ", sid, ")")
 )
+
+(* ****** ****** *)
+
+
+(*
+implement
+print_g0exp(x0) =
+fprint_g0exp(stdout_ref, x0)
+implement
+prerr_g0exp(x0) =
+fprint_g0exp(stderr_ref, x0)
+*)
+
+local
+
+impltmp
+print$val<g0exp> x = print_g0exp x
+
+in (* in-of-local *)
+
+implement
+print_g0exp(x0) =
+(
+case+ x0.node() of
+//
+| G0Eid(tid) =>
+  print!("G0Eid(", tid, ")")
+//
+| G0Eint(int) =>
+  print!("G0Eint(", int, ")")
+//
+| G0Eapps(s0ts) =>
+  print!("G0Eapps(", s0ts, ")")
+//
+| G0Elist(t0, g0es, t1) =>
+  print!
+  ("G0Elist(", t0, "; ", g0es, "; ", t1, ")")
+//
+| G0Enone(tok) =>
+  print!("G0Enone(", tok, ")" )
+  // end of [G0Enone]
+//
+) (* end of [fprint_g0exp] *)
+
+end // end of [local]
+
+(* ****** ****** *)
+
+(*
+implement
+print_g0marg(x0) =
+fprint_g0marg(stdout_ref, x0)
+implement
+prerr_g0marg(x0) =
+fprint_g0marg(stderr_ref, x0)
+*)
+
+local
+
+impltmp
+print$val<g0eid> x = print_i0dnt x
+
+in (* in-of-local *)
+
+implement
+print_g0marg(x0) =
+(
+case+
+x0.node() of
+| G0MARGnone(tok) =>
+  print!
+  ("G0MARGnone(", tok, ")")
+| G0MARGsarg(tbeg, g0as, tend) =>
+  print!
+  ("G0MARGsarg(", tbeg, "; ", g0as, "; ", tend, ")")
+| G0MARGdarg(tbeg, g0as, tend) =>
+  print!
+  ("G0MARGdarg(", tbeg, "; ", g0as, "; ", tend, ")")
+) (* fprint_g0marg *)
+
+(*
+implement
+print_g0marglst(xs) =
+(
+  list1_print<g0marg>(xs)
+)
+*)
+
+end // end of [local]
+
 
 (* ****** ****** *)
 

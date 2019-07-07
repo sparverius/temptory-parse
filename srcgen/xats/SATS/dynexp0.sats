@@ -138,6 +138,9 @@ typedef sq0arglst = list1_0(sq0arg)
 datatype
 sq0arg_node =
   | SQ0ARGnone of token
+  (* RK : to account for `impltmp(a:tflt) F(con(a)) ...`
+  | SQ0ARGs0rtsome of (s0marg)
+  *)
   | SQ0ARGsome of
     (token(*'{'*), q0arglst, token(*'}'*))
 
@@ -159,6 +162,101 @@ sq0arg_node =
   fun
   sq0arg_make_node
   (loc: loc_t, node: sq0arg_node): sq0arg
+
+(* ****** ****** *)
+
+abstbox eq0arg_tbox = ptr
+
+typedef eq0arg = eq0arg_tbox
+typedef eq0argopt = optn1(eq0arg)
+
+datatype
+eq0arg_node =
+  | EQ0ARGnone of token
+  | EQ0ARGsome of
+    (token(*'='*), s0exp)
+
+  fun
+  print_eq0arg : print_type(eq0arg)
+  #symload print with print_eq0arg
+  fun
+  show_eq0arg : print_type(eq0arg)
+  #symload show with show_eq0arg
+
+  fun
+  eq0arg_get_loc(eq0arg): loc_t
+  fun
+  eq0arg_get_node(eq0arg): eq0arg_node
+
+  #symload .loc with eq0arg_get_loc
+  #symload .node with eq0arg_get_node
+
+  fun
+  eq0arg_make_node
+  (loc: loc_t, node: eq0arg_node): eq0arg
+
+
+abstbox eq0opt_tbox = ptr
+
+typedef eq0opt = eq0opt_tbox
+
+datatype
+eq0opt_node =
+  | EQ0ARGopt of (token(*'='*), eq0argopt)
+
+  fun
+  print_eq0opt : print_type(eq0opt)
+  #symload print with print_eq0opt
+  fun
+  show_eq0opt : print_type(eq0opt)
+  #symload show with show_eq0opt
+
+  fun
+  eq0opt_get_loc(eq0opt): loc_t
+  fun
+  eq0opt_get_node(eq0opt): eq0opt_node
+
+  #symload .loc with eq0opt_get_loc
+  #symload .node with eq0opt_get_node
+
+  fun
+  eq0opt_make_node
+  (loc: loc_t, node: eq0opt_node): eq0opt
+
+(* ****** ****** *)
+
+(*
+abstbox i0mparg_tbox = ptr
+
+typedef i0mparg = i0mparg_tbox
+typedef i0mparglst = list1_0(sq0arg)
+
+
+datatype
+i0mparg_node =
+  | I0MPARGnone of token
+  | I0MPARGs0marg of (s0marg)
+  | I0MPARGsq0arg of (sq0arglst)
+
+  fun
+  print_i0mparg : print_type(i0mparg)
+  #symload print with print_i0mparg
+  fun
+  show_i0mparg : print_type(i0mparg)
+  #symload show with show_i0mparg
+
+  fun
+  i0mparg_get_loc(sq0arg): loc_t
+  fun
+  i0mparg_get_node(sq0arg): i0mparg_node
+
+  #symload .loc with i0mparg_get_loc
+  #symload .node with i0mparg_get_node
+
+  fun
+  i0mparg_make_node
+  (loc: loc_t, node: i0mparg_node): i0mparg
+*)
 
 (* ****** ****** *)
 
@@ -648,6 +746,19 @@ d0clau_node =
     | DG0PATgua of (d0pat, token(*WHEN*), d0gualst)
 //
   fun
+  print_d0clau: print_type(d0clau)
+  #symload print with print_d0clau
+  fun
+  show_d0clau: print_type(d0clau)
+  #symload show with show_d0clau
+  fun
+  print_dg0pat: print_type(dg0pat)
+  #symload print with print_dg0pat
+  fun
+  show_dg0pat: print_type(dg0pat)
+  #symload show with show_dg0pat
+
+  fun
   d0clau_get_loc(d0clau): loc_t
   fun
   d0clau_get_node(d0clau): d0clau_node
@@ -853,6 +964,15 @@ d0ecl_node =
   | D0Cextern of
     (token(*EXTERN*), d0ecl)
   //
+  | D0Cdefine of
+    ( token
+    , g0eid(*fun*)
+    , g0marglst(*arg*), g0expdef(*opt*))
+  | D0Cmacdef of
+    ( token
+    , g0eid(*fun*)
+    , g0marglst(*arg*), d0macdef(*d0exp*))
+
   | D0Cinclude of
     (token(*INCLUDE*), d0exp)
   // HX: for file inclusion
@@ -881,7 +1001,7 @@ d0ecl_node =
   //
   | D0Cabstype of
     ( token
-    , s0eid, t0marglst, sort0opt, abstdf0)
+    , s0eid, t0marglst, sort0opt, abstdf0, eq0opt)
   //
   | D0Cabsimpl of
     ( token
@@ -904,6 +1024,7 @@ d0ecl_node =
   | D0Cimpdecl of
     ( token(*impkind*)
     , declmodopt//modifier
+    //, s0marg
     , sq0arglst, tq0arglst
     , dq0eid, ti0arglst, f0arglst, effs0expopt, token, d0exp)
   //
@@ -947,6 +1068,16 @@ d0ecl_node =
     | ABSTDF0nil of () // unspecified
     | ABSTDF0lteq of (token(*"<="*), s0exp)
     | ABSTDF0eqeq of (token(*"=="*), s0exp)
+  //
+  and
+g0expdef =
+  | G0EDEFnone of ()
+  | G0EDEFsome of (tokenopt, g0exp(*def*))
+
+and
+d0macdef =
+  | D0MDEFnone of ()
+  | D0MDEFsome of (tokenopt, d0exp(*def*))
   //
   and
   wd0eclseq =
@@ -1004,6 +1135,23 @@ d0ecl_node =
   fun
   show_abstdf0 : print_type(abstdf0)
   #symload show with show_abstdf0
+
+
+  fun
+  print_g0expdef : print_type(g0expdef)
+  #symload print with print_g0expdef
+  fun
+  show_g0expdef : print_type(g0expdef)
+  #symload show with show_g0expdef
+
+  fun
+  print_d0macdef : print_type(d0macdef)
+  #symload print with print_d0macdef
+  fun
+  show_d0macdef : print_type(d0macdef)
+  #symload show with show_d0macdef
+
+
 
   fun
   print_wd0eclseq : (wd0eclseq) -> void
