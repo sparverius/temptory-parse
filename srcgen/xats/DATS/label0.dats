@@ -86,6 +86,17 @@ case+ l0 of
 )
 
 implement
+show_label(l0) =
+(
+case+ l0 of
+| LABint(i0) => print(i0)
+  (* print!("LABint(", i0, ")") *)
+| LABsym(s0) => print(s0)
+  (* print!("LABsym(", s0, ")") *)
+)
+
+
+implement
 label_nil = LABsym(symbol_nil)
 
 implement

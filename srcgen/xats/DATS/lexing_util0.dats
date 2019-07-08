@@ -466,6 +466,14 @@ lexing_isSYMBOLIC(buf: &lexbuf >> _, i0: int) : tnode
 
 (* ****** ****** *)
 
+(*
+extern
+fun{}
+lexing_isLITERAL(buf: &lexbuf >> _, sym: string) : tnode
+extern
+fun{} isLITERAL$res(string, string): tnode
+*)
+
 extern
 fun
 lexing_COMMENT_line(buf: &lexbuf >> _, sym: string) : tnode
@@ -521,6 +529,32 @@ lexing_isBLANK(buf: &lexbuf >> _, i0: int) : tnode = loop(buf) where
 } (* end of [lexing_isBLANK] *)
 
 (* ****** ****** *)
+
+(*
+fun
+lexing_isPERCENT(buf: &lexbuf >> _, i0: int) : tnode = let
+
+  val i1 = lexbuf_getc(buf)
+  val c1 = char0_chr(i1)
+
+in
+
+  ifcase
+  | c1 = '%' => let
+      val-T_IDENT_sym(sym) = lexing_isSYMBOLIC(buf, i0)
+    in
+      if isSLASH4(sym)
+      then lexing_COMMENT_rest(buf, sym)
+      else lexing_COMMENT_line(buf, sym)
+
+    end
+  | _(* else *) => lexing_isSYMBOLIC(buf, i0) where
+    {
+      val () = lexbuf_unget(buf, i1)
+    } (* end of [......] *)
+
+end (* end of [lexing_isSLASH] *)
+*)
 
 fun
 lexing_isSLASH(buf: &lexbuf >> _, i0: int) : tnode = let
@@ -993,6 +1027,39 @@ lexing_COMMENT_rest(buf, sym) = loop0(buf) where
 } (* end of [lexing_COMMENT_rest] *)
 
 (* ****** ****** *)
+
+(*
+impltmp{}
+lexing_isLITERAL(buf, sym) = loop0(buf) where
+{
+
+  fun
+  loop0(buf: &lexbuf >> _): tnode = let
+
+    val i0 = lexbuf_getc(buf)
+    val c0 = char0_chr(i0)
+
+  in
+
+    if isEOL(c0)
+    then isLITERAL$res<>(sym, lexbuf_get_fullseg(buf)) where
+    //T_COMMENT_line (sym, lexbuf_get_fullseg(buf)) where
+    {
+      val () = lexbuf_unget(buf, i0)
+    }
+    else
+    (
+      if (i0 >= 0)
+      then loop0(buf)
+      else isLITERAL$res<>(sym, lexbuf_get_fullseg(buf))
+      //T_COMMENT_line(sym, lexbuf_get_fullseg(buf))
+    )
+
+  end
+
+} (* end of [lexing_COMMENT_line] *)
+*)
+
 
 implement
 lexing_COMMENT_line(buf, sym) = loop0(buf) where

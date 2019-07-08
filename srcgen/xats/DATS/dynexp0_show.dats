@@ -32,6 +32,9 @@ _(*TMP*) = "./../DATS/staexp0_show.dats"
 //
 #macdef spc() = fprint$val<char>(the_stdout<>(), ' ')
 
+impltmp show$before<>() = ()
+impltmp show$after<>() = ()
+
 impltmp show$beg<>() = ()
 impltmp show$end<>() = ()
 
@@ -198,6 +201,46 @@ show$val<g0exp> x = show_g0exp x
 impltmp
 show$val<g0eid> x = show_i0dnt x
 
+(* ****** ****** *)
+
+impltmp
+print$val<eq0arg> x = print_eq0arg x
+impltmp
+print$val<eq0opt> x = print_eq0opt x
+impltmp
+show$val<eq0arg> x = show_eq0arg x
+impltmp
+show$val<eq0opt> x = show_eq0opt x
+
+(* ****** ****** *)
+
+implement
+show_eq0arg(x0) =
+(
+  case+ x0.node() of
+  | EQ0ARGnone(token) => print!("EQ0ARGnone()")
+  | EQ0ARGsome(token(*'='*), s0exp) =>
+    (
+      show(token);
+      (* show(s0exp) *)
+    )
+    (* print!("EQ0ARGsome(", token, "; ", s0exp, ")") *)
+)
+
+implement
+show_eq0opt(x0) =
+(
+case+ x0.node() of
+| EQ0ARGopt (token(*'='*), eq0argopt) =>
+  (
+    show_spc();
+    show(token);
+    show_spc();
+    show$val<optn0(eq0arg)>(g0ofg1(eq0argopt))
+  )
+  (* print!("EQ0ARGopt(", token, "; ", eq0argopt, ")") *)
+)
+
 
 (* ****** ****** *)
 
@@ -218,7 +261,7 @@ x0.node() of
     (* show(opt) *)
     show$val<optn0(sort0)>(g0ofg1(opt)) where
     {
-      impltmp show$beg<>() = show_col()
+      impltmp show$before<>() = show_col()
     }
   )
   //print!("Q0ARGsome(", sid, "; ", opt, ")")
@@ -439,7 +482,7 @@ case+ x0.node() of
     show(tbeg);
     show$val<list0(d0pat)>(g0ofg1(d0ps)) where
     {
-      //impltmp show$sep<>() = prout(",");
+      impltmp show$sep<>() = prout(",");
     };
     show(tend)
   )
@@ -470,7 +513,8 @@ case+ x0.node() of
   (tok, d0p) =>
   print!("D0Pqual(", tok, "; ", d0p, ")")
 //
-| D0Pnone(tok) => print!("D0Pnone(", tok, ")")
+| D0Pnone(tok) => //print!("D0Pnone(", tok, ")")
+  show(tok)
 //
 ) (* end of [show_d0pat] *)
 
@@ -492,7 +536,18 @@ case+ x0 of
 | d0pat_RPAREN_cons0(tok) => show(tok)
   (* print!("d0pat_RPAREN_cons0(", tok, ")") *)
 | d0pat_RPAREN_cons1(tok1, d0ps, tok2) =>
-  print!("d0pat_RPAREN_cons1(", tok1, ", ", d0ps, ", ", tok2, ")")
+  (
+    show(tok1);
+    show$val<list0(d0pat)>(g0ofg1(d0ps)) where
+    {
+
+    };
+    show(tok2)
+    (* show$val<optn0(s0exp)>(g0ofg1(tok2)) where *)
+    (* { *)
+    (* }; *)
+  )
+  (* print!("d0pat_RPAREN_cons1(", tok1, ", ", d0ps, ", ", tok2, ")") *)
 ) (* end of [show_d0pat_RPAREN] *)
 
 end // end of [local]
@@ -593,8 +648,8 @@ case+ x0.node() of
 //
 | D0Eint(i0) => show_t0int(i0)
   (* print!("D0Eint(", i0, ")") *)
-| D0Echr(c0) =>
-  print!("D0Echr(", c0, ")")
+| D0Echr(c0) => show_t0chr(c0)
+  (* print!("D0Echr(", c0, ")") *)
 | D0Eflt(f0) => show(f0)
   (* print!("D0Eflt(", f0, ")") *)
 | D0Estr(s0) => show(s0)
@@ -625,7 +680,10 @@ case+ x0.node() of
   (tbeg, s0es, tend) =>
   (
     show(tbeg);
-    show$val<list0(s0exp)>(g0ofg1(s0es));
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = show_comma()//()
+    };
     show(tend)
   )
   (* print!("D0Etqarg(" *)
@@ -692,7 +750,7 @@ case+ x0.node() of
     show_newline();
     show$val<optn0(token)>(g0ofg1(tbar)) where
     {
-      impltmp show$end<>() = show_spc();
+      impltmp show$after<>() = show_spc();
     };
     show$val<list0(d0clau)>(g0ofg1(d0cs)) where
     {
@@ -725,7 +783,6 @@ case+ x0.node() of
     show_newline();
     show(tok2);
     show_newline();
-
   )
 (*
   print!("D0Elet(", tok0, "; "
@@ -735,26 +792,60 @@ case+ x0.node() of
 | D0Ewhere(d0e1, d0cs) =>
   (
     show(d0e1);
+    show_newline();
     show(d0cs)
   )
   (* print!("D0Ewhere(", d0e1, "; ", d0cs, ")") *)
 //
 | D0Edtsel
   (tok, lab, arg) =>
-  print!("D0Edtsel(", tok, "; ", lab, "; ", arg, ")")
+  (
+    show(tok);
+    show(lab);
+    show$val<optn0(d0exp)>(g0ofg1(arg))
+  )
+  (* print!("D0Edtsel(", tok, "; ", lab, "; ", arg, ")") *)
 //
 | D0Elam
   (tok0, arg1, res2, farrw, fbody, tend) =>
+  (
+    show(tok0);
+    (* show(arg1); *)
+    show$val<list0(f0arg)>(g0ofg1(arg1)) where
+    {
+
+    };
+    show(res2);
+    show(farrw);
+    show(fbody);
+    (* show(tend) *)
+    show$val<optn0(token)>(g0ofg1(tend)) where
+    {
+
+    };
+
+  )
+(*
   print!("D0Elam(", tok0, "; "
   , arg1, "; ", res2, "; ", farrw, "; ", fbody, "; ", tend, ")")
+*)
 //
 | D0Eanno
   (d0e, ann) =>
-  print!("D0Eanno(", d0e, "; ", ann, ")")
+  (
+    show(d0e);
+    show_col();
+    show(ann)
+  )
+  (* print!("D0Eanno(", d0e, "; ", ann, ")") *)
 //
 | D0Equal
   (tok, d0e) =>
-  print!("D0Equal(", tok, "; ", d0e, ")")
+  (* print!("D0Equal(", tok, "; ", d0e, ")") *)
+  (
+    show(tok);
+    show(d0e)
+  )
 //
 | D0Enone(tok) => print!("\n") //print!("D0Enone(", tok, ")")
 //
@@ -856,11 +947,19 @@ case+ x0 of
   (
     show_newline();
     show(tok);
-
   )
   (* print!("endwhere_cons1(", tok, ")") *)
 | endwhere_cons2(tok1, opt2) =>
-  print!("endwhere_cons2(", tok1, "; ", opt2, ")")
+  (
+    show_newline();
+    show(tok1);
+    show$val<optn0(token)>(g0ofg1(opt2)) where
+    {
+      impltmp show$before<>() = show_newline()
+    };
+  )
+
+  (* print!("endwhere_cons2(", tok1, "; ", opt2, ")") *)
 )
 //
 (* ****** ****** *)
@@ -873,12 +972,18 @@ case+ x0 of
   (tok0, opt1, d0cs, opt2) =>
   (
     // here for newline or space
-    spc();
+    (* spc(); *)
     //
     show(tok0);
-    show$val<optn0(token)>(g0ofg1(opt1));
-    prout("\n  ");
-    show$val<list0(d0ecl)>(g0ofg1(d0cs));
+    show$val<optn0(token)>(g0ofg1(opt1)) where
+    {
+      impltmp show$before<>() = show_newline()
+    };
+    show_newline();
+    show$val<list0(d0ecl)>(g0ofg1(d0cs)) where
+    {
+      impltmp show$sep<>() = show_newline()
+    };
     show(opt2)
   )
   (* print!("d0eclseq_WHERE(" *)
@@ -891,10 +996,10 @@ implement
 show_f0unarrow(x0) =
 (
 case+ x0 of
-| F0UNARROWnone(tok) =>
-  print!("F0UNARROWnone(", tok, ")")
-| F0UNARROWdflt(tok) =>
-  print!("F0UNARROWdflt(", tok, ")")
+| F0UNARROWnone(tok) => show(tok)
+  (* print!("F0UNARROWnone(", tok, ")") *)
+| F0UNARROWdflt(tok) => show(tok)
+  (* print!("F0UNARROWdflt(", tok, ")") *)
 | F0UNARROWlist(tbeg, s0es, tend) =>
   print!("F0UNARROWlist(", tbeg, "; ", s0es, "; ", tend, ")")
 ) (* end of [show_f0unarrow] *)
@@ -925,7 +1030,11 @@ case+ x0 of
 | TEQD0EXPnone() => ()
   (* print!("TEQD0EXPnone(", ")") *)
 | TEQD0EXPsome(tok, d0e) =>
-  print!("TEQD0EXPsome(", tok, "; ", d0e, ")")
+  (
+    show(tok);
+    show_d0exp(d0e);
+  )
+  (* print!("TEQD0EXPsome(", tok, "; ", d0e, ")") *)
 )
 
 (* ****** ****** *)
@@ -997,14 +1106,12 @@ case+ x0.node() of
 | D0Cstatic(tok, d0c) =>
   print!("D0Cstatic(", tok, "; ", d0c, ")")
 | D0Cextern(tok, d0c) =>
-(*
   (
     show(tok);
     spc();
-    show(d0c)
+    show(d0c) //where { val _ = $showtype d0c }
   )
-*)
-  show_mac(tok, d0c)
+  (* show_mac(tok, d0c) *)
   (* print!("D0Cextern(", tok, "; ", d0c, ")") *)
 //
 | D0Cdefine
@@ -1015,7 +1122,7 @@ case+ x0.node() of
     show(gid);
     show$val<list0(g0marg)>(g0ofg1(gmas)) where
     {
-      impltmp show$beg<>() = show_spc();
+      impltmp show$before<>() = show_spc();
     };
     show(gdef)
   )
@@ -1117,7 +1224,8 @@ case+ x0.node() of
     show$val<list0(t0marg)>(g0ofg1(arg));
     (* $showtype(res); *)
     show$val<optn0(sort0)>(g0ofg1(res));
-    show(tdef)
+    show(tdef);
+    show(eq0opt)
   )
 (*
   print!("D0Cabstype("
@@ -1181,12 +1289,26 @@ case+ x0.node() of
 | D0Cfundecl
   (tok, mopt, tqas, d0cs) =>
   (
+    (* show_newline(); *)
     show(tok);
     (* spc(); *)
+    (if iseqz(g0ofg1(tqas)) then show_spc());
     show(mopt);
-    spc();
-    show$val<list0(tq0arg)>(g0ofg1(tqas));
-    show$val<list0(f0undecl)>(g0ofg1(d0cs))
+    (* spc(); *)
+    show$val<list0(tq0arg)>(g0ofg1(tqas)) where
+    {
+      impltmp show$sep<>() = ()
+      impltmp show$end<>() = (if isneqz tqas then prout(" ") else ())
+    };
+    show$val<list0(f0undecl)>(g0ofg1(d0cs)) where
+    {
+      impltmp show$sep<>() =
+      (
+        show_newline();
+        prout("and");
+        show_newline()
+      )
+    }
   )
   (* print!("D0Cfundecl(", tok, "; ", mopt, "; ", tqas, "; ", d0cs, ")") *)
 //
@@ -1203,18 +1325,22 @@ case+ x0.node() of
     show$val<list0(tq0arg)>(g0ofg1(tqas));
     spc();
     show(dqid);
-    show$val<list0(ti0arg)>(g0ofg1(tias));
-    show$val<list0(f0arg)>(g0ofg1(f0as));
+    show$val<list0(ti0arg)>(g0ofg1(tias)) where
+    {
+      impltmp show$sep<>() = ()
+    };
+    show$val<list0(f0arg)>(g0ofg1(f0as)) where
+    {
+      impltmp show$sep<>() = show_comma();
+    };
 
     show(res0);
-    spc();
+
+    show_spc();
     show(teq1);
-    (*
-    where {
-      val _ = $showtype(teq1)
-    };
-    *)
-    spc();
+    show_newline();
+
+
     show(d0e2)
 
   )
@@ -1268,7 +1394,7 @@ print!("D0Csymload("
     show_newline();
     show(tok1);
     show_newline();
-    show$val<list0(d0ecl)>(g0ofg1(d0cs0)) where {
+    show$val<list0(d0ecl)>(g0ofg1(d0cs1)) where {
       impltmp show$sep<>() = show_newline();
     };
     show_newline();
@@ -1286,9 +1412,11 @@ print!("D0Csymload("
 where
 {
 
+(*
 impltmp
 {a}
 print$val(x) = show$val<a>(x)
+*)
 (* fprint$val<a>(the_stdout<>(), x) *)
 
 }
@@ -1462,7 +1590,7 @@ in
   show$val<optn0(i0dnt)>(g0ofg1(rcd.wth));
   show$val<optn0(s0exp)>(g0ofg1(rcd.res)) where
   {
-    impltmp show$beg<>() = prout(": ")
+    impltmp show$before<>() = prout(": ")
   };
   show(rcd.ini);
 )
@@ -1485,14 +1613,27 @@ val+F0UNDECL(rcd) = x0
 in
 (
   show(rcd.nam);
-  show$val<list0(f0arg)>(g0ofg1(rcd.arg));
+  show$val<list0(f0arg)>(g0ofg1(rcd.arg)) where
+  {
+    impltmp show$sep<>() = ()
+    //impltmp show$sep<>() = show_col()
+  };
   (* show_col(); *)
   show(rcd.res);
-  prout(" ");
-  show(rcd.teq);
-  prout("\n");
-  show(rcd.def);
-  show(rcd.wtp);
+  (
+    case+ token_get_node(rcd.teq) of
+    | T_EQ() =>
+    (
+    show_spc();
+    show(rcd.teq);
+    show_newline();
+
+    show(rcd.def);// where { val _ = $showtype rcd.def };
+    show(rcd.wtp);
+    )
+    | _ => ()
+  )
+
 )(*
   print!("F0UNDECL@{"
   , ", nam=", rcd.nam

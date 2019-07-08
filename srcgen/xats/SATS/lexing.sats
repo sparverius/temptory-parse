@@ -92,6 +92,10 @@ tnode =
 //
   | T_SPECHAR of (int) // special char
 //
+(* // RK
+  | T_EXTCODE of (int(*kind*), string) // external code
+*)
+//
   | T_COMMENT_line of
     (string(*init*), string) // line comment
   | T_COMMENT_rest of

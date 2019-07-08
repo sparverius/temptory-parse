@@ -129,6 +129,29 @@ print$val<g0exp> x = print_g0exp x
 impltmp
 print$val<g0eid> x = print_i0dnt x
 
+impltmp
+print$val<eq0arg> x = print_eq0arg x
+impltmp
+print$val<eq0opt> x = print_eq0opt x
+
+(* ****** ****** *)
+
+implement
+print_eq0arg(x0) =
+(
+  case+ x0.node() of
+  | EQ0ARGnone(token) => print!("EQ0ARGnone()")
+  | EQ0ARGsome(token(*'='*), s0exp) =>
+    print!("EQ0ARGsome(", token, "; ", s0exp, ")")
+)
+
+implement
+print_eq0opt(x0) =
+(
+case+ x0.node() of
+| EQ0ARGopt (token(*'='*), eq0argopt) =>
+  print!("EQ0ARGopt(", token, "; ", eq0argopt, ")")
+)
 
 (* ****** ****** *)
 

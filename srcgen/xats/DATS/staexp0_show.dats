@@ -21,6 +21,10 @@
 
 #macdef prout(x) = fprint$val<string>(the_stdout<>(), ,(x))
 
+
+impltmp show$before<>() = ()
+impltmp show$after<>() = ()
+
 impltmp show$beg<>() = ()
 impltmp show$end<>() = ()
 
@@ -182,21 +186,26 @@ impltmp {a} optn1_show(t0) =
 (
   case+ t0 of
     | optn1_none() => ()
-    | optn1_some(x0) => (show$beg<>(); show$val<a>(x0); show$end<>())
+    | optn1_some(x0) => (show$before<>(); show$val<a>(x0); show$after<>())
 )
 
 impltmp {a} optn0_show(t0) =
 (
   case+ t0 of
     | optn0_none() => ()
-    | optn0_some(x0) => (show$beg<>(); show$val<a>(x0); show$end<>())
+    | optn0_some(x0) => (show$before<>(); show$val<a>(x0); show$after<>())
 )
 
 impltmp(a:tflt) show$val<optn0(a)>(x) = optn0_show<a>(x)
 impltmp(a:tflt) show$val<optn1(a)>(x) = optn1_show<a>(x)
 
 
-impltmp(a:vtflt) list1_vt_show<a>(xs) = (loop(0, xs)) where
+impltmp(a:vtflt) list1_vt_show<a>(xs) =
+(
+show$beg<>();
+loop(0, xs);
+show$end<>();
+) where
 {
   fun loop(i0: int, xs: !list1_vt(a)): void =
   (
@@ -212,7 +221,12 @@ impltmp(a:vtflt) list1_vt_show<a>(xs) = (loop(0, xs)) where
   )
 }
 
-impltmp(a:tflt) list1_show<a>(xs) = (loop(0, xs)) where
+impltmp(a:tflt) list1_show<a>(xs) =
+(
+show$beg<>();
+loop(0, xs);
+show$end<>();
+) where
 {
   fun loop(i0: int, xs: !list1(a)): void =
   (
@@ -220,16 +234,21 @@ impltmp(a:tflt) list1_show<a>(xs) = (loop(0, xs)) where
   | list1_nil() => ()
   | list1_cons(x0, xs) =>
     (
-    show$beg<>();
+    show$before<>();
     (if(i0 > 0) then show$sep<>());
     show$val<a>(x0);
-    show$end<>();
+    show$after<>();
     loop(i0+1, xs)
     )
   )
 }
 
-impltmp(a:vtflt) list0_vt_show<a>(xs) = (loop(0, xs)) where
+impltmp(a:vtflt) list0_vt_show<a>(xs) =
+(
+show$beg<>();
+loop(0, xs);
+show$end<>();
+) where
 {
   fun loop(i0: int, xs: !list0_vt(a)): void =
   (
@@ -238,9 +257,9 @@ impltmp(a:vtflt) list0_vt_show<a>(xs) = (loop(0, xs)) where
   | list0_vt_cons(x0, xs) =>
     (
     (if(i0 > 0) then show$sep<>());
-    show$beg<>();
+    show$before<>();
     show$val<a>(x0);
-    show$end<>();
+    show$after<>();
     loop(i0+1, xs)
 
 (*
@@ -253,7 +272,12 @@ impltmp(a:vtflt) list0_vt_show<a>(xs) = (loop(0, xs)) where
   )
 }
 
-impltmp(a:tflt) list0_show<a>(xs) = (loop(0, xs)) where
+impltmp(a:tflt) list0_show<a>(xs) =
+(
+show$beg<>();
+loop(0, xs);
+show$end<>();
+) where
 {
   fun loop(i0: int, xs: !list0(a)): void =
   (
@@ -262,9 +286,9 @@ impltmp(a:tflt) list0_show<a>(xs) = (loop(0, xs)) where
   | list0_cons(x0, xs) =>
     (
     (if(i0 > 0) then show$sep<>());
-    show$beg<>();
+    show$before<>();
     show$val<a>(x0);
-    show$end<>();
+    show$after<>();
     loop(i0+1, xs)
     )
 (*
@@ -521,8 +545,8 @@ show_l0abl(l0) =
 (
 case+
 l0.node() of
-| L0ABsome(lab) =>
-  print!("L0ABsome(", lab, ")")
+| L0ABsome(lab) => show(lab)
+  (* print!("L0ABsome(", lab, ")") *)
 | L0ABnone(tok) =>
   print!("L0ABnone(", tok, ")")
 )
@@ -587,21 +611,31 @@ show_g0exp(x0) =
 (
 case+ x0.node() of
 //
-| G0Eid(tid) =>
-  print!("G0Eid(", tid, ")")
+| G0Eid(tid) => show(tid)
+  (* print!("G0Eid(", tid, ")") *)
 //
 | G0Eint(int) => show_t0int(int)
   (* print!("G0Eint(", int, ")") *)
 //
 | G0Eapps(s0ts) =>
-  print!("G0Eapps(", s0ts, ")")
+  (
+    show$val<list0(g0exp)>(g0ofg1(s0ts));
+  )
+  (* print!("G0Eapps(", s0ts, ")") *)
 //
 | G0Elist(t0, g0es, t1) =>
+  (
+    show(t0);
+    show$val<list0(g0exp)>(g0ofg1(g0es));
+    show(t1)
+  )
+(*
   print!
   ("G0Elist(", t0, "; ", g0es, "; ", t1, ")")
+*)
 //
-| G0Enone(tok) =>
-  print!("G0Enone(", tok, ")" )
+| G0Enone(tok) => show(tok)
+  (* print!("G0Enone(", tok, ")" ) *)
   // end of [G0Enone]
 //
 ) (* end of [fprint_g0exp] *)
@@ -634,15 +668,32 @@ show_g0marg(x0) =
 (
 case+
 x0.node() of
-| G0MARGnone(tok) =>
+| G0MARGnone(tok) => ()
+(*
   print!
   ("G0MARGnone(", tok, ")")
+*)
 | G0MARGsarg(tbeg, g0as, tend) =>
+  (
+    show(tbeg);
+    show$val<list0(i0dnt)>(g0ofg1(g0as));
+    show(tend)
+  )
+(*
   print!
   ("G0MARGsarg(", tbeg, "; ", g0as, "; ", tend, ")")
+*)
 | G0MARGdarg(tbeg, g0as, tend) =>
+  (
+    show(tbeg);
+    show$val<list0(i0dnt)>(g0ofg1(g0as));
+    show(tend)
+  )
+
+(*
   print!
   ("G0MARGdarg(", tbeg, "; ", g0as, "; ", tend, ")")
+*)
 ) (* fprint_g0marg *)
 
 (*
@@ -755,7 +806,7 @@ x0.node() of
   (
     show(sid);
     show$val<optn0(sort0)>(g0ofg1(opt)) where {
-      impltmp show$beg<>() = show_col()
+      impltmp show$before<>() = show_col()
     }
     (* show(opt) *)
   )
@@ -796,7 +847,7 @@ x0.node() of
     (* show_newline(); *)
     show$val<optn0(token)>(g0ofg1(opt)) where {
       impltmp show$sep<>() = () //prout(":") //()
-      impltmp show$end<>() = show_col()//prout(":")
+      impltmp show$after<>() = show_col()//prout(":")
     };
 
     show(s0t);
@@ -1123,7 +1174,7 @@ case+ x0.node() of
     show(teq);
     show_newline();
     show$val<list0(d0atcon)>(g0ofg1(d0cs)) where {
-        impltmp show$beg<>() = prout("| ")
+        impltmp show$before<>() = prout("| ")
         impltmp show$sep<>() = (show_newline(); )
     };
   )
@@ -1150,7 +1201,7 @@ case+ x0.node() of
       impltmp show$sep<>() = ()
     };
     show$val<optn0(s0exp)>(g0ofg1(argopt)) where {
-      impltmp show$beg<>() = prout(" of ")
+      impltmp show$before<>() = prout(" of ")
       impltmp show$sep<>() = ()
     };
 

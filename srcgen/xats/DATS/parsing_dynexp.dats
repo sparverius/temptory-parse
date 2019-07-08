@@ -1816,18 +1816,53 @@ case+ tnd of
 //
 | T_LBRACE() => let
     val () = buf.incby1()
+
     val s0es =
       p_s0expseq_COMMA(buf, err)
+//
+    val d0es =
+    (
+      if iseqz s0es then
+      optn1_some(p_d0eclseq_dyn(buf, err))
+      else optn1_none()
+    ) : optn1(list10(d0ecl)) where
+    {
+      typedef list10(a:tflt) = [n:int | n >= 0] list1(a, n)
+    }
+//
     val tbeg = tok
     val tend = p_RBRACE(buf, err)
   in
     err := e0;
-    d0exp_make_node
-    ( loc_res
-    , D0Esqarg(tbeg, s0es, tend)) where
-    {
-      val loc_res = tbeg.loc()+tend.loc()
-    }
+// RK additions
+    (
+      case+ d0es of
+      | optn1_none() =>
+        (
+          // (* // orig
+          d0exp_make_node
+          ( loc_res
+          , D0Esqarg(tbeg, s0es, tend)) where
+          {
+            val loc_res = tbeg.loc()+tend.loc()
+          }
+          // *)
+        )
+      | optn1_some(d0es0) =>
+        (
+          assertloc(length(d0es0) >= 0);
+          d0exp_make_node
+          ( loc_res
+          , D0Elet(tbeg, d0es0,
+          token_make_node(loc_res, T_BLANK("")),
+          list1_nil(), tend)) where
+          {
+            val loc_res = tbeg.loc()+tend.loc()
+          }
+        )
+    )
+// end additions RK
+
   end // end of [T_LBRACE]
 //
 | T_LPAREN() => let

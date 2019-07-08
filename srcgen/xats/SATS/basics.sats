@@ -305,5 +305,8 @@ show$val(x: !a): void
 fun {} show$sep(): void
 fun {} show$beg(): void
 fun {} show$end(): void
+fun {} show$before(): void
+fun {} show$after(): void
+
 
 (* end of [xats_basics.sats] *)

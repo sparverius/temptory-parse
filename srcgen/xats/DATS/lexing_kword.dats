@@ -367,6 +367,7 @@ val () = myins("var", T_VAR())
 //
 val () = myins("implfun", T_IMPLFUN_)
 val () = myins("impltmp", T_IMPLTMP_)
+val () = myins("implate", T_IMPLTMP_) // possibly change
 val () = myins("implmnt", T_IMPLMNT_)
 val () = myins("implement", T_IMPLMNT_)
 val () = myins("primplmnt", T_PRIMPLMNT_)
