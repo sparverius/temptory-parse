@@ -134,6 +134,13 @@ print$val<eq0arg> x = print_eq0arg x
 impltmp
 print$val<eq0opt> x = print_eq0opt x
 
+
+(*
+impltmp
+print$val<s0quasopt> x = print_s0quasopt x
+
+*)
+
 (* ****** ****** *)
 
 implement
@@ -149,8 +156,15 @@ implement
 print_eq0opt(x0) =
 (
 case+ x0.node() of
+| EQ0OPTnone () =>
+  print!("EQ0OPTnone()")
+| EQ0OPTsome (token(*'='*), eq0argopt) =>
+  print!("EQ0OPTsome(", token, "; ", eq0argopt, ")")
+
+(*
 | EQ0ARGopt (token(*'='*), eq0argopt) =>
   print!("EQ0ARGopt(", token, "; ", eq0argopt, ")")
+*)
 )
 
 (* ****** ****** *)
@@ -376,6 +390,12 @@ case+ x0.node() of
   (tok, d0p) =>
   print!("D0Pqual(", tok, "; ", d0p, ")")
 //
+
+| D0Pexist
+  (tok, s0qas, tend) =>
+  print!("D0Pexist(", tok, "; ", s0qas, "; ", tend, ")")
+
+//
 | D0Pnone(tok) => print!("D0Pnone(", tok, ")")
 //
 ) (* end of [fprint_d0pat] *)
@@ -538,6 +558,12 @@ case+ x0.node() of
 | D0Equal
   (tok, d0e) =>
   print!("D0Equal(", tok, "; ", d0e, ")")
+//
+
+| D0Eexist
+  (tok, s0qas, tend) =>
+  print!("D0Eexist(", tok, "; ", s0qas, "; ", tend, ")")
+
 //
 | D0Enone(tok) => print!("D0Enone(", tok, ")")
 //
@@ -846,10 +872,17 @@ case+ x0.node() of
 | D0Cabssort(tok, tid) =>
   print!("D0Cabssort(", tok, "; ", tid, ")")
 //
+(*
+// orig
 | D0Cstacst0
   (tok, sid, tmas, tok1, s0t2) =>
 print!("D0Cstacst0("
   , tok, "; ", sid, "; ", tmas, "; ", tok1, "; ", s0t2, ")")
+*)
+| D0Cstacst0
+  (tok, sid, tmas, tok1, s0t2, e0opt) =>
+  print!("D0Cstacst0("
+  , tok, "; ", sid, "; ", tmas, "; ", tok1, "; ", s0t2, "; ", e0opt, ")")
 //
 | D0Csortdef
   (tok, tid, tok1, def2) =>
@@ -865,7 +898,7 @@ print!("D0Csortdef("
 | D0Cabstype
   (tok, sid, arg, res, tdef, eq0opt) =>
 print!("D0Cabstype("
-  , tok, "; ", sid, "; ", arg, "; ", res, "; ", tdef, ")")
+  , tok, "; ", sid, "; ", arg, "; ", res, "; ", tdef, "; ", eq0opt, ")")
 //
 | D0Cabsimpl
   (tok, sqid, smas, res0, teq1, def2) =>
@@ -883,9 +916,20 @@ print!("D0Cabsimpl("
     print!("D0Cvardecl(", tok, "; ", d0cs, ")")
   ) (*D0Cvardecl*)
 //
+(*
+| D0Cfundecl
+  (tok, mopt, tqas, s0qasopt, d0cs) =>
+  print!("D0Cfundecl(", tok, "; ", mopt, "; ", "tq0arg_tbox(", tqas, ")", "; ", s0qasopt, "; ", d0cs, ")")
+*)
 | D0Cfundecl
   (tok, mopt, tqas, d0cs) =>
-  print!("D0Cfundecl(", tok, "; ", mopt, "; ", tqas, "; ", d0cs, ")")
+  print!("D0Cfundecl(", tok, "; ", mopt, "; ", "tq0arg_tbox(", tqas, ")", "; ", d0cs, ")")
+(*
+  where
+  {
+    //val _ = $showtype(tqas)
+  }
+*)
 //
 | D0Cimpdecl
   ( tok, mopt //, s0as
@@ -1118,9 +1162,14 @@ val+F0UNDECL(rcd) = x0
 in
   print!("F0UNDECL@{"
   , ", nam=", rcd.nam
+// rk
+  , ", qua=", rcd.qua
+//
   , ", arg=", "f0arglst", rcd.arg
-  , ", res=", rcd.res, ", teq=", rcd.teq
-  , ", def=", rcd.def, ", wtp=", rcd.wtp, "}")
+  , ", res=", rcd.res
+  , ", teq=", rcd.teq
+  , ", def=", rcd.def
+  , ", wtp=", rcd.wtp, "}")
 end // end of [fprint_f0undecl]
 
 (* ****** ****** *)

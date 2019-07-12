@@ -1114,6 +1114,23 @@ case+ tnd of
     }
   end // end of [T_IDENT_qual]
 //
+
+| T_LBRACK _ => let
+    val () = buf.incby1()
+    val s0qs =
+      p_s0quaseq_BARSMCLN(buf, err)
+    val tnd = T_EXISTS(0)
+    val loc = tok.loc((*void*))
+    val tbeg =
+      token_make_node(loc, tnd)
+    val tend = p_RBRACK(buf, err)
+    val loc_res = loc + tend.loc()
+  in
+    err := e0;
+    d0pat_make_node
+    (loc_res, D0Pexist(tok, s0qs, tend))
+  end // end of [T_LBRACK]
+
 | _ (* error *) => let
     val () = (err := e0 + 1)
   in
@@ -1262,6 +1279,13 @@ case+ tnd of
     (loc_res, F0ARGsome_sta(tbeg, s0qs, tend))
   end // end of [T_LBRACE]
 //
+(* rk
+| T_CLNLT((* _ *)) =>
+  (
+  err := e0;
+  f0arg_make_node(tok.loc(), F0ARGnone(tok))
+  )
+*)
 | _(*non-sta-met*) =>
   let
     val d0p = p_atmd0pat(buf, err)
@@ -1976,6 +2000,21 @@ case+ tnd of
       val loc_res = tok.loc()+d0e.loc()
     }
   end // end of [T_IDENT_qual]
+| T_LBRACK _ => let
+    val () = buf.incby1()
+    val s0qs =
+      p_s0quaseq_BARSMCLN(buf, err)
+    val tnd = T_EXISTS(0)
+    val loc = tok.loc((*void*))
+    val tbeg =
+      token_make_node(loc, tnd)
+    val tend = p_RBRACK(buf, err)
+    val loc_res = loc + tend.loc()
+  in
+    err := e0;
+    d0exp_make_node
+    (loc_res, D0Eexist(tok, s0qs, tend))
+  end // end of [T_LBRACK]
 //
 | _ (* error *) => let
     val () = (err := e0 + 1)
@@ -2828,10 +2867,12 @@ case+ def of
      | list1_cons
        (tqa, _) => loc+tqa.loc()
     )
+(* // orig
   | EFFS0EXPsome(s0e) => loc+s0e.loc()
-(*
-  | EFFS0EXPsome(sfe, s0e) => loc+s0e.loc()
 *)
+// (*
+  | EFFS0EXPsome(sfe, s0e) => loc+s0e.loc()
+// *)
   )
 | TEQD0EXPsome(_, d0e) => loc+d0e.loc()
 ) : loc_t // end of [val]
@@ -3091,6 +3132,45 @@ val e0 = err
 val nam =
 p_d0pid(buf, err)
 //
+
+  val s0qao = p_q0uas(buf, err)
+
+  (* val loc = nam.loc() *)
+
+(*
+  val s0qao =
+  (
+    case+ s0qas of
+    |
+    s0quasopt_make_node(s0qas.loc(), S0QUASsome(s0qas))
+    else
+    s0quasopt_make_node(s0qas.loc(), S0QUASnone())
+  ) : s0quasopt
+*)
+(*
+  val s0qas = p_s0quaseq_BARSMCLN(buf, err)
+
+  val loc = nam.loc()
+
+  val loc0 =
+  (
+    case+ s0qas of
+    | list1_nil() => loc
+    | list1_cons _ => let
+        val d0c =
+          list1_last(s0qas) in loc+d0c.loc()
+        // end of [val]
+      end // end of [list1_cons]
+  ) : loc_t // end of [val]
+  val s0qao =
+  (
+    if isneqz s0qas then
+    s0quasopt_make_node(loc0, S0QUASsome(s0qas))
+    else
+    s0quasopt_make_node(loc0, S0QUASnone())
+  ) : s0quasopt
+*)
+
 val arg =
 p_f0argseq(buf, err)
 val res =
@@ -3112,7 +3192,7 @@ val loc1 =
 in
   err := e0;
   F0UNDECL
-  (@{loc=loc1,nam=nam,arg=arg,res=res,teq=teq,def=d0e,wtp=wopt})
+  (@{loc=loc1,nam=nam,qua=s0qao,arg=arg,res=res,teq=teq,def=d0e,wtp=wopt})
 end // end of [p_f0undecl]
 //
 implement
@@ -3157,6 +3237,7 @@ tok, buf, err
 //
   val loc_res =
   (
+    // orig
     case+ d0cs of
     | list1_nil() => loc
     | list1_cons _ => let
@@ -3165,12 +3246,94 @@ tok, buf, err
         // end of [val]
       end // end of [list1_cons]
   ) : loc_t // end of [val]
+
+
 in
   err := e0;
   d0ecl_make_node
     (loc_res, D0Cfundecl(tok, mopt, tqas, d0cs))
   // d0ecl_make_node
 end // end of [ptok_fundecl]
+(*
+implement
+ptok_fundecl
+(
+tok, buf, err
+) = let
+//
+  val e0 = err
+  val () =
+    buf.incby1()
+  // end of [val]
+  val loc = tok.loc()
+//
+  val mopt =
+    p_declmodopt(buf, err)
+//
+  val tqas =
+    p_tq0argseq(buf, err)
+//
+
+  // rk
+(*
+  val s0qas = p_s0quaseq_BARSMCLN(buf, err)
+
+  val loc0 =
+  (
+    case+ s0qas of
+    | list1_nil() => loc
+    | list1_cons _ => let
+        val d0c =
+          list1_last(s0qas) in loc+d0c.loc()
+        // end of [val]
+      end // end of [list1_cons]
+  ) : loc_t // end of [val]
+*)
+  val loc0 = loc
+  val s0quopt =
+  (
+(*
+    if isneqz s0qas then
+    s0quasopt_make_node(loc0, S0QUASsome(s0qas))
+    else
+*)
+    s0quasopt_make_node(loc0, S0QUASnone())
+  ) : s0quasopt
+  //
+
+//
+  val d0cs =
+    p_f0undeclseq_AND(buf, err)
+//
+  val loc_res =
+  (
+    case+ d0cs of
+    | list1_nil() => loc0
+    | list1_cons _ => let
+        val d0c =
+          list1_last(d0cs) in loc0+d0c.loc()
+        // end of [val]
+
+(*
+    // orig
+    case+ d0cs of
+    | list1_nil() => loc
+    | list1_cons _ => let
+        val d0c =
+          list1_last(d0cs) in loc+d0c.loc()
+        // end of [val]
+*)
+      end // end of [list1_cons]
+  ) : loc_t // end of [val]
+
+
+in
+  err := e0;
+  d0ecl_make_node
+    (loc_res, D0Cfundecl(tok, mopt, tqas, s0quopt, d0cs))
+  // d0ecl_make_node
+end // end of [ptok_fundecl]
+*)
 //
 (* ****** ****** *)
 
@@ -3366,8 +3529,15 @@ p_eq0opt(buf, err) = let
   end : loc_t // end of [val]
 in
     err := e0;
-    eq0opt_make_node
-    (loc0, EQ0ARGopt(tok, opt))
+    (
+    case+ opt of
+    | optn1_none() =>
+      eq0opt_make_node
+      (loc0, EQ0OPTnone())
+    | optn1_some _ =>
+      eq0opt_make_node
+      (loc0, EQ0OPTsome(tok, opt))
+    )
 end
 
 
@@ -3575,7 +3745,13 @@ abstype ::=
     | ABSTDF0eqeq(_, s0e) => loc+s0e.loc()
     ) : loc_t // end of [val]
     val eq0opt = p_eq0opt(buf, err)
-    val loc_res = loc_res + eq0opt.loc()
+    //val loc_res = loc_res + eq0opt.loc()
+    val loc_res =
+    (
+      case+ eq0opt.node() of
+      | EQ0OPTnone() => loc_res
+      | EQ0OPTsome(_, _) => loc_res + eq0opt.loc()
+    ) : loc_t
   in
     err := e0;
     d0ecl_make_node
@@ -3903,10 +4079,21 @@ abstype ::=
     val tok1 = p_COLON(buf, err)
     val s0t2 = p_sort0(buf, err)
     val loc_res = loc + s0t2.loc()
+
+    val eq0opt = p_eq0opt(buf, err)
+
+    val loc_res =
+    (
+      case+ eq0opt.node() of
+      | EQ0OPTnone() => loc_res
+      | EQ0OPTsome(_, _) => loc_res + eq0opt.loc()
+    ) : loc_t
+
   in
     err := e0;
+
     d0ecl_make_node
-    (loc_res, D0Cstacst0(tok, sid, tmas, tok1, s0t2))
+    (loc_res, D0Cstacst0(tok, sid, tmas, tok1, s0t2, eq0opt))
   end // end of [T_SRP_STACST]
 //
 | T_SRP_NONFIX() => let

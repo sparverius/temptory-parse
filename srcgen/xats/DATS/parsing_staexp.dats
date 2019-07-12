@@ -1728,6 +1728,44 @@ end // end of [p_labs0exp]
 
 (* ****** ****** *)
 
+(*
+extern
+fun
+p_q0uas : parser(s0exp)
+*)
+
+implement
+p_q0uas
+(buf, err) = let
+//
+val e0 = err
+val tok = buf.get0()
+val tnd = tok.node()
+//
+in
+//
+case+ tnd of
+| T_LBRACE() => let
+    val () = buf.incby1()
+    val s0qs =
+      p_s0quaseq_BARSMCLN(buf, err)
+    val tbeg = tok
+    val tend = p_RBRACE(buf, err)
+    val loc_res = tbeg.loc() + tend.loc()
+  in
+    err := e0;
+    s0exp_make_node
+    (loc_res, S0Eforall(tbeg, s0qs, tend))
+  end // end of [T_LBRACE]
+| _ (* error *) => let
+    val () = (err := e0 + 1)
+  in
+    s0exp_make_node(tok.loc(), S0Enone(tok))
+  end // HX: indicating a parsing error
+//
+end // end of [p_atms0exp]
+
+
 implement
 p_atms0exp
 (buf, err) = let
@@ -2468,15 +2506,15 @@ tok.node() of
       p_apps0exp_NEQ(buf, err)
     // end of [val]
   in
-    EFFS0EXPsome(s0e_res)
-(*
+//    EFFS0EXPsome(s0e_res)
+// (*
     EFFS0EXPsome
       (S0EFFnone(tok), s0e_res)
     // EFFS0EXPsome
-*)
+// *)
   end // end of [T_CLN]
-(*
-| T_CLNLT(_) => let
+// (*
+| T_CLNLT((* _ *)) => let
     val () = buf.incby1()
     val s0es =
     list1_vt2t
@@ -2495,8 +2533,8 @@ tok.node() of
       (S0EFFsome(tbeg, s0es, tend), s0e_res)
     // EFFS0EXPsome
   end // end of [T_CLNLT]
-*)
-| _(*non-COLON/LT*) => EFFS0EXPnone(*none*)
+// *)
+| _(*non-COLON/LT*) => (print!(tok.node()); EFFS0EXPnone(*none*))
 //
 end // end of [p_effs0expopt]
 //

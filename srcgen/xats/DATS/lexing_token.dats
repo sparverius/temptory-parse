@@ -124,8 +124,12 @@ case+ tnd of
 | T_BLANK(x) =>
   print!("BLANK(", x, ")")
 //
+(*
 | T_CLNLT(x) =>
   print!("CLNLT(", x, ")")
+*)
+| T_CLNLT() =>
+  print!("CLNLT")
 | T_DOTLT(x) =>
   print!("DOTLT(", x, ")")
 //
@@ -972,6 +976,14 @@ lexing_locatize_node
         case+ node1 of
         | T_EOF() => node0 | _(*else*) => node1
       end
+(*
+    | T_IDENT_srp(id) => let
+        val node1 = tnode_search(id)
+      in
+        case+ node1 of
+        | T_EOF() => node0 | _(*else*) => node1
+      end
+*)
     | _ (* rest-of-tnode *) => node0
 
   )
@@ -991,8 +1003,9 @@ case+ node of
 //
 | T_BLANK(bs) => posincneol(pos1, bs)
 //
-| T_CLNLT(cs) => posincneol(pos1, cs)
 | T_DOTLT(cs) => posincneol(pos1, cs)
+//
+(* | T_CLNLT() => posinc1(pos1) *)
 //
 | T_SPECHAR(c0) => posinc1(pos1)
 //

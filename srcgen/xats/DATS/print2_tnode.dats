@@ -11,7 +11,8 @@ case+ tnd of
 //
 | T_BLANK(x) => print(x)
 //
-| T_CLNLT(x) => print(x)
+//| T_CLNLT(x) => print(x)
+| T_CLNLT() => print(":<")
 | T_DOTLT(x) => print(x)
 //
 | T_IDENT_alp(x) => print(x)
@@ -104,8 +105,8 @@ case+ tnd of
 | T_LBRACK() => print("[")
 | T_RBRACK() => print("]")
 //
-| T_EXISTS(knd) =>
-  print!("exists(", knd, ")")
+| T_EXISTS(knd) => print("[")
+  //print!("exists(", knd, ")")
 //
 | T_TUPLE(knd) => print(str) where
   {

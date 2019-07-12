@@ -736,6 +736,41 @@ s0qua_make_node
 (loc: loc_t, node: s0qua_node): s0qua
 //
 (* ****** ****** *)
+
+// rk
+(*
+typedef s0quasopt = optn1(s0qualst)
+*)
+//
+abstbox s0quasopt_tbox = ptr
+typedef s0quasopt = s0quasopt_tbox
+
+datatype
+s0quasopt_node =
+| S0QUASnone of ()
+| S0QUASsome of (s0exp)
+//
+fun print_s0quasopt : print_type(s0quasopt)
+#symload print with print_s0quasopt
+//
+fun show_s0quasopt : s0quasopt -> void
+#symload show with show_s0quasopt
+//
+fun
+s0quasopt_get_loc(s0quasopt): loc_t
+fun
+s0quasopt_get_node(s0quasopt): s0quasopt_node
+//
+#symload .loc with s0quasopt_get_loc
+#symload .node with s0quasopt_get_node
+//
+fun
+s0quasopt_make_node
+(loc: loc_t, node: s0quasopt_node): s0quasopt
+//
+
+
+(* ****** ****** *)
 //
 abstbox s0uni_tbox = ptr
 typedef s0uni = s0uni_tbox
@@ -885,7 +920,7 @@ show_labs0exp_RBRACE: labs0exp_RBRACE -> void
 // There is no longer plan
 // to support effect-tracking!!!
 //
-(*
+// (*
 //
 datatype
 s0eff =
@@ -897,23 +932,20 @@ s0eff =
 fun
 print_s0eff: print_type(s0eff)
 fun
-prerr_s0eff: prerr_type(s0eff)
-fun
-fprint_s0eff: fprint_type(s0eff)
+show_s0eff: print_type(s0eff)
 //
 #symload print with print_s0eff
-#symload prerr with prerr_s0eff
-#symload fprint with fprint_s0eff
+#symload show with show_s0eff
 //
-*)
+// *)
 //
 datatype
 effs0expopt =
 | EFFS0EXPnone of ()
-| EFFS0EXPsome of (s0exp)
-(*
+// | EFFS0EXPsome of (s0exp)
+// (*
 | EFFS0EXPsome of (s0eff, s0exp)
-*)
+// *)
 //
 fun
 print_effs0expopt: print_type(effs0expopt)

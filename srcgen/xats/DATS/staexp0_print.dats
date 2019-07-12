@@ -226,6 +226,21 @@ print$val<sl0abled(a)> x = print_sl0abled<a> x
 
 (* ****** ****** *)
 
+impltmp
+print$val<s0quasopt> x = print_s0quasopt x
+
+
+implement
+print_s0quasopt(x0) =
+(
+  case+ x0.node() of
+  | S0QUASnone() => print!("S0QUASnone()")
+  | S0QUASsome(s0qualst) =>
+    print!("S0QUASsome(", s0qualst, ")")
+)
+
+(* ****** ****** *)
+
 (*
 implement
 print_t0int(x0) =
@@ -934,18 +949,36 @@ implement
 prerr_effs0expopt(x0) =
 fprint_effs0expopt(stderr_ref, x0)
 *)
+
+implement
+print_s0eff(x0) =
+(
+case+ x0 of
+| S0EFFnone(token(*:*)) => // HX: default
+  print!("S0EFFnone(", "token=", token, ")")
+| S0EFFsome(tok0(*:<*), s0explst, tok1) => // HX: annotated
+  print!("S0EFFsome("
+  , "tok0=", tok0
+  , ", s0explst=", s0explst
+  , ", tok1=", tok1
+  , ")")
+)
+
+
 implement
 print_effs0expopt(x0) =
 (
 case+ x0 of
 | EFFS0EXPnone() =>
   print!("EFFS0EXPnone(", ")")
+(*
 | EFFS0EXPsome(s0e) =>
   print!("EFFS0EXPsome(", s0e, ")")
-(*
+*)
+// (*
 | EFFS0EXPsome(s0f, s0e) =>
   print!("EFFS0EXPsome(", s0f, "; ", s0e, ")")
-*)
+// *)
 ) (* end of [fprint_effs0expopt] *)
 
 (* ****** ****** *)

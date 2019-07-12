@@ -880,3 +880,27 @@ end // end of [local]
 (* ****** ****** *)
 
 (* end of [xats_staexp0.dats] *)
+
+local
+
+absimpl
+s0quasopt_tbox = $rec{
+  s0quasopt_loc= loc_t
+, s0quasopt_node= s0quasopt_node
+} (* end of [absimpl] *)
+
+in (* in-of-local *)
+
+implement
+s0quasopt_get_loc(x0) = x0.s0quasopt_loc
+implement
+s0quasopt_get_node(x0) = x0.s0quasopt_node
+
+implement
+s0quasopt_make_node
+(loc, node) = $rec
+{
+  s0quasopt_loc= loc, s0quasopt_node= node
+} (* end of [s0quasopt_make_node] *)
+
+end // end of [local]

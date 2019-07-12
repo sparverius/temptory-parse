@@ -55,7 +55,8 @@ tnode =
 //
   | T_BLANK of (string) // blank
 //
-  | T_CLNLT of (string) // :<
+  //| T_CLNLT of (string) // :<
+  | T_CLNLT of () // :<
   | T_DOTLT of (string) // .<
 //
   | T_IDENT_alp of string // alnum

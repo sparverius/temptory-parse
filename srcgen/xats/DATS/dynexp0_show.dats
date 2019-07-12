@@ -231,7 +231,10 @@ implement
 show_eq0opt(x0) =
 (
 case+ x0.node() of
-| EQ0ARGopt (token(*'='*), eq0argopt) =>
+| EQ0OPTnone () => ()
+  (* print!("EQ0OPTnone()") *)
+| EQ0OPTsome (token(*'='*), eq0argopt) =>
+//| EQ0ARGopt (token(*'='*), eq0argopt) =>
   (
     show_spc();
     show(token);
@@ -362,8 +365,8 @@ show_sq0arg(x0) =
 //
 case+
 x0.node() of
-| SQ0ARGnone(tok) =>
-  print!("SQ0ARGnone(", tok, ")")
+| SQ0ARGnone(tok) => ()
+  (* print!("SQ0ARGnone(", tok, ")") *)
 (*
 | SQ0ARGs0rtsome(q0as) =>
   (
@@ -388,8 +391,8 @@ show_tq0arg(x0) =
 //
 case+
 x0.node() of
-| TQ0ARGnone(tok) =>
-  print!("TQ0ARGnone(", tok, ")")
+| TQ0ARGnone(tok) => ()
+  (* print!("TQ0ARGnone(", tok, ")") *)
 | TQ0ARGsome(tbeg, q0as, tend) =>
   (
     show(tbeg);
@@ -473,8 +476,18 @@ case+ x0.node() of
 //
 | D0Psqarg
   (tbeg, s0as, tend) =>
+  (
+    show(tbeg);
+    show$val<list0(s0arg)>(g0ofg1(s0as)) where
+    {
+      impltmp show$sep<>() = ()
+    };
+    show(tend)
+  )
+(*
   print!("D0Psqarg("
   , tbeg, "; ", s0as, "; ", tend, ")")
+*)
 //
 | D0Pparen
   (tbeg, d0ps, tend) =>
@@ -513,8 +526,24 @@ case+ x0.node() of
   (tok, d0p) =>
   print!("D0Pqual(", tok, "; ", d0p, ")")
 //
+
+| D0Pexist
+  (tok, s0qas, tend) =>
+  (
+    show(tok);
+    show$val<list0(s0qua)>(g0ofg1(s0qas)) where
+    {
+      impltmp show$sep<>() = show_col()
+    };
+    show(tend);
+    show_spc()
+  )
+
+  (* print!("D0Pexist(", tok, "; ", s0qas, "; ", tend, ")") *)
+
+//
 | D0Pnone(tok) => //print!("D0Pnone(", tok, ")")
-  show(tok)
+  ()(* show(tok) *)
 //
 ) (* end of [show_d0pat] *)
 
@@ -692,11 +721,14 @@ case+ x0.node() of
 | D0Eparen
   (tbeg, d0es, tend) =>
   (
+    (* show_newline(); *)
     show(tbeg);
+    (* show_newline(); *)
     show$val<list0(d0exp)>(g0ofg1(d0es)) where
     {
       impltmp show$sep<>() = show_comma();
     };
+    (* show_newline(); *)
     show(tend)
   )
 
@@ -846,6 +878,23 @@ case+ x0.node() of
     show(tok);
     show(d0e)
   )
+//
+
+| D0Eexist
+  (tok, s0qes, tend) =>
+(*
+  print!("D0Eexist(", tok, "; ", s0qas, "; ", tend, ")")
+*)
+  (
+    show(tok);
+    show$val<list0(s0qua)>(g0ofg1(s0qes)) where
+    {
+      impltmp show$sep<>() = show_col()
+    };
+    show(tend);
+    show_spc()
+  )
+
 //
 | D0Enone(tok) => print!("\n") //print!("D0Enone(", tok, ")")
 //
@@ -1161,16 +1210,47 @@ case+ x0.node() of
   (* print!(tok, "; ", tid) *)
   //print!("D0Cabssort(", tok, "; ", tid, ")")
 //
+(*
+// initial attempt
 | D0Cstacst0
   (tok, sid, tmas, tok1, s0t2) =>
-  print!("D0Cstacst0("
-  , tok, "; ", sid, "; ", tmas, "; ", tok1, "; ", s0t2, ")")
-//
-| D0Csortdef
-  (tok, tid, tok1, def2) => show_mac(tok, tid, tok1, def2)
-(*
   (
     show(tok);
+    show_spc();
+    show(sid);
+    (* show(tmas); *)
+    show$val<list0(t0marg)>(g0ofg1(tmas)) where {
+      impltmp show$sep<>() = ()
+    };
+
+    show(tok1);
+    show(s0t2)
+  )
+*)
+| D0Cstacst0
+  (tok, sid, tmas, tok1, s0t2, e0opt) =>
+  (
+    show(tok);
+    show_spc();
+    show(sid);
+    (* show(tmas); *)
+    show$val<list0(t0marg)>(g0ofg1(tmas)) where {
+      impltmp show$sep<>() = ()
+    };
+
+    show(tok1);
+    show(s0t2);
+    show(e0opt)
+  )
+(*
+  print!("D0Cstacst0("
+  , tok, "; ", sid, "; ", tmas, "; ", tok1, "; ", s0t2, ")")
+*)
+//
+| D0Csortdef
+  (tok, tid, tok1, def2) => //show_mac(tok, tid, tok1, def2)
+  (
+    show_token(tok);
     print(" ");
     show(tid);
     print(" ");
@@ -1178,7 +1258,6 @@ case+ x0.node() of
     print(" ");
     show(def2)
   )
-*)
 (*
   {
     val () = show_token(tok);
@@ -1220,7 +1299,7 @@ case+ x0.node() of
     show(tok);
     spc();
     show(sid);
-    spc();
+    (* spc(); *)
     show$val<list0(t0marg)>(g0ofg1(arg));
     (* $showtype(res); *)
     show$val<optn0(sort0)>(g0ofg1(res));
@@ -1257,6 +1336,19 @@ case+ x0.node() of
   (tok, mopt, d0cs) =>
   (
     show(tok);
+    ( // for `[...]` in p0at
+      case+ d0cs of
+      | list1_nil() => ()
+      | list1_cons(x, xs) =>
+        (
+          case+ (rcd.pat).node() of
+          | D0Papps _ => show_spc()
+          | _ => ()
+        ) where
+        {
+          val+V0ALDECL(rcd) = x
+        }
+    );
     (* show_spc(); *)
     show(mopt);
     show$val<list0(v0aldecl)>(g0ofg1(d0cs)) where
@@ -1286,6 +1378,33 @@ case+ x0.node() of
 *)
 
 //
+(*
+| D0Cfundecl
+  (tok, mopt, tqas, s0qasopt, d0cs) =>
+  (
+    (* show_newline(); *)
+    show(tok);
+    (* spc(); *)
+    (if iseqz(g0ofg1(tqas)) then show_spc());
+    show(mopt);
+    (* spc(); *)
+    show$val<list0(tq0arg)>(g0ofg1(tqas)) where
+    {
+      impltmp show$sep<>() = ()
+      impltmp show$end<>() = (if isneqz tqas then prout(" ") else ())
+    };
+    show(s0qasopt);
+    show$val<list0(f0undecl)>(g0ofg1(d0cs)) where
+    {
+      impltmp show$sep<>() =
+      (
+        show_newline();
+        prout("and");
+        show_newline()
+      )
+    }
+  )
+*)
 | D0Cfundecl
   (tok, mopt, tqas, d0cs) =>
   (
@@ -1356,12 +1475,35 @@ case+ x0.node() of
 //
 | D0Csymload
   (tok, sym, twth, dqid, tint) =>
+  (
+    show(tok);
+    show_spc();
+    show(sym);
+    show_spc();
+    show(twth);
+    show_spc();
+    show(dqid);
+    (* show(tint); *)
+    show$val<optn0(t0int)>(g0ofg1(tint)) where {
+      impltmp show$before<>() = prout(" of ")
+    };
+
+  )
+(*
 print!("D0Csymload("
   , tok, "; ", sym, "; "
   , twth, "; ", dqid, "; ", tint, ")")
+*)
 //
 | D0Cdatasort(tok, d0cs) =>
-  print!("D0Cdatasort(", tok, "; ", d0cs, ")")
+  (
+    show(tok);
+    show_spc();
+    show$val<list0(d0tsort)>(g0ofg1(d0cs)) where {
+      impltmp show$sep<>() = (prout("\n"); prout("and"); prout("\n"))
+    };
+  )
+  (* print!("D0Cdatasort(", tok, "; ", d0cs, ")") *)
 //
 | D0Cdatatype(tok, d0cs, wopt) =>
   (
@@ -1559,10 +1701,20 @@ in
     | _ => show_spc()
   );
   show(rcd.pat);
+  (* show(rcd.teq); *)
   show_spc();
-  show(rcd.teq);
-  show_spc();
-  show(rcd.def);
+  (
+    case+ token_get_node(rcd.teq) of
+    | T_EQ() =>
+    (
+    show(rcd.teq);
+    show_spc();
+    show_d0exp(rcd.def);
+    )
+    | _ => ()
+  )
+
+
 (*
   show$val<list0(f0arg)>(g0ofg1(rcd.arg));
   prout(" : ");
@@ -1613,6 +1765,11 @@ val+F0UNDECL(rcd) = x0
 in
 (
   show(rcd.nam);
+// rk
+  show(rcd.qua);
+//
+
+
   show$val<list0(f0arg)>(g0ofg1(rcd.arg)) where
   {
     impltmp show$sep<>() = ()
@@ -1627,7 +1784,6 @@ in
     show_spc();
     show(rcd.teq);
     show_newline();
-
     show(rcd.def);// where { val _ = $showtype rcd.def };
     show(rcd.wtp);
     )

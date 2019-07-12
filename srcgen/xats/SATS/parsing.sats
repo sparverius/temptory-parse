@@ -415,6 +415,14 @@ p_s0quaseq_BARSMCLN: parser(s0qualst)
 //
 (* ****** ****** *)
 
+  // rk
+
+  fun
+  p_q0uas : parser(s0exp)
+
+
+(* ****** ****** *)
+
 fun p_s0uni: parser(s0uni)
 fun p_s0uniseq: parser(s0unilst)
 

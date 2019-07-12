@@ -191,7 +191,7 @@ case+ fnk of
 | FNKfun() => print("fun")
 
 | FNKprfn0() => print("prfn0")
-| FNKprfn1() => print("prfn1")
+| FNKprfn1() => print("prfun")
 | FNKprfun() => print("prfun")
 | FNKpraxi() => print("praxi")
 //

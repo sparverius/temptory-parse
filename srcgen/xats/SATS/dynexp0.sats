@@ -202,7 +202,8 @@ typedef eq0opt = eq0opt_tbox
 
 datatype
 eq0opt_node =
-  | EQ0ARGopt of (token(*'='*), eq0argopt)
+  | EQ0OPTnone of ()
+  | EQ0OPTsome of (token(*'='*), eq0argopt)
 
   fun
   print_eq0opt : print_type(eq0opt)
@@ -456,6 +457,8 @@ d0pat_node =
 
   | D0Pqual of (token, d0pat) // qualified
 
+  | D0Pexist of (token, s0qualst, token) // existential
+
   | D0Pnone of (token) // HX-2018-09-15: indicating error
   // end of [d0pat_node]
 
@@ -557,6 +560,10 @@ d0exp_node =
 
   | D0Ewhere of
     (d0exp, d0eclseq_WHERE)
+
+//  (*
+  | D0Eexist of (token, s0qualst, token) // existential sum
+//  *)
 
   | D0Edtsel of
     (token, l0abl, d0expopt)
@@ -882,11 +889,26 @@ V0ARDECL of @{
 (* ****** ****** *)
 
 
+(*
 datatype
 f0undecl =
 F0UNDECL of @{
   loc= loc_t
 , nam= d0pid
+, arg= f0arglst
+, res= effs0expopt
+, teq= token
+, def= d0exp
+, wtp= wths0expopt
+} (* f0undecl *)
+*)
+
+datatype
+f0undecl =
+F0UNDECL of @{
+  loc= loc_t
+, nam= d0pid
+, qua= s0exp//s0quasopt
 , arg= f0arglst
 , res= effs0expopt
 , teq= token
@@ -989,7 +1011,9 @@ d0ecl_node =
   | D0Cabssort of (token, s0tid)
   //
   | D0Cstacst0 of
-    (token, s0eid, t0marglst, token, sort0)
+    (token, s0eid, t0marglst, token, sort0
+    // rk
+    , eq0opt)
   //
   | D0Csortdef of
     (token, s0tid, token, s0rtdef)
@@ -1020,6 +1044,12 @@ d0ecl_node =
   | D0Cfundecl of
     ( token(*funkind*)
     , declmodopt, tq0arglst, f0undeclist)
+  (*
+| D0Cfundecl of
+    ( token(*funkind*)
+    , declmodopt, tq0arglst, s0quasopt, f0undeclist)
+*)
+
   //
   | D0Cimpdecl of
     ( token(*impkind*)

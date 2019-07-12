@@ -467,7 +467,20 @@ print$val<g0exp> x = print_g0exp x
 impltmp
 print$val<g0eid> x = print_i0dnt x
 
+(* ****** ****** *)
 
+impltmp
+print$val<s0quasopt> x = print_s0quasopt x
+
+
+implement
+show_s0quasopt(x0) =
+(
+  case+ x0.node() of
+  | S0QUASnone() => print!("S0QUASnone()")
+  | S0QUASsome(s0qualst) =>
+    print!("S0QUASsome(", s0qualst, ")")
+)
 
 (* ****** ****** *)
 
@@ -559,8 +572,8 @@ show_s0ymb(x0) =
 case+
 x0.node() of
 //
-| S0YMBi0dnt(id0) =>
-  print!("S0YMBi0dnt(", id0, ")")
+| S0YMBi0dnt(id0) => show(id0)
+  (* print!("S0YMBi0dnt(", id0, ")") *)
 //
 | S0YMBdtlab(dot1, lab2) =>
   print!("S0YMBdtlab(", dot1, "; ", lab2, ")")
@@ -756,7 +769,13 @@ show_s0rtcon(x0) =
 (
 case+ x0.node() of
 | S0RTCON(sid, opt) =>
-  print!("S0RTCON(", sid, ", ", opt, ")")
+  (
+    show(sid);
+    show$val<optn0(sort0)>(g0ofg1(opt)) where {
+    };
+
+  )
+  (* print!("S0RTCON(", sid, ", ", opt, ")") *)
 ) (* end of [show_s0rtcon] *)
 
 (* ****** ****** *)
@@ -766,7 +785,16 @@ show_d0tsort(x0) =
 (
 case+ x0.node() of
 | D0TSORT(tid, tok, s0cs) =>
-  print!("D0TSORT(", tid, "; ", tok, "; ", s0cs, ")")
+  (
+    show(tid);
+    show(tok);
+    show_newline();
+    show$val<list0(s0rtcon)>(g0ofg1(s0cs)) where {
+      impltmp show$before<>() = prout("| ")
+      impltmp show$sep<>() = (show_newline(); )
+    };
+  )
+  (* print!("D0TSORT(", tid, "; ", tok, "; ", s0cs, ")") *)
 ) (* end of [show_d0tsort] *)
 
 (* ****** ****** *)
@@ -973,7 +1001,16 @@ case+ x0.node() of
   (* print!("S0Eapps(", s0es, ")") *)
 //
 | S0Eimp(tbeg, s0es, tend) =>
-  print!("S0Eimp(", tbeg, "; ", s0es, "; ", tend, ")")
+  (
+    show(tbeg);
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = ()
+    };
+    show(tend)
+
+  )
+  (* print!("S0Eimp(", tbeg, "; ", s0es, "; ", tend, ")") *)
 //
 | S0Eparen
   (tbeg, s0es, tend) =>
@@ -1008,7 +1045,15 @@ let
   end
 *)
 | S0Eexists(tbeg, s0qs, tend) =>
-  print!("S0Eexists(", tbeg, "; ", s0qs, "; ", tend, ")")
+  (
+    show(tbeg);
+    show$val<list0(s0qua)>(g0ofg1(s0qs)) where
+    {
+      //impltmp show$sep<>() = prout(",")
+    };
+    show(tend)
+  )
+  (* print!("S0Eexists(", tbeg, "; ", s0qs, "; ", tend, ")") *)
 //
 | S0Etuple
   (tbeg, topt, s0es, tend) =>
@@ -1133,12 +1178,48 @@ case+ x0 of
 (* ****** ****** *)
 
 implement
+show_s0eff(x0) =
+(
+case+ x0 of
+| S0EFFnone(token(*:*)) => // HX: default
+  (
+    show(token)
+  )
+  (* print!("S0EFFnone(", "token=", token, ")") *)
+| S0EFFsome(tok0(*:<*), s0explst, tok1) => // HX: annotated
+  (
+    show(tok0);
+    show$val<list0(s0exp)>(g0ofg1(s0explst)) where {
+      //impltmp show$sep<>() = show_spc();
+    };
+    show(tok1)
+  )
+(*
+  print!("S0EFFsome("
+  , "tok0=", tok0
+  , ", s0explst=", s0explst
+  , ", tok1=", tok1
+  , ")")
+*)
+)
+
+
+implement
 show_effs0expopt(x0) =
 (
 case+ x0 of
 | EFFS0EXPnone() => ()
   (* print!("EFFS0EXPnone(", ")") *)
-| EFFS0EXPsome(s0e) => (show_col(); show(s0e))
+//| EFFS0EXPsome(s0e) => (show_col(); show(s0e))
+| EFFS0EXPsome(s0f, s0e) =>
+  (
+    show(s0f);
+    show_spc(); // ?
+    show(s0e);
+  )
+(*
+  print!("EFFS0EXPsome(", s0f, "; ", s0e, ")")
+*)
 (*
 where
 {

@@ -1,4 +1,5 @@
 #extern fun board_copy(!board):board
+#extern fun board_nil():board
 
 (*
 #extern fun {} board_forall1(!board):bool
