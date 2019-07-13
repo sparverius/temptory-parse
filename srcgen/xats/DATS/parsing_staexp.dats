@@ -263,6 +263,11 @@ case+ tnd of
 | T_IDENT_sym _ => true
 //
 | T_BSLASH((*void*)) => true
+
+  // (*
+  | T_STRING_closed(_) => true
+  // *)
+
 //
 | _ (* non-identifier *) => false
 //
@@ -295,6 +300,13 @@ tok.node() of
   {
     val () = buf.incby1()
   }
+  //
+    | T_STRING_closed(_) =>
+      i0dnt_some(tok) where
+      {
+        val () = buf.incby1()
+      }
+  //
 //
 | _ (* non-identifier *) =>
   (
@@ -2531,6 +2543,29 @@ tok.node() of
   in
     EFFS0EXPsome
       (S0EFFsome(tbeg, s0es, tend), s0e_res)
+    // EFFS0EXPsome
+  end // end of [T_CLNLT]
+| T_CLNLTGT() => let
+    val () = buf.incby1()
+(*
+    val s0es =
+    list1_vt2t
+    (
+      pstar_COMMA_fun
+      {s0exp}(buf, err, p_apps0exp_NGT)
+    )
+*)
+    val tbeg = tok
+ //   val tend = p_GT(buf, err)
+
+   val s0e_res =
+      p_apps0exp_NEQ(buf, err)
+   // end of [val]
+   val loc_res = tbeg.loc() //+ tend.loc()
+  in
+    EFFS0EXPsome
+      (S0EFFnone(tbeg), s0e_res)
+      (* s0exp_make_node(tbeg.loc(), S0Enone(tbeg)) *)
     // EFFS0EXPsome
   end // end of [T_CLNLT]
 | T_CLNLTBNG((* _ *)) => let

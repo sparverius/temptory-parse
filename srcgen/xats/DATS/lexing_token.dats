@@ -130,6 +130,8 @@ case+ tnd of
 *)
 | T_CLNLT() =>
   print!("CLNLT")
+| T_CLNLTGT() =>
+  print!("CLNLTGT")
 | T_CLNLTBNG() =>
   print!("CLNLTBNG")
 
@@ -179,9 +181,9 @@ case+ tnd of
   print!("CHAR_slash(", rep, ")")
 //
 | T_STRING_closed(str) =>
-  print!("STRING_closed(", str, ")")
+  print!("T_STRING_closed(", str, ")")
 | T_STRING_unclsd(str) =>
-  print!("STRING_unclsd(", str, ")")
+  print!("T_STRING_unclsd(", str, ")")
 //
 (*
 | T_CDATA(cdata, asz) => print!("CDATA(...)")

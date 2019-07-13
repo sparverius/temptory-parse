@@ -57,6 +57,8 @@ tnode =
 //
   //| T_CLNLT of (string) // :<
   | T_CLNLT of () // :<
+  | T_CLNLTGT of () // :<>
+
   | T_CLNLTBNG of () // :<!
   | T_DOTLT of (string) // .<
 //

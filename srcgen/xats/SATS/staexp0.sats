@@ -926,6 +926,7 @@ datatype
 s0eff =
 | S0EFFnone of
   (token(*:*)) // HX: default
+//| S0EFFone of (token)
 | S0EFFsome of
   (token(*:<*), s0explst, token) // HX: annotated
 //

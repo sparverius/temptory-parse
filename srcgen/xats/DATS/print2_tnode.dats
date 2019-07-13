@@ -13,6 +13,7 @@ case+ tnd of
 //
 //| T_CLNLT(x) => print(x)
 | T_CLNLT() => print(":<")
+| T_CLNLTGT() => print(":<>")
 | T_CLNLTBNG() => print(":<!")
 | T_DOTLT(x) => print(x)
 //

@@ -301,6 +301,7 @@ val () = myins(".<", T_DOTLT)
 *)
 val () = myins(">.", T_GTDOT)
 //
+val () = myins(":<>", T_CLNLTGT)
 val () = myins(":<", T_CLNLT)
 val () = myins(":<!", T_CLNLTBNG)
 (*

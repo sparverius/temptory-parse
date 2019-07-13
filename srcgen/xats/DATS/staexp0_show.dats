@@ -1132,7 +1132,17 @@ case+ x0 of
 | s0exp_RPAREN_cons0(tok) => show(tok)
   (* print!("s0exp_RPAREN_cons0(", tok, ")") *)
 | s0exp_RPAREN_cons1(tok1, s0es, tok2) =>
+  (
+    show(tok1);
+    show$val<list0(s0exp)>(g0ofg1(s0es)) where
+    {
+      impltmp show$sep<>() = ()//prout(",")
+    };
+    show(tok2)
+  )
+(*
   print!("s0exp_RPAREN_cons1(", tok1, ", ", s0es, ", ", tok2, ")")
+*)
 ) (* end of [show_s0exp_RPAREN] *)
 
 end // end of [local]
