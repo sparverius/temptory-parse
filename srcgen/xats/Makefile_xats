@@ -211,6 +211,13 @@ $(SED) -i -e 's/^SATS/BUILD/' -e 's/^DATS/BUILD/' .depend
 #
 ######
 
+test:: ; ./opt ./TEST/test27.sats
+
+regress:: all test
+
+
+######
+
 clean:: ; $(RMF) BUILD/*_?ats.c
 clean:: ; $(RMF) BUILD/*_?ats.o
 clean:: ; $(RMF) opt_dats.o

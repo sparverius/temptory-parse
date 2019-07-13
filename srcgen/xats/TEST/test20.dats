@@ -35,7 +35,7 @@ prfun
 prop_verify_add
 {b:bool | b} ():<prf> [b] void
 
-////
+
 
 (* ****** ****** *)
 //
@@ -50,6 +50,7 @@ lemma_sizeof
 //
 (* ****** ****** *)
 
+
 praxi
 topize
 {a:tflt}(x: !INV(a) >> a?): void
@@ -59,6 +60,7 @@ topize
 castfn
 dataget
 {a:vtflt}(x: !INV(a) >> a): (a?!)
+
 
 (* ****** ****** *)
 (*

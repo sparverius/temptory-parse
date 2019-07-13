@@ -216,7 +216,20 @@ impltmp show$val<impkind>(x) = show_impkind(x)
 impltmp show$sep<>() = ()
 impltmp show$beg<>() = ()
 impltmp show$end<>() = ()
+impltmp show$before<>() = ()
+impltmp show$after<>() = ()
 //fprint$val<string>(the_stdout<>(), " ")
+
+
+
+(*
+impltmp template$sep<>() = ()
+impltmp template$beg<>() = ()
+impltmp template$end<>() = ()
+impltmp template$before_each<>() = ()
+impltmp template$after_each<>() = ()
+*)
+
 
 (* ****** ****** *)
 

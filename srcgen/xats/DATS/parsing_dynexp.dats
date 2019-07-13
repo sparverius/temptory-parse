@@ -449,6 +449,9 @@ p_q0arg: parser(q0arg)
 extern
 fun
 p_q0argseq_COMMA: parser(q0arglst)
+extern
+fun
+p_q0argseq_COMMA_SMCLN: parser(q0arglst)
 //
 (* ****** ****** *)
 //
@@ -501,6 +504,15 @@ p_q0argseq_COMMA
   (pstar_COMMA_fun{q0arg}(buf, err, p_q0arg))
 ) (* end of [p_q0argseq_COMMA] *)
 //
+
+  implement
+  p_q0argseq_COMMA_SMCLN
+    (buf, err) =
+  (
+    list1_vt2t
+    (pstar_COMMA_SMCLN_fun{q0arg}(buf, err, p_q0arg))
+  )
+
 (* ****** ****** *)
 //
 extern
@@ -602,7 +614,8 @@ tok.node() of
 | T_LT() => let
     val () = buf.incby1()
     val q0as =
-      p_q0argseq_COMMA(buf, err)
+//      p_q0argseq_COMMA(buf, err)
+      p_q0argseq_COMMA_SMCLN(buf, err)
     // end of [val]
     val tbeg = tok
     val tend = p_GT(buf, err)
@@ -612,6 +625,22 @@ tok.node() of
     tq0arg_make_node
     (loc_res, TQ0ARGsome(tbeg, q0as, tend))
   end
+  // for fun {}....
+  | T_LBRACE() => let
+      val () = buf.incby1()
+      val q0as =
+  //      p_q0argseq_COMMA(buf, err)
+        p_q0argseq_COMMA_SMCLN(buf, err)
+      // end of [val]
+      val tbeg = tok
+      val tend = p_RBRACE(buf, err)
+      val loc_res = tbeg.loc() + tend.loc()
+    in
+      err := e0;
+      tq0arg_make_node
+      (loc_res, TQ0ARGsome(tbeg, q0as, tend))
+    end
+  //
 | T_LTGT() => let
     val () = buf.incby1()
     val q0as = list1_nil(*void*)

@@ -504,6 +504,14 @@ pstar_BARSMCLN_fun{a}(buf, err, fpar) =
 )
 (* end of [pstar_BARSMCLN_fun] *)
 //
+  implement
+  pstar_COMMA_SMCLN_fun{a}(buf, err, fpar) =
+  (
+    pstar_sep_fun
+    (buf, err, tnode_is_COMMA_SMCLN, fpar)
+  )
+
+
 //
 (* ****** ****** *)
 //

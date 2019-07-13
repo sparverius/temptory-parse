@@ -29,6 +29,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
+#staload "./../SATS/basics.sats"
+#staload _ = "./basics.dats"
+
 local
 //
 (* ****** ****** *)

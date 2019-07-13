@@ -308,5 +308,10 @@ fun {} show$end(): void
 fun {} show$before(): void
 fun {} show$after(): void
 
+fun {} template$sep(): void
+fun {} template$beg(): void
+fun {} template$end(): void
+fun {} template$before_each(): void
+fun {} template$after_each(): void
 
 (* end of [xats_basics.sats] *)

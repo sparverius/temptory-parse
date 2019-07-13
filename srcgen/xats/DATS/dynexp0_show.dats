@@ -14,6 +14,8 @@
 (* ****** ****** *)
 //
 #staload "./../SATS/basics.sats"
+(* #staload _ = "./../DATS/basics.dats" *)
+#staload _ = "./../DATS/conf.dats"
 
 #staload "./../SATS/lexing.sats"
 //
@@ -396,7 +398,10 @@ x0.node() of
 | TQ0ARGsome(tbeg, q0as, tend) =>
   (
     show(tbeg);
-    show$val<list0(q0arg)>(g0ofg1(q0as));
+    show$val<list0(q0arg)>(g0ofg1(q0as)) where
+    {
+      impltmp show$sep<>() = prout(";")
+    };
     show(tend)
   )
   (* print!("TQ0ARGsome(", tbeg, "; ", q0as, "; ", tend, ")") *)
@@ -1416,8 +1421,19 @@ case+ x0.node() of
     (* spc(); *)
     show$val<list0(tq0arg)>(g0ofg1(tqas)) where
     {
-      impltmp show$sep<>() = ()
-      impltmp show$end<>() = (if isneqz tqas then prout(" ") else ())
+      impltmp show$beg<>() = template$beg<>()
+      impltmp show$sep<>() = template$sep<>()
+
+      impltmp show$end<>() = template$end<>()
+      impltmp show$before<>() = template$before_each<>()
+      impltmp show$after<>() = template$after_each<>()
+
+(*
+      impltmp show$beg<>() = (prout("\n"))
+      impltmp show$sep<>() = (prout("\n"))
+      impltmp show$end<>() = (prout("\n"))
+      (* impltmp show$end<>() = (if isneqz tqas then prout(" ") else ()) *)
+*)
     };
     show$val<list0(f0undecl)>(g0ofg1(d0cs)) where
     {

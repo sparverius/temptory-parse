@@ -57,8 +57,18 @@ tnode =
 //
   //| T_CLNLT of (string) // :<
   | T_CLNLT of () // :<
+  | T_CLNLTBNG of () // :<!
   | T_DOTLT of (string) // .<
 //
+  // rk
+
+(*
+  | T_EXN of ()
+*)
+
+  // kr
+
+
   | T_IDENT_alp of string // alnum
   | T_IDENT_sym of string // symbol
 //
@@ -396,6 +406,11 @@ fun
 tnode_is_BARSMCLN : tnode -> bool
 fun
 tnode_is_SMCLN : tnode -> bool
+
+// rk
+fun
+tnode_is_COMMA_SMCLN : tnode -> bool
+// kr
 
 (* ****** ****** *)
 

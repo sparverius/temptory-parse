@@ -581,6 +581,13 @@ pstar_SMCLN_fun
 ) : list1_0_vt(a) // end of [pstar_SMCLN_fun]
 //
 fun
+pstar_COMMA_SMCLN_fun
+  {a:tbox}
+(
+  buf: &tokbuf >> _, err: &int >> _, fpar: parser(a)
+) : list1_0_vt(a) // end of [pstar_SMCLN_fun]
+//
+fun
 pstar_BARSMCLN_fun
   {a:tbox}
 (

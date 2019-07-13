@@ -302,6 +302,7 @@ val () = myins(".<", T_DOTLT)
 val () = myins(">.", T_GTDOT)
 //
 val () = myins(":<", T_CLNLT)
+val () = myins(":<!", T_CLNLTBNG)
 (*
 val () = myins(":<", T_COLONLT)
 *)
@@ -379,6 +380,8 @@ val () = myins("abssort", T_ABSSORT)
 //
 val () = myins("sortdef", T_SORTDEF)
 //
+  val () = myins("stadef", T_SORTDEF)
+
 val () = myins("sexpdef", T_SEXPDEF_)
 val () = myins("propdef", T_PROPDEF_)
 val () = myins("viewdef", T_VIEWDEF_)

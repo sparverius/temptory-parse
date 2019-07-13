@@ -2533,6 +2533,25 @@ tok.node() of
       (S0EFFsome(tbeg, s0es, tend), s0e_res)
     // EFFS0EXPsome
   end // end of [T_CLNLT]
+| T_CLNLTBNG((* _ *)) => let
+    val () = buf.incby1()
+    val s0es =
+    list1_vt2t
+    (
+      pstar_COMMA_fun
+      {s0exp}(buf, err, p_apps0exp_NGT)
+    )
+    val tbeg = tok
+    val tend = p_GT(buf, err)
+    val s0e_res =
+      p_apps0exp_NEQ(buf, err)
+    // end of [val]
+    val loc_res = tbeg.loc() + tend.loc()
+  in
+    EFFS0EXPsome
+      (S0EFFsome(tbeg, s0es, tend), s0e_res)
+    // EFFS0EXPsome
+  end // end of [T_CLNLT]
 // *)
 | _(*non-COLON/LT*) => (print!(tok.node()); EFFS0EXPnone(*none*))
 //

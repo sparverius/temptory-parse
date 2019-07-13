@@ -130,6 +130,9 @@ case+ tnd of
 *)
 | T_CLNLT() =>
   print!("CLNLT")
+| T_CLNLTBNG() =>
+  print!("CLNLTBNG")
+
 | T_DOTLT(x) =>
   print!("DOTLT(", x, ")")
 //
@@ -765,6 +768,12 @@ tnode_is_SMCLN(node) =
 (
   case+ node of
   | T_SMCLN() => true | _ => false
+)
+
+implement
+tnode_is_COMMA_SMCLN(node) =
+(
+  tnode_is_SMCLN(node) orelse tnode_is_COMMA(node)
 )
 //
 implement
