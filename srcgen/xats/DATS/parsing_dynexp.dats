@@ -4266,6 +4266,7 @@ in
 //
 case+ tnd of
 | T_EOF() => res
+//| T_COMMENT_mlblock _ => loop1(buf, err, res)
 | _(*non-EOF*) => let
     val loc = tok.loc()
     val n1r = loc.beg_nrow()

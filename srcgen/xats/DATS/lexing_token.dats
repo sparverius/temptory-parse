@@ -1132,6 +1132,10 @@ lexing_preprocess_tokenlst(toks) = let
   | T_COMMENT_rest _ => loop1(x1, xs2, res)
   | T_COMMENT_cblock _ => loop1(x1, xs2, res)
   | T_COMMENT_mlblock _ => loop1(x1, xs2, res)
+(*
+  | T_COMMENT_mlblock _ =>
+    loop1(x1, xs2, list1_vt_cons(x0, res))
+*)
   | T_AT() =>
   (
     case+ x1.node() of

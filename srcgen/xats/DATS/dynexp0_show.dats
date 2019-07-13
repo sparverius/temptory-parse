@@ -1419,6 +1419,8 @@ case+ x0.node() of
     (if iseqz(g0ofg1(tqas)) then show_spc());
     show(mopt);
     (* spc(); *)
+    (
+    if isneqz tqas then (
     show$val<list0(tq0arg)>(g0ofg1(tqas)) where
     {
       impltmp show$beg<>() = template$beg<>()
@@ -1427,14 +1429,18 @@ case+ x0.node() of
       impltmp show$end<>() = template$end<>()
       impltmp show$before<>() = template$before_each<>()
       impltmp show$after<>() = template$after_each<>()
-
+    }
+    )
+    else show$val<list0(tq0arg)>(g0ofg1(tqas))
+    );
 (*
       impltmp show$beg<>() = (prout("\n"))
       impltmp show$sep<>() = (prout("\n"))
       impltmp show$end<>() = (prout("\n"))
       (* impltmp show$end<>() = (if isneqz tqas then prout(" ") else ()) *)
+      };
 *)
-    };
+
     show$val<list0(f0undecl)>(g0ofg1(d0cs)) where
     {
       impltmp show$sep<>() =
@@ -1443,7 +1449,9 @@ case+ x0.node() of
         prout("and");
         show_newline()
       )
-    }
+    };
+    show_newline();
+
   )
   (* print!("D0Cfundecl(", tok, "; ", mopt, "; ", tqas, "; ", d0cs, ")") *)
 //
@@ -1503,7 +1511,7 @@ case+ x0.node() of
     show$val<optn0(t0int)>(g0ofg1(tint)) where {
       impltmp show$before<>() = prout(" of ")
     };
-
+    show_newline();
   )
 (*
 print!("D0Csymload("
