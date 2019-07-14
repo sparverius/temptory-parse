@@ -221,6 +221,21 @@ show$val<eq0opt> x = show_eq0opt x
 
 (* ****** ****** *)
 
+fun is_d0exp_ELSEsome(xs: d0exp_ELSE) : bool =
+(
+  case+ xs of
+  | d0exp_ELSEsome _ => true
+  | _ =>> false
+)
+
+
+fun is_d0exp_ELSEnone(xs: d0exp_ELSE) : bool =
+(
+  case+ xs of
+  | d0exp_ELSEnone() => true
+  | _ =>> false
+)
+
 fun d0exp_isParen(xs: d0exp): bool =
 (
   case+ xs.node() of
@@ -501,7 +516,7 @@ x0.node() of
   (
     show(tbeg);
     show$val<list0(s0exp)>(g0ofg1(q0as)) where {
-      impltmp show$sep<>() = show_comma()//prout(",")
+      impltmp show$sep<>() = (prout","; ti0arg$sep<>())//show_comma()//prout(",")
     };
     show(tend)
   )
@@ -868,13 +883,29 @@ case+ x0.node() of
 | D0Eif0
   (tif0, d0e1, d0e2, d0e3, tend) =>
   (
+    if$beg<>();
     show(tif0);
-    show_newline();
+    (* show_newline(); *)
+    if$end<>();
+
     show(d0e1);
-    show_newline();
+    (* show_newline(); *)
+
+
+    then$beg<>();
+
     show(d0e2);
-    show_newline();
-    show(d0e3);
+    (* show_newline(); *)
+    then$end<>();
+
+    (
+      if is_d0exp_ELSEsome(d0e3) then
+      (
+        else$beg<>();
+        show(d0e3);
+        else$end<>()
+      )
+    );
     show$val<optn0(token)>(g0ofg1(tend))
   )
   (* ) where { val _ = $showtype(tend) } *)
@@ -935,10 +966,11 @@ case+ x0.node() of
     show$val<list0(d0exp)>(g0ofg1(d0es)) where {
     };
 
+
     (* show_newline(); *)
     end$beg<>();
     show(tok2);
-    end$end<>();
+    end$end<>()
     (* show_newline(); *)
 
   )
@@ -1602,6 +1634,7 @@ case+ x0.node() of
   , sqas, tqas
   , dqid, tias, f0as, res0, teq1, d0e2) =>
   (
+
     prout(def$impl$beg<>());
 
     show(tok);
@@ -1612,13 +1645,13 @@ case+ x0.node() of
     (
     show$val<list0(sq0arg)>(g0ofg1(sqas)) where
     {
-      impltmp show$beg<>() = template$beg<>()
-      impltmp show$end<>() = template$end<>()
+      impltmp show$beg<>() = sq0arg$beg<>()//template$beg<>()
+      impltmp show$end<>() = sq0arg$end<>()//template$end<>()
       impltmp show$sep<>() = () // pr(impl$tmp$sep<>())
     }
     )
     else
-    template$none<>()
+    sq0arg$none<>() //template$none<>()
     );
     show$val<list0(tq0arg)>(g0ofg1(tqas));
     //spc();

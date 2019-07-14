@@ -1,3 +1,7 @@
+val xs = (if foo then 0)
+val xs = (if foo then true else false)
+
+////
 
 fun loop1(x0:x0,yy:!yy): bool =
 (

@@ -318,6 +318,19 @@ fun {} template$none(): void
 
 fun {} template$arg$sep(): void
 
+fun {} ti0arg$sep(): void
+
+
+fun {} tq0arg$beg(): void
+fun {} tq0arg$end(): void
+
+
+fun {} sq0arg$beg(): void
+fun {} sq0arg$end(): void
+
+fun {} sq0arg$none(): void
+
+
 // =>
 fun {} eqgt$beg(): void
 fun {} eqgt$end(): void
@@ -362,5 +375,13 @@ fun {} in$end(): void
 fun {} end$beg(): void
 fun {} end$end(): void
 
+fun {} if$beg(): void
+fun {} if$end(): void
+
+fun {} then$beg(): void
+fun {} then$end(): void
+
+fun {} else$beg(): void
+fun {} else$end(): void
 
 (* end of [xats_basics.sats] *)
