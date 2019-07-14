@@ -314,4 +314,53 @@ fun {} template$end(): void
 fun {} template$before_each(): void
 fun {} template$after_each(): void
 
+fun {} template$none(): void
+
+fun {} template$arg$sep(): void
+
+// =>
+fun {} eqgt$beg(): void
+fun {} eqgt$end(): void
+
+// ->
+fun {} arrow$beg(): void
+fun {} arrow$end(): void
+
+fun {} smcln$beg(): void
+fun {} smcln$end(): void
+
+
+fun {} def$id$beg(): string
+fun {} def$id$end(): string
+
+fun {} def$impl$beg(): string
+fun {} def$impl$end(): string
+
+
+fun {} eq$beg(): string
+fun {} eq$end(): string
+
+fun {} paren$beg(): void
+fun {} paren$end(): void
+
+fun {} case$beg(): void
+fun {} case$end(): void
+fun {} case$endall(): void
+fun {} case$sep(): void
+
+fun {} colon$sep(): void
+
+fun {} comma$sep(): void
+fun {} bar$sep(): void
+
+fun {} let$beg(): void
+fun {} let$end(): void
+
+fun {} in$beg(): void
+fun {} in$end(): void
+
+fun {} end$beg(): void
+fun {} end$end(): void
+
+
 (* end of [xats_basics.sats] *)

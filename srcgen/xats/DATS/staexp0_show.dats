@@ -16,6 +16,11 @@
 #staload "./../SATS/staexp0.sats"
 #staload _ = "./staexp0.dats"
 (* #staload _ = "./staexp0_print.dats" *)
+
+
+#staload _ = "./../DATS/conf.dats"
+
+
 //
 (* ****** ****** *)
 
@@ -30,7 +35,9 @@ impltmp show$end<>() = ()
 
 fun show_newline() = prout("\n")
 fun show_spc() = prout(" ")
-fun show_col() = prout(":")
+fun show_col() = colon$sep<>() //prout(":")
+fun show_comma() = (prout(","); comma$sep<>())
+fun show_bar() = (prout("|"); bar$sep<>())
 //
 local
 //
@@ -854,7 +861,7 @@ x0.node() of
   (
     show(tbeg);
     show$val<list0(s0arg)>(g0ofg1(s0as)) where {
-      impltmp show$sep<>() = prout(",")
+      impltmp show$sep<>() = show_comma()//prout(",")
     };
     show(tend)
   )
@@ -894,7 +901,7 @@ x0.node() of
   (
     show(tbeg);
     show$val<list0(t0arg)>(g0ofg1(t0as)) where {
-      impltmp show$sep<>() = prout(",")//()
+      impltmp show$sep<>() = show_comma() //prout(",")//()
     };
     show(tend)
   )
@@ -913,7 +920,7 @@ case+ x0.node() of
   (
     show$val<list0(i0dnt)>(g0ofg1(ids)) where
     {
-      impltmp show$sep<>() = prout(",");
+      impltmp show$sep<>() = show_comma()//prout(",");
     };
     //print(":");
     show_col();
@@ -1019,7 +1026,7 @@ case+ x0.node() of
     (* show_spc(); *)
     show$val<list0(s0exp)>(g0ofg1(s0es)) where
     {
-      impltmp show$sep<>() = prout(",")
+      impltmp show$sep<>() = show_comma()//prout(",")
     };
     show(tend)
     (* show(opt); *)
@@ -1030,7 +1037,7 @@ case+ x0.node() of
   (
     show(tbeg);
     show$val<list0(s0qua)>(g0ofg1(s0qs)) where {
-      impltmp show$sep<>() = prout("|")
+      impltmp show$sep<>() = show_bar() //prout("|")
     };
     show(tend)
   )
@@ -1063,7 +1070,7 @@ let
     show$val<optn0(token)>(g0ofg1(topt));
     show$val<list0(s0exp)>(g0ofg1(s0es)) where
     {
-      impltmp show$sep<>() = prout(",")
+      impltmp show$sep<>() = show_comma()//prout(",")
     };
     show(tend)
     (* show(opt); *)
@@ -1080,7 +1087,7 @@ let
     show$val<optn0(token)>(g0ofg1(topt));
     show$val<list0(sl0abled(s0exp))>(g0ofg1(s0es)) where
     {
-      impltmp show$sep<>() = prout(",")
+      impltmp show$sep<>() = show_comma()//prout(",")
     };
     show(tend)
   )

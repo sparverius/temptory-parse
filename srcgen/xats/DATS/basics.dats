@@ -220,8 +220,6 @@ impltmp show$before<>() = ()
 impltmp show$after<>() = ()
 //fprint$val<string>(the_stdout<>(), " ")
 
-
-
 (*
 impltmp template$sep<>() = ()
 impltmp template$beg<>() = ()

@@ -625,6 +625,13 @@ d0exp_node =
   show_d0exp : print_type(d0exp)
   #symload show with show_d0exp
 
+(*
+  fun
+  show_d0exp2 : (d0exp, int, int) -> void
+  #symload show2 with show_d0exp2
+*)
+
+
   fun
   d0exp_get_loc(d0exp): loc_t
   fun

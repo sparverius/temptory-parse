@@ -121,6 +121,9 @@ extern
 fun
 isSYMBOLIC(c: char): bool
 //
+  extern
+  fun isCLN(c: char): bool
+//
 extern
 fun isSLASH(c: char): bool
 extern
@@ -215,6 +218,11 @@ SYMBOLIC = "%&+-./:=@~`^|*!?<>#$"
 in
   $extfcall(ptr, "strchr", SYMBOLIC, c) > the_null_ptr
 end // end of [SYMBOLIC_test]
+
+(* ****** ****** *)
+
+  implement
+  isCLN(c) = (c = ':')
 
 (* ****** ****** *)
 
@@ -822,6 +830,28 @@ lexing_isDOLLAR(buf: &lexbuf >> _, i0: int) : tnode = loop(buf, 0) where
 
 (* ****** ****** *)
 
+  fun
+  lexing_isCLN(buf: &lexbuf >> _, i0: int) : tnode = let
+
+    val i1 = lexbuf_getc(buf)
+    val c1 = char0_chr(i1)
+
+  in
+
+    ifcase
+    | c1 = '!' => T_IDENT_sym(lexbuf_get_fullseg(buf)) where {
+        val () = lexbuf_unget(buf, i1)
+        (* val () = lexbuf_get_none(buf) *)
+      } (* end of [......] *)
+
+    | _(* else *) => lexing_isSYMBOLIC(buf, i0) where
+    {
+      val () = lexbuf_unget(buf, i1)
+    }
+
+  end (* end of [lexing_isLPAREN] *)
+
+
 fun
 lexing_isLPAREN(buf: &lexbuf >> _, i0: int) : tnode = let
 
@@ -844,6 +874,19 @@ end (* end of [lexing_isLPAREN] *)
 
 fun
 lexing_isSQUOTE(buf: &lexbuf >> _, i0: int) : tnode = loop(buf) where
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
 //
   fun
@@ -990,6 +1033,9 @@ in
   | isIDENTFST(c0) => lexing_isIDENTFST(buf, i0)
   | isSHARP(c0) => lexing_isSHARP(buf, i0)
   | isDOLLAR(c0) => lexing_isDOLLAR(buf, i0)
+
+    | isCLN(c0) => lexing_isCLN(buf, i0) // for separating the situation `:!`
+
   | isSYMBOLIC(c0) => lexing_isSYMBOLIC(buf, i0)
   | isLPAREN(c0) => lexing_isLPAREN(buf, i0)
   | isSQUOTE(c0) => lexing_isSQUOTE(buf, i0)

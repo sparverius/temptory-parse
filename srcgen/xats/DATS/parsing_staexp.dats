@@ -2534,6 +2534,23 @@ tok.node() of
       pstar_COMMA_fun
       {s0exp}(buf, err, p_apps0exp_NGT)
     )
+      val tok2 = buf.get0()
+      val s0es =
+      (
+        case+ tok2.node() of
+        | T_FUN _ => (res0)
+           where
+          {
+
+            val tident = token_make_node(tok2.loc(), T_IDENT_alp("fun"))
+            val s0exp1 = s0exp_make_node(tok2.loc(), S0Eop1(tident))
+            (* val i0dntsome = I0DNTsome(tident) *)
+            val () = buf.incby1()
+            val res0 = list1_cons(s0exp1, list1_nil)
+
+          }
+        | _ =>> s0es
+      )
     val tbeg = tok
     val tend = p_GT(buf, err)
     val s0e_res =

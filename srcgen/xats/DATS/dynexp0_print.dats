@@ -473,10 +473,70 @@ prerr_d0exp(x0) =
 fprint_d0exp(stderr_ref, x0)
 *)
 
+implement
+print_d0gua(xs) =
+(
+  case+ xs.node() of
+    | D0GUAexp(d0exp) => print!
+      (
+        "D0GUAexp( d0exp(", d0exp, ") )"
+      )
+    | D0GUAmat(d0exp, token(*AS*), d0pat) => print!
+      (
+        "D0GUAmat(",
+        " d0exp(", d0exp, ") ; token(", token, ") ; ",
+        " d0pat(", d0pat, ") "
+        , ")"
+      )
+)
+
+
+impltmp
+print$val<d0gua> x = print_d0gua x
+
+implement
+print_d0clau(xs) =
+(
+  case+ xs.node() of
+    | D0CLAUgpat(dg0pat) => print!
+      (
+        "D0CLAUgpat( dg0pat(", dg0pat, ") )"
+      )
+    | D0CLAUclau(dg0pat, token(*EQGT*), d0exp) => print!
+      (
+        "D0CLAUclau(",
+        " dg0pat(", dg0pat, ") ; token(", token, ") ; ",
+        " d0exp(", d0exp, ") "
+        , ")"
+      )
+)
+
+implement
+print_dg0pat(xs) =
+(
+  case+ xs.node() of
+    | DG0PATpat(d0pat) => print!
+      (
+        "DG0PATpat( d0pat(", d0pat, ") )"
+      )
+    | DG0PATgua(d0pat, token(*WHEN*), d0gualst) => print!
+      (
+        "DG0PATgua(",
+        " d0pat(", d0pat, ") ; token(", token, ") ; ",
+        " d0gualst(", d0gualst, ") "
+        , ")"
+      )
+)
+
 local
 
 impltmp
 print$val<d0exp> x = print_d0exp x
+
+impltmp
+print$val<d0clau> x = print_d0clau x
+impltmp
+print$val<d0gua> x = print_d0gua x
 
 in (* in-of-local *)
 
@@ -531,8 +591,12 @@ case+ x0.node() of
 //
 | D0Ecase
   (tok0, d0e1, tof2, tbar, d0cs, tend) =>
+  print!("D0Ecase( tok0=", tok0, "; d0e1="
+  , d0e1, "; tof2=", tof2, "; tbar=", tbar, "; d0cs=", d0cs, "; tend", tend, ")")
+(*
   print!("D0Ecase(", tok0, "; "
   , d0e1, "; ", tof2, "; ", tbar, "; ", "...", "; ", tend, ")")
+*)
 //
 | D0Elet
   (tok0, d0cs, tok1, d0es, tok2) =>
@@ -540,7 +604,8 @@ case+ x0.node() of
   , d0cs, "; ", tok1, "; ", d0es, "; ", tok2, ")")
 //
 | D0Ewhere(d0e1, d0cs) =>
-  print!("D0Ewhere(", d0e1, "; ", d0cs, ")")
+  print!("D0Ewhere(", " d0e1(", d0e1, ") ", "; ", "d0cs (", d0cs, ") ", ")")
+  (* print!("D0Ewhere(", d0e1, "; ", d0cs, ")") *)
 //
 | D0Edtsel
   (tok, lab, arg) =>
@@ -892,8 +957,18 @@ print!("D0Csortdef("
   ( tok, sid
   , arg, res, tok1, tdef) =>
   print!("D0Csexpdef("
+  , "tok=(", tok, ") ; "
+  , "sid=(", sid, ") ; "
+  , "arg=(", arg, ") ; "
+  , "res=(", res, ") ; "
+  , "tok1=(", tok1, ") ; "
+  , "tdef=(", tdef, ")")
+
+(*
+  print!("D0Csexpdef("
   , tok, "; ", sid, "; "
   , arg, "; ", res, "; ", tok1, "; ", tdef, ")")
+*)
 //
 | D0Cabstype
   (tok, sid, arg, res, tdef, eq0opt) =>
