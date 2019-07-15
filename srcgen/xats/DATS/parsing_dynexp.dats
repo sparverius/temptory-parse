@@ -2702,7 +2702,6 @@ tok.node() of
     g0e.node() of
     | G0Enone(x) =>
       G0EDEFnone(*void*)
-      //where { val () = print!("HERE!!!!!!!!!!!!", x) }
     | _(*non-G0Enone*) =>
       G0EDEFsome(optn1_none(*void*), g0e(*def*))
   end

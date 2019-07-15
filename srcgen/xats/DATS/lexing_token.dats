@@ -62,6 +62,9 @@ UN = "libats/SATS/unsafe.sats"
 
 #staload "./../SATS/basics.sats"
 #staload _ = "./basics.dats"
+
+#staload _ = "./conf.dats"
+
 #staload "./../SATS/lexing.sats"
 (* #staload _ = "./lexing.dats" *)
 #staload "./../SATS/location.sats"

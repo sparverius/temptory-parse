@@ -323,7 +323,7 @@ popt_ENDIF(buf, err) = let
   val tok = buf.get0()
 in
   case+ tok.node() of
-    | T_END() => (buf.incby1(); optn1_some(tok))
+    (* | T_END() => (buf.incby1(); optn1_some(tok)) *)
     | T_ENDIF() => (buf.incby1(); optn1_some(tok))
     | _ (* non-BAR *) => optn1_none(*void*)
 end // end of [popt_ENDIF]

@@ -1,3 +1,5 @@
+
+
 implement
 print2_tnode(tnd) =
 (
@@ -21,7 +23,13 @@ case+ tnd of
 | T_IDENT_sym(x) => print(x)
 //
 | T_IDENT_srp(x) => print(x)
-| T_IDENT_dlr(x) => print(x)
+| T_IDENT_dlr(x) => //print(x)
+  (
+    case+ 0 of
+    | _ when x = "$ldelay" => (ldelay$beg<>(); print(x); ldelay$end<>())
+    | _ when x = "$extfcall" => (print(x); print("\n"))
+    | _ =>> print(x)
+  )
 //
 | T_IDENT_qual(x) => print(x)
 //

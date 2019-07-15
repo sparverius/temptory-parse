@@ -35,7 +35,7 @@ impltmp show$end<>() = ()
 
 fun show_newline() = prout("\n")
 fun show_spc() = prout(" ")
-fun show_col() = colon$sep<>() //prout(":")
+fun show_col() = (prout":"; colon$sep<>()) //prout(":")
 fun show_comma() = (prout(","); comma$sep<>())
 fun show_bar() = (prout("|"); bar$sep<>())
 //
@@ -480,6 +480,14 @@ impltmp
 print$val<s0quasopt> x = print_s0quasopt x
 
 
+(* ****** ****** *)
+
+
+extern fun{x:tbox} show$list(xs: list1(x)): void
+impltmp{x:tbox} show$list(xs) = show$val<list0(x)>(g0ofg1(xs))
+
+(* ****** ****** *)
+
 implement
 show_s0quasopt(x0) =
 (
@@ -583,9 +591,13 @@ x0.node() of
   (* print!("S0YMBi0dnt(", id0, ")") *)
 //
 | S0YMBdtlab(dot1, lab2) =>
-  print!("S0YMBdtlab(", dot1, "; ", lab2, ")")
-| S0YMBbrack(tok1, tok2) =>
-  print!("S0YMBbrack(", tok1, "; ", tok2, ")")
+  (
+    show(dot1);
+    show(lab2)
+  )
+  (* print!("S0YMBdtlab(", dot1, "; ", lab2, ")") *)
+| S0YMBbrack(tok1, tok2) => (show(tok1); show(tok2))
+  (* print!("S0YMBbrack(", tok1, "; ", tok2, ")") *)
 //
 ) (* end of [show_s0ymb] *)
 //
@@ -639,7 +651,8 @@ case+ x0.node() of
 //
 | G0Eapps(s0ts) =>
   (
-    show$val<list0(g0exp)>(g0ofg1(s0ts));
+    //show$val<list0(g0exp)>(g0ofg1(s0ts));
+    show$list<g0exp>(s0ts)
   )
   (* print!("G0Eapps(", s0ts, ")") *)
 //
@@ -1026,7 +1039,7 @@ case+ x0.node() of
     (* show_spc(); *)
     show$val<list0(s0exp)>(g0ofg1(s0es)) where
     {
-      impltmp show$sep<>() = show_comma()//prout(",")
+      impltmp show$sep<>() = (prout",";staexp$sep<>())//show_comma()//prout(",")
     };
     show(tend)
     (* show(opt); *)
@@ -1220,6 +1233,22 @@ case+ x0 of
 *)
 )
 
+local
+
+fun show_s0eapps(x0: s0exp): void =
+(
+  case+ x0.node() of
+  | S0Eapps(s0es) =>
+    (
+      show$val<list0(s0exp)>(g0ofg1(s0es)) where
+      {
+        impltmp show$sep<>() = prout(" ")//()
+      }
+    )
+  | _ =>> show(x0)
+)
+
+in
 
 implement
 show_effs0expopt(x0) =
@@ -1232,8 +1261,13 @@ case+ x0 of
   (
     show(s0f);
     show_spc(); // ?
-    show(s0e);
+    (* show(s0e); *)
+    show_s0eapps(s0e)
   )
+) (* end of [show_effs0expopt] *)
+
+end
+
 (*
   print!("EFFS0EXPsome(", s0f, "; ", s0e, ")")
 *)
@@ -1248,7 +1282,7 @@ where
 | EFFS0EXPsome(s0f, s0e) =>
   print!("EFFS0EXPsome(", s0f, "; ", s0e, ")")
 *)
-) (* end of [show_effs0expopt] *)
+
 
 (* ****** ****** *)
 

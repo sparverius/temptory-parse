@@ -2605,7 +2605,7 @@ tok.node() of
     // EFFS0EXPsome
   end // end of [T_CLNLT]
 // *)
-| _(*non-COLON/LT*) => (print!(tok.node()); EFFS0EXPnone(*none*))
+| _(*non-COLON/LT*) => ((* print!(tok.node());  *)EFFS0EXPnone(*none*))
 //
 end // end of [p_effs0expopt]
 //

@@ -323,13 +323,19 @@ fun {} ti0arg$sep(): void
 
 fun {} tq0arg$beg(): void
 fun {} tq0arg$end(): void
-
+fun {} tq0arg$sep(): void
+fun {} tq0arg$none(): void
 
 fun {} sq0arg$beg(): void
 fun {} sq0arg$end(): void
 
 fun {} sq0arg$none(): void
+fun {} sq0arg$sep(): void
 
+fun {} q0arg$colon$beg(): void
+fun {} q0arg$colon$end(): void
+
+fun {} staexp$sep(): void
 
 // =>
 fun {} eqgt$beg(): void
@@ -346,8 +352,11 @@ fun {} smcln$end(): void
 fun {} def$id$beg(): string
 fun {} def$id$end(): string
 
-fun {} def$impl$beg(): string
-fun {} def$impl$end(): string
+fun {} impdecl$beg(): void
+fun {} impdecl$end(): void
+
+fun {} impdecl$eq$beg(): void
+fun {} impdecl$eq$end(): void
 
 
 fun {} eq$beg(): string
@@ -383,5 +392,11 @@ fun {} then$end(): void
 
 fun {} else$beg(): void
 fun {} else$end(): void
+
+fun {} ldelay$beg(): void
+fun {} ldelay$end(): void
+
+fun {} delay$beg(): void
+fun {} delay$end(): void
 
 (* end of [xats_basics.sats] *)

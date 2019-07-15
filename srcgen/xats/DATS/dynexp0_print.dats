@@ -600,8 +600,13 @@ case+ x0.node() of
 //
 | D0Elet
   (tok0, d0cs, tok1, d0es, tok2) =>
+  print!("D0Elet(", "tok0(", tok0, ") ; "
+  , "d0cs(", d0cs, ") ; tok1(", tok1, ") ; d0es(", d0es, ") ; tok2(", tok2, ") )")
+
+(*
   print!("D0Elet(", tok0, "; "
   , d0cs, "; ", tok1, "; ", d0es, "; ", tok2, ")")
+*)
 //
 | D0Ewhere(d0e1, d0cs) =>
   print!("D0Ewhere(", " d0e1(", d0e1, ") ", "; ", "d0cs (", d0cs, ") ", ")")
@@ -907,7 +912,7 @@ case+ x0.node() of
   print!("D0Cfixity(", tok, "; ", ids, "; ", opt, ")")
 //
 | D0Cstatic(tok, d0c) =>
-  print!("D0Cstatic(", tok, "; ", d0c, ")")
+  print!("D0Cstatic(", "tok(", tok, ") ", "; ", " d0c(",d0c, ") ", ")")
 | D0Cextern(tok, d0c) =>
   print!("D0Cextern(", tok, "; ", d0c, ")")
 //
@@ -1007,15 +1012,31 @@ print!("D0Cabsimpl("
 *)
 //
 | D0Cimpdecl
-  ( tok, mopt //, s0as
+  ( tokn, mopt //, s0as
   , sqas, tqas
   , dqid, tias, f0as, res0, teq1, d0e2) =>
-
+  print!("D0Cimpdecl( "
+  , "tokn(", tokn, ") ", nxt
+  , "mopt(", mopt, ")", nxt
+  , "sqas(", sqas, ")", nxt
+  , "tqas(", tqas, ")", nxt
+  , "dqid(", dqid, ")", nxt
+  , "tias(", tias, ")", nxt
+  , "f0as(", f0as, ")", nxt
+  , "res0(", res0, ")", nxt
+  , "teq1(", teq1, ")", nxt
+  , "d0e2(", d0e2, ")"
+  , " )") where
+  {
+    val nxt = " ; "
+  }
+(*
   print!("D0Cimpdecl("
   , tok, "; ", mopt, "; sq0arglst"
   , sqas, "; tq0arglst", tqas, "; "
   , dqid, "; ti0arglst", tias, "; f0arglst", f0as, "; "
   , res0, "; ", teq1, "; ", d0e2, ")")
+*)
 //
 | D0Csymload
   (tok, sym, twth, dqid, tint) =>
@@ -1236,7 +1257,7 @@ val+F0UNDECL(rcd) = x0
 //
 in
   print!("F0UNDECL@{"
-  , ", nam=", rcd.nam
+  , "nam=", rcd.nam
 // rk
   , ", qua=", rcd.qua
 //

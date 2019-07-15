@@ -33,13 +33,22 @@ impltmp template$arg$sep<>() = ()
 
 impltmp ti0arg$sep<>() = ()
 
-impltmp tq0arg$beg<>() = pr newline
+impltmp tq0arg$sep<>() = pr newline
+impltmp tq0arg$beg<>() = ()
 impltmp tq0arg$end<>() = pr newline
+
+impltmp tq0arg$none<>() = ()
 
 impltmp sq0arg$beg<>() = pr newline
 impltmp sq0arg$end<>() = pr newline
 impltmp sq0arg$none<>() = pr newline
 
+impltmp sq0arg$sep<>() = ()
+
+impltmp q0arg$colon$beg<>() = () //pr space
+impltmp q0arg$colon$end<>() = () //pr space
+
+impltmp staexp$sep<>() = () //pr space
 
 (*
 extern fun{} decl$aft(): void
@@ -51,11 +60,16 @@ impltmp decl$aft<>() =
   )
 *)
 
+impltmp impdecl$eq$beg<>() = pr space
+impltmp impdecl$eq$end<>() = pr newline
+
+impltmp impdecl$beg<>() = pr newline
+impltmp impdecl$end<>() = () //newline //newline
+
+
 impltmp def$id$beg<>() = space //newline
 impltmp def$id$end<>() = space //newline
 
-impltmp def$impl$beg<>() = newline
-impltmp def$impl$end<>() = "" //newline //newline
 
 
 impltmp eq$beg<>() = space //newline
@@ -73,7 +87,7 @@ impltmp comma$sep<>() = pr space
 (* impltmp case$end<>() = pr newline //newline *)
 (* impltmp case$endall<>() = pr newline //newline *)
 
-impltmp paren$beg<>() = ()
+impltmp paren$beg<>() = pr newline
 impltmp paren$end<>() = pr newline
 
 
@@ -105,3 +119,10 @@ impltmp then$end<>() = ()
 
 impltmp else$beg<>() = pr space
 impltmp else$end<>() = ()
+
+
+impltmp ldelay$beg<>() = ()
+impltmp ldelay$end<>() = pr newline
+
+impltmp delay$beg<>() = ()
+impltmp delay$end<>() = pr newline
